@@ -1,0 +1,17 @@
+.sidebar {
+  background-color: #fff;
+  height: 100%;
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.list {
+  flex-basis: initial;
+}
+
+.link, .link:visited {
+  color: #000;
+  display: block;
+}

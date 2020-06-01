@@ -1,0 +1,23 @@
+.addressType {
+  background-color: #d8d8d8;
+  font-size: 10px;
+  font-weight: bold;
+  border-radius: 3px;
+  padding: 4px;
+}
+
+.address {
+  font-weight: bold;
+  display: block;
+  margin: 8px 0 12px 0;
+}
+
+.freeLabel, .inUseLabel {
+  font-size: 14px;
+  color: #666;
+}
+
+.freeLabel, .inUseLabel {
+  color: #666;
+  margin-bottom: 8px;
+}

@@ -1,0 +1,44 @@
+.header {
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+.summary {
+  padding-top: 40px;
+  padding-bottom: 40px;
+  text-align: center;
+  background-color: #141414;
+  color: #fff;
+}
+
+.balanceLabel {
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.ops {
+  margin-top: 20px;
+}
+
+.addresses, .transactions, .authorizations {
+  padding: 8px;
+}
+
+.navbar {
+  z-index: 100;
+}
+
+
+.tabs {
+  width: 100%;
+}
+
+.testRegion {
+  position: absolute;
+  bottom: 40px;
+}
+
+.cog {
+  width: 20px;
+  height: 20px;
+}

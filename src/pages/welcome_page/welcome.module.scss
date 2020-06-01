@@ -1,0 +1,43 @@
+.welcome {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.info {
+  background-color: #111;
+  flex: 1;
+  text-align: center;
+}
+
+.logo {
+  width: 119px;
+  height: 100px;
+}
+
+.words {
+  color: #fff;
+  font-size: 26px;
+  font-weight: bold;
+  letter-spacing: 0.3px;
+  text-align: center;
+}
+
+.ops {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.statusContainer {
+  background-color: #111;
+  padding: 0 8px;
+  color: #3cc68a;
+  height: 25px;
+  line-height: 25px;
+}
+
+.status {
+  font-size: 90%;
+}
