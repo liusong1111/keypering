@@ -1,10 +1,12 @@
 import React from "react";
 import { NavBar, Flex, Checkbox, Icon, List } from "antd-mobile";
+import { useHistory } from "react-router";
 
 const SettingPage = () => {
+  const history = useHistory();
   return (
     <div>
-      <NavBar mode="dark" icon={<Icon type="left" />} onLeftClick={() => window.history.back()} leftContent="Setting"></NavBar>
+      <NavBar mode="dark" icon={<Icon type="left" />} onLeftClick={() => history.goBack()} leftContent="Setting"></NavBar>
       <Flex>
         <Flex.Item>
           <List renderHeader={() => "Lock plugins"}>

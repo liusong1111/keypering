@@ -1,14 +1,14 @@
 import React from "react";
 import styles from "./change_wallet_name.module.scss";
-import { Button, Card, Icon, InputItem, List, NavBar } from "antd-mobile";
+import { Button, Icon, InputItem, List, NavBar } from "antd-mobile";
 
 interface ChangeWalletNameProps {
   // initialWalletName: string;
   // onChangeWallet: any;
 }
 
-class ChangeWalletNamePage extends React.Component<ChangeWalletNameProps, any> {
-  constructor(props: ChangeWalletNameProps) {
+class ChangeWalletNamePage extends React.Component<any, any> {
+  constructor(props: any) {
     super(props);
     // const { initialWalletName } = props;
     const initialWalletName = "";

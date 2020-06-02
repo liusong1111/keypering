@@ -1,12 +1,14 @@
 import React from "react";
 import styles from "./change_password.module.scss";
 import { Button, Icon, InputItem, List, NavBar } from "antd-mobile";
+import {useHistory, withRouter} from "react-router";
 
 class ChangePasswordPage extends React.Component<any, any> {
   render() {
+    const { history } = this.props;
     return (
       <div>
-        <NavBar icon={<Icon type="left" />} onLeftClick={() => window.history.back()}>
+        <NavBar icon={<Icon type="left" />} onLeftClick={() => history.goBack()}>
           Change password
         </NavBar>
         <List>
@@ -26,4 +28,4 @@ class ChangePasswordPage extends React.Component<any, any> {
   }
 }
 
-export default ChangePasswordPage;
+export default withRouter(ChangePasswordPage);

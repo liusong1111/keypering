@@ -9,7 +9,7 @@ import Sidebar from "../../widgets/sidebar";
 import WalletSelector from "../../widgets/wallet_selector";
 import TransactionRequest from "../../widgets/transaction_request";
 import CogImg from "../../imgs/cog.svg";
-import { useHistory } from "react-router";
+import { withRouter } from "react-router";
 
 const tabNames = [
   { title: "Addresses", key: "Addresses" },
@@ -67,6 +67,7 @@ class HomePage extends React.Component<any, any> {
 
   handleOpenSetting = () => {
     const { currentWallet } = this.state;
+    const { history } = this.props;
     const BUTTONS = ["Change Wallet Name", "Change Password", "Backup Wallet", "Delete Wallet"];
     ActionSheet.showActionSheetWithOptions(
       {
@@ -77,15 +78,15 @@ class HomePage extends React.Component<any, any> {
       (buttonIndex) => {
         if (buttonIndex === 0) {
           console.log("change wallet name");
-          window.location.href = "/change_wallet_name";
+          history.push("/change_wallet_name");
         } else if (buttonIndex === 1) {
           console.log("change password");
-          window.location.href = "/change_password";
+          history.push("/change_password");
         } else if (buttonIndex === 2) {
           console.log("backup wallet");
         } else if (buttonIndex === 3) {
           console.log("delete wallet");
-          window.location.href = "/delete_wallet";
+          history.push("/delete_wallet");
         } else {
           console.log("should not be here");
         }
@@ -135,7 +136,8 @@ class HomePage extends React.Component<any, any> {
   };
 
   handleTestAuthorizationRequest = () => {
-    window.location.href = "/authorization_request";
+    const { history } = this.props;
+    history.push("/authorization_request");
   };
 
   handleDeclineTransactionRequest = () => {
@@ -223,4 +225,4 @@ class HomePage extends React.Component<any, any> {
   }
 }
 
-export default HomePage;
+export default withRouter(HomePage);

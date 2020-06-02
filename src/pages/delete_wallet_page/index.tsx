@@ -1,12 +1,14 @@
 import React from "react";
 import styles from "./delete_wallet.module.scss";
 import { Button, Icon, InputItem, List, NavBar } from "antd-mobile";
+import {withRouter} from "react-router";
 
 class DeleteWalletPage extends React.Component<any, any> {
   render() {
+    const { history } = this.props;
     return (
       <div>
-        <NavBar icon={<Icon type="left" />} onLeftClick={() => window.history.back()}>
+        <NavBar icon={<Icon type="left" />} onLeftClick={() => history.goBack()}>
           Delete wallet
         </NavBar>
         <List renderHeader="Enter password to delete wallet">
@@ -22,4 +24,4 @@ class DeleteWalletPage extends React.Component<any, any> {
   }
 }
 
-export default DeleteWalletPage;
+export default withRouter(DeleteWalletPage);

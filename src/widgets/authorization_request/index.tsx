@@ -1,13 +1,16 @@
 import React from "react";
 import styles from "./authorization_request.module.scss";
 import { Button, Checkbox, Icon, List, NavBar } from "antd-mobile";
+import {withRouter} from "react-router";
 
 interface AuthorizationRequestProps {
   url: string;
+  history: any;
+  [key: string]: any;
 }
 
-class AuthorizationRequest extends React.Component<AuthorizationRequestProps, any> {
-  constructor(props: AuthorizationRequestProps) {
+class AuthorizationRequest extends React.Component<any, any> {
+  constructor(props: any) {
     super(props);
   }
 
@@ -16,10 +19,10 @@ class AuthorizationRequest extends React.Component<AuthorizationRequestProps, an
   handleApprove = () => {};
 
   render() {
-    const { url } = this.props;
+    const { url, history } = this.props;
     return (
       <div>
-        <NavBar icon={<Icon type="left" />} onLeftClick={() => window.history.back()}>
+        <NavBar icon={<Icon type="left" />} onLeftClick={() => this.props.history.goBack()}>
           Authorization Request
         </NavBar>
         <List>
@@ -49,4 +52,4 @@ class AuthorizationRequest extends React.Component<AuthorizationRequestProps, an
   }
 }
 
-export default AuthorizationRequest;
+export default withRouter(AuthorizationRequest);

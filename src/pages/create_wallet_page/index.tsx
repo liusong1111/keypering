@@ -1,7 +1,7 @@
 import React, { useState, MouseEvent } from "react";
 import styles from "./create_wallet_page.module.scss";
 import { Button, Card, InputItem, List, NoticeBar, TextareaItem, WhiteSpace } from "antd-mobile";
-import { useRouteMatch } from "react-router";
+import {useRouteMatch, withRouter} from "react-router";
 
 interface GenerateMnemonicProps {
   mnemonic: string;
@@ -205,7 +205,8 @@ class CreateWalletPage extends React.Component<any, any> {
   };
 
   handleCancel = () => {
-    window.history.back();
+    const { history } = this.props;
+    history.goBack();
   };
 
   handleBack = () => {
@@ -240,4 +241,4 @@ class CreateWalletPage extends React.Component<any, any> {
   }
 }
 
-export default CreateWalletPage;
+export default withRouter(CreateWalletPage);
