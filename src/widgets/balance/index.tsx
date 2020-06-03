@@ -45,7 +45,7 @@ const Balance = ({ value, className = "", size = "normal" }: BalanceProps) => {
   const sizeClass = SizeClassDict[size];
 
   return (
-    <span className={`${className} ${sizeClass}`}>
+    <span className={`${styles.balance} ${className} ${sizeClass}`}>
       <span className={styles.m}>{mf}</span>
       <span className={styles.n}>.{nf}</span>
     </span>

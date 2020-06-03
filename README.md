@@ -16,7 +16,7 @@
 
 First you need to install [nodejs](https://nodejs.org/) and [yarn](https://yarnpkg.com/).
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), and built with [Ant Design Mobile](https://mobile.ant.design/).
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), and built with [Ant Design Mobile](https://mobile.ant.design/), [Source Code Pro](https://github.com/adobe-fonts/source-code-pro), [Google Lato Font](https://fonts.google.com/specimen/Lato).
 
 ### Available Scripts
 

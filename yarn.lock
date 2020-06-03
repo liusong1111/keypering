@@ -15818,6 +15818,16 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
+typeface-lato@^0.0.75:
+  version "0.0.75"
+  resolved "https://registry.npm.taobao.org/typeface-lato/download/typeface-lato-0.0.75.tgz#8aa11c5611dc38416837c089b265a2abd1f7dd31"
+  integrity sha1-iqEcVhHcOEFoN8CJsmWiq9H33TE=
+
+typeface-source-code-pro@^1.1.3:
+  version "1.1.3"
+  resolved "https://registry.npm.taobao.org/typeface-source-code-pro/download/typeface-source-code-pro-1.1.3.tgz#46113e0ad1729ed2a6b950bb4a77748f65bbf6ef"
+  integrity sha1-RhE+CtFyntKmuVC7Snd0j2W79u8=
+
 typescript@~3.7.2:
   version "3.7.5"
   resolved "https://registry.npm.taobao.org/typescript/download/typescript-3.7.5.tgz?cache=0&sync_timestamp=1590390909369&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Ftypescript%2Fdownload%2Ftypescript-3.7.5.tgz#0692e21f65fd4108b9330238aac11dd2e177a1ae"
