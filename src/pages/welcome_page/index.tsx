@@ -2,11 +2,12 @@ import React from "react";
 import { Button, Icon, WhiteSpace } from "antd-mobile";
 import { useHistory } from "react-router";
 import styles from "./welcome.module.scss";
+import Page from "../../widgets/page";
 
 const WelcomePage = () => {
   const history = useHistory();
   return (
-    <div className={styles.welcome}>
+    <Page>
       <div className={styles.info}>
         <img src="logo.png" alt="logo" className={styles.logo} />
         <div className={styles.words}>Welcome to Keypering</div>
@@ -25,7 +26,7 @@ const WelcomePage = () => {
         &nbsp;
         <span className={styles.status}>Connected (mainnet)</span>
       </div>
-    </div>
+    </Page>
   );
 };
 
