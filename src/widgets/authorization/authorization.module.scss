@@ -3,6 +3,19 @@
   margin: 14px 0;
 }
 
+.applicationLabel {
+  padding-right: 8px;
+}
+
+.link, .link:visited {
+  color: #3cc68a;
+  font-weight: bold;
+}
+
+.timestamp {
+  font-size: 90%;
+}
+
 .revokeButton {
   float: right;
 }

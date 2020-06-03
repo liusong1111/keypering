@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { Button, NavBar, Tabs, Drawer, Icon, Flex, WhiteSpace, ActionSheet } from "antd-mobile";
+import { Button, NavBar, Tabs, Drawer, Icon, Flex, WhiteSpace, ActionSheet, WingBlank } from "antd-mobile";
 import { withRouter } from "react-router";
 import { Settings as SettingsIcon, Menu as MenuIcon } from "react-feather";
 import Balance from "../../widgets/balance";
@@ -197,22 +197,21 @@ class HomePage extends React.Component<any, any> {
               console.log("onChange:", tab, index);
             }}
           >
-            <div key="Addresses" className={styles.addresses}>
+            <WingBlank key="Addresses" className={styles.addresses}>
               <AddressList />
-            </div>
-            <div key="Transactions" className={styles.transactions}>
+            </WingBlank>
+            <WingBlank key="Transactions" className={styles.transactions}>
               <TransactionList />
-            </div>
-            <div key="Authorization" className={styles.authorizations}>
+            </WingBlank>
+            <WingBlank key="Authorization" className={styles.authorizations}>
               <AuthorizationList />
-            </div>
+            </WingBlank>
           </Tabs>
         </Flex.Item>
         <div className={styles.testRegion}>
           <Button inline size="small" onClick={this.handleTestAuthorizationRequest}>
             Request Addr(test)
           </Button>
-          &nbsp;
           <Button inline size="small" onClick={this.handleTestRequestSigning}>
             Request Signing(test)
           </Button>

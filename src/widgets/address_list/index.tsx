@@ -1,8 +1,9 @@
 import React from "react";
 import styles from "./address_list.module.scss";
-import {Flex, Tag } from "antd-mobile";
+import { Flex } from "antd-mobile";
 import Balance from "../balance";
 import Address from "../address";
+import Tag from "../tag";
 
 interface AddressListProps {
 
@@ -25,16 +26,15 @@ const getAddressType = (addr: AddressListProps) => {
 
 const AddressList = (props: AddressListProps) => {
   return (
-    <div>
-      <Tag small>{getAddressType(props)}</Tag>
-      <br />
+    <div className={styles.item}>
+      <Tag>{getAddressType(props)}</Tag>
       <Address className={styles.address} value={"ckt1qyqd5eyygtdmwdr7ge736zw6z0ju6wsw7rssu8fcve"}></Address>
       <Flex>
-        <Flex.Item>
+        <Flex.Item className={styles.freeContainer}>
           <div className={styles.freeLabel}>Free</div>
           <Balance value={0x1234567899999} className={styles.balance} />
         </Flex.Item>
-        <Flex.Item>
+        <Flex.Item className={styles.inUseContainer}>
           <div className={styles.inUseLabel}>In Use</div>
           <Balance value={0x1234a1b2cccc} className={styles.balance} />
         </Flex.Item>

@@ -30,7 +30,6 @@
 }
 
 .addresses, .transactions, .authorizations {
-  padding: 8px;
 }
 
 .navbar {
@@ -44,7 +43,10 @@
 
 .testRegion {
   position: absolute;
-  bottom: 40px;
+  width: 100%;
+  bottom: 20px;
+  display: flex;
+  justify-content: space-evenly;
 }
 
 .cog {

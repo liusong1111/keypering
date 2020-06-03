@@ -1,6 +1,6 @@
 import React from "react";
-import styles from "./transaction.module.scss";
 import { Icon } from "antd-mobile";
+import styles from "./transaction.module.scss";
 
 interface TransactionProps {
   requestUrl: string;
@@ -12,13 +12,18 @@ interface TransactionProps {
 const Transaction = ({ requestUrl, metaInfo, state, timestamp }: TransactionProps) => {
   return (
     <div>
-      <div className={styles.requestFromContainer}>
+      <div className={styles.item}>
         <span className={styles.requestFromLabel}>Request from: </span>
-        <a className={styles.requestFromLink} href={requestUrl}>{requestUrl}</a>
+        <a className={styles.requestFromLink} href={requestUrl}>
+          {requestUrl}
+        </a>
       </div>
-      <div>Meta info: {metaInfo}</div>
-      <div>
-        <span className={styles.timestamp}>{timestamp}</span> <Icon type={"success"} />
+      <div className={styles.item}>
+        <span className={styles.metaInfoLabel}>Meta info: </span>
+        {metaInfo}
+      </div>
+      <div className={styles.item}>
+        <span className={styles.timestamp}>{timestamp}</span> <Icon type="success" />
       </div>
     </div>
   );

@@ -1,5 +1,10 @@
-.requestFromContainer {
+.item {
   margin: 14px 0;
+}
+
+.requestFromLabel, .metaInfoLabel {
+  display: inline-block;
+  width: 100px;
 }
 
 .requestFromLabel {
@@ -8,10 +13,12 @@
 
 a.requestFromLink, a:visited.requestFromLink {
   color: #3cc68a;
+  font-weight: bold;
 }
 
 .timestamp {
   font-size: 90%;
+  display: block;
 }
 
 

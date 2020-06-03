@@ -14,10 +14,10 @@ const Authorization = ({ url, timestamp }: AuthorizationProps) => {
     <div>
       <div className={styles.applicationContainer}>
         <span className={styles.applicationLabel}>Application: </span>
-        <a href={url}>{url}</a>
+        <a className={styles.link} href={url} target="_blank">{url}</a>
       </div>
       <div>
-        <Timestamp value={timestamp} />
+        <Timestamp className={styles.timestamp} value={timestamp} />
         <Button inline size={"small"} className={styles.revokeButton}>Revoke</Button>
       </div>
     </div>
