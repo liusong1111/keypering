@@ -13242,6 +13242,13 @@ react-fast-compare@^3.0.1:
   resolved "https://registry.npm.taobao.org/react-fast-compare/download/react-fast-compare-3.1.1.tgz#0becf31e3812fa70dc231e259f40d892d4767900"
   integrity sha1-C+zzHjgS+nDcIx4ln0DYktR2eQA=
 
+react-feather@^2.0.8:
+  version "2.0.8"
+  resolved "https://registry.npm.taobao.org/react-feather/download/react-feather-2.0.8.tgz#455baf1470f756a57e2ad6c72545444ce5925781"
+  integrity sha1-RVuvFHD3VqV+KtbHJUVETOWSV4E=
+  dependencies:
+    prop-types "^15.7.2"
+
 react-focus-lock@^2.1.0:
   version "2.3.1"
   resolved "https://registry.npm.taobao.org/react-focus-lock/download/react-focus-lock-2.3.1.tgz#9d5d85899773609c7eefa4fc54fff6a0f5f2fc47"

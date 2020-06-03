@@ -1,5 +1,7 @@
 import React, { useCallback, useState } from "react";
 import { Button, NavBar, Tabs, Drawer, Icon, Flex, WhiteSpace, ActionSheet } from "antd-mobile";
+import { withRouter } from "react-router";
+import { Settings as SettingsIcon, Menu as MenuIcon } from "react-feather";
 import Balance from "../../widgets/balance";
 import AddressList from "../../widgets/address_list";
 import styles from "./home.module.scss";
@@ -9,7 +11,6 @@ import Sidebar from "../../widgets/sidebar";
 import WalletSelector from "../../widgets/wallet_selector";
 import TransactionRequest from "../../widgets/transaction_request";
 import CogImg from "../../imgs/cog.svg";
-import { withRouter } from "react-router";
 
 const tabNames = [
   { title: "Addresses", key: "Addresses" },
@@ -159,7 +160,7 @@ class HomePage extends React.Component<any, any> {
         {transactionRequest && (
           <TransactionRequest
             inner={transactionRequest}
-            visible={true}
+            visible
             onDecline={this.handleDeclineTransactionRequest}
             onApprove={this.handleApproveTransactionRequest}
           />
@@ -167,17 +168,17 @@ class HomePage extends React.Component<any, any> {
         <div className={styles.header}>
           <NavBar
             className={styles.navbar}
-            icon={<Icon type="ellipsis" />}
-            rightContent={<img onClick={this.handleOpenSetting} className={styles.cog} src={CogImg} />}
+            icon={<MenuIcon color="#fff" />}
+            rightContent={<Icon type="ellipsis" onClick={this.handleOpenSetting} />}
             onLeftClick={this.handleToggleDrawer}
           >
-            <span onClick={this.handleToggleWalletSelector}>
-              Wallet1 <Icon type="down" />
-            </span>
+            <div onClick={this.handleToggleWalletSelector}>
+              Wallet1 <Icon type="down" className={styles.downButton} />
+            </div>
           </NavBar>
           <div className={styles.summary}>
             <div className={styles.balanceLabel}>Balance</div>
-            <Balance value={1234_78000000} size={"large"} />
+            <Balance value={1234_78000000} size="large" />
             <div className={styles.ops}>
               <Button inline type="primary" size="small">
                 Send
@@ -188,11 +189,7 @@ class HomePage extends React.Component<any, any> {
         {walletSelectorOpen && (
           <WalletSelector wallets={wallets} currentWallet={currentWallet} onSelect={this.handleSelectWallet} />
         )}
-        <Drawer
-          className={styles.drawer}
-          sidebar={<Sidebar onClose={this.handleCloseDrawer} />}
-          open={drawerOpen}
-        ></Drawer>
+        <Drawer className={styles.drawer} sidebar={<Sidebar onClose={this.handleCloseDrawer} />} open={drawerOpen} />
         <Flex.Item className={styles.tabs}>
           <Tabs
             tabs={tabNames}
