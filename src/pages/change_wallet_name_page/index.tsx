@@ -1,6 +1,6 @@
 import React from "react";
-import styles from "./change_wallet_name.module.scss";
 import { Button, Icon, InputItem, List, NavBar } from "antd-mobile";
+import styles from "./change_wallet_name.module.scss";
 
 interface ChangeWalletNameProps {
   // initialWalletName: string;
@@ -22,7 +22,6 @@ class ChangeWalletNamePage extends React.Component<any, any> {
     const { newName } = this.state;
     if (!newName) {
       alert("Wallet name should not be empty");
-      return;
     }
     // onChangeWallet(newName);
   };

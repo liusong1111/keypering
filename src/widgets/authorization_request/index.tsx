@@ -1,7 +1,7 @@
 import React from "react";
-import styles from "./authorization_request.module.scss";
 import { Button, Checkbox, Icon, List, NavBar } from "antd-mobile";
-import {withRouter} from "react-router";
+import { withRouter } from "react-router";
+import styles from "./authorization_request.module.scss";
 
 interface AuthorizationRequestProps {
   url: string;

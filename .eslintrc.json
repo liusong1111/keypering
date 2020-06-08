@@ -3,6 +3,17 @@
     "browser": true,
     "es6": true
   },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "paths": ["src"],
+        "extensions": [".js", ".ts", ".jsx", ".tsx"]
+      }
+    },
+    "react": {
+     "version": "detect"
+    }
+  },
   "extends": [
     "airbnb",
     "eslint:recommended",
@@ -39,6 +50,10 @@
           ".tsx"
         ]
       }
-    ]
+    ],
+    "react/jsx-wrap-multilines": "off",
+    "no-unused-vars": "off",
+    "jsx-a11y/click-events-have-key-events": "off",
+    "jsx-a11y/no-static-element-interactions": "off"
   }
 }

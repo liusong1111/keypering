@@ -23,7 +23,8 @@ const Transaction = ({ requestUrl, metaInfo, state, timestamp }: TransactionProp
         {metaInfo}
       </div>
       <div className={styles.item}>
-        <span className={styles.timestamp}>{timestamp}</span> <Icon type="success" />
+        <span className={styles.timestamp}>{timestamp}</span>
+        <Icon type="success" />
       </div>
     </div>
   );

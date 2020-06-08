@@ -47,7 +47,8 @@ const Balance = ({ value, className = "", size = "normal" }: BalanceProps) => {
   return (
     <span className={`${styles.balance} ${className} ${sizeClass}`}>
       <span className={styles.m}>{mf}</span>
-      <span className={styles.n}>.{nf}</span>
+.
+      <span className={styles.n}>{nf}</span>
     </span>
   );
 };

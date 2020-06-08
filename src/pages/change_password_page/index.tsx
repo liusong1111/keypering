@@ -1,7 +1,7 @@
 import React from "react";
-import styles from "./change_password.module.scss";
 import { Button, Icon, InputItem, List, NavBar } from "antd-mobile";
-import {useHistory, withRouter} from "react-router";
+import { useHistory, withRouter } from "react-router";
+import styles from "./change_password.module.scss";
 
 class ChangePasswordPage extends React.Component<any, any> {
   render() {
@@ -18,9 +18,7 @@ class ChangePasswordPage extends React.Component<any, any> {
             <InputItem labelNumber={20}>Confirm Password</InputItem>
           </List.Item>
           <List.Item>
-            <Button type="primary">
-              Confirm
-            </Button>
+            <Button type="primary">Confirm</Button>
           </List.Item>
         </List>
       </div>

@@ -1,7 +1,7 @@
 import React, { useState, MouseEvent } from "react";
+import { Button, Card, InputItem, Toast, List, NoticeBar, TextareaItem, WhiteSpace } from "antd-mobile";
+import { useRouteMatch, withRouter } from "react-router";
 import styles from "./create_wallet_page.module.scss";
-import { Button, Card, InputItem, List, NoticeBar, TextareaItem, WhiteSpace } from "antd-mobile";
-import {useRouteMatch, withRouter} from "react-router";
 
 interface GenerateMnemonicProps {
   mnemonic: string;
@@ -13,13 +13,13 @@ interface GenerateMnemonicProps {
 const GenerateMnemonic = ({ mnemonic, onRegenerate, onCancel, onNext }: GenerateMnemonicProps) => {
   return (
     <Card className={styles.card}>
-      <Card.Header className={styles.cardHeader} title={"Your wallet seed has been generated"} />
+      <Card.Header className={styles.cardHeader} title="Your wallet seed has been generated" />
       <Card.Body>
         <TextareaItem value={mnemonic} disabled />
         <NoticeBar action={<Button>Regenerate</Button>}>
           Write down your wallet seed and save it in a safe place
         </NoticeBar>
-        <Button inline size={"small"} className={styles.rightButton} onClick={onRegenerate}>
+        <Button inline size="small" className={styles.rightButton} onClick={onRegenerate}>
           Regenerate
         </Button>
         <WhiteSpace />
@@ -29,7 +29,7 @@ const GenerateMnemonic = ({ mnemonic, onRegenerate, onCancel, onNext }: Generate
           <div>
             <Button onClick={onCancel}>Cancel</Button>
             <WhiteSpace />
-            <Button type={"primary"} onClick={onNext}>
+            <Button type="primary" onClick={onNext}>
               Next
             </Button>
           </div>
@@ -63,7 +63,7 @@ class EnterMnemonic extends React.Component<EnterMnemonicProps, any> {
     if (mnemonic === inputMnemonic) {
       onNext();
     } else {
-      alert("please input correct mnemonic");
+      Toast.fail("please input correct mnemonic", 3);
     }
   };
 
@@ -81,7 +81,7 @@ class EnterMnemonic extends React.Component<EnterMnemonicProps, any> {
             <div>
               <Button onClick={onBack}>Back</Button>
               <WhiteSpace />
-              <Button onClick={this.handleNext} type={"primary"}>
+              <Button onClick={this.handleNext} type="primary">
                 Next
               </Button>
             </div>
@@ -111,15 +111,15 @@ class SetNameAndPassword extends React.Component<SetNameAndPasswordProps, any> {
     const { onConfirm } = this.props;
     const { password, password2, walletName } = this.state;
     if (!walletName) {
-      alert("please specify wallet name");
+      Toast.fail("please specify wallet name");
       return;
     }
     if (!password) {
-      alert("password should not be empty");
+      Toast.fail("password should not be empty");
       return;
     }
     if (password !== password2) {
-      alert("password is not the same");
+      Toast.fail("password is not the same");
       return;
     }
     onConfirm(walletName, password);
@@ -149,7 +149,7 @@ class SetNameAndPassword extends React.Component<SetNameAndPasswordProps, any> {
 
     return (
       <Card className={styles.card}>
-        <Card.Header className={styles.cardHeader} title={"Setup your new wallet"} />
+        <Card.Header className={styles.cardHeader} title="Setup your new wallet" />
         <Card.Body>
           <List>
             <InputItem placeholder="" labelNumber={7} value={walletName} onChange={this.handleInputWalletName}>
@@ -201,7 +201,7 @@ class CreateWalletPage extends React.Component<any, any> {
   }
 
   handleRegenerate = () => {
-    console.log("onRegenerate");
+    // console.log("onRegenerate");
   };
 
   handleCancel = () => {
@@ -210,15 +210,19 @@ class CreateWalletPage extends React.Component<any, any> {
   };
 
   handleBack = () => {
+    let { step } = this.state;
+    step -= 1;
     this.setState({
-      step: this.state.step - 1,
+      step,
     });
   };
 
   handleNext = () => {
-    console.log("onNextStep");
+    // console.log("onNextStep");
+    let { step } = this.state;
+    step += 1;
     this.setState({
-      step: this.state.step + 1,
+      step,
     });
   };
 
@@ -232,7 +236,14 @@ class CreateWalletPage extends React.Component<any, any> {
     const { step, mnemonic } = this.state;
 
     if (step === 0) {
-      return <GenerateMnemonic mnemonic={mnemonic} onRegenerate={this.handleRegenerate} onCancel={this.handleCancel} onNext={this.handleNext} />;
+      return (
+        <GenerateMnemonic
+          mnemonic={mnemonic}
+          onRegenerate={this.handleRegenerate}
+          onCancel={this.handleCancel}
+          onNext={this.handleNext}
+        />
+      );
     }
     if (step === 1) {
       return <EnterMnemonic mnemonic={mnemonic} onBack={this.handleBack} onNext={this.handleNext} />;

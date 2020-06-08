@@ -6,7 +6,7 @@ const SettingPage = () => {
   const history = useHistory();
   return (
     <div>
-      <NavBar mode="dark" icon={<Icon type="left" />} onLeftClick={() => history.goBack()} leftContent="Setting"></NavBar>
+      <NavBar mode="dark" icon={<Icon type="left" />} onLeftClick={() => history.goBack()} leftContent="Setting" />
       <Flex>
         <Flex.Item>
           <List renderHeader={() => "Lock plugins"}>

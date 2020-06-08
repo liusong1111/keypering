@@ -60,7 +60,7 @@ class HomePage extends React.Component<any, any> {
   };
 
   handleSelectWallet = (e: any) => {
-    console.log(e);
+    // console.log(e);
     this.setState({
       walletSelectorOpen: false,
     });
@@ -78,18 +78,18 @@ class HomePage extends React.Component<any, any> {
       },
       (buttonIndex) => {
         if (buttonIndex === 0) {
-          console.log("change wallet name");
+          // console.log("change wallet name");
           history.push("/change_wallet_name");
         } else if (buttonIndex === 1) {
-          console.log("change password");
+          // console.log("change password");
           history.push("/change_password");
         } else if (buttonIndex === 2) {
-          console.log("backup wallet");
+          // console.log("backup wallet");
         } else if (buttonIndex === 3) {
-          console.log("delete wallet");
+          // console.log("delete wallet");
           history.push("/delete_wallet");
         } else {
-          console.log("should not be here");
+          // console.log("should not be here");
         }
       }
     );
@@ -173,7 +173,8 @@ class HomePage extends React.Component<any, any> {
             onLeftClick={this.handleToggleDrawer}
           >
             <div onClick={this.handleToggleWalletSelector}>
-              Wallet1 <Icon type="down" className={styles.downButton} />
+              Wallet1
+              <Icon type="down" className={styles.downButton} />
             </div>
           </NavBar>
           <div className={styles.summary}>
@@ -194,7 +195,7 @@ class HomePage extends React.Component<any, any> {
           <Tabs
             tabs={tabNames}
             onChange={(tab, index) => {
-              console.log("onChange:", tab, index);
+              // console.log("onChange:", tab, index);
             }}
           >
             <WingBlank key="Addresses" className={styles.addresses}>

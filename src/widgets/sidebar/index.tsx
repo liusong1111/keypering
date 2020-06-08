@@ -1,7 +1,7 @@
 import React from "react";
-import styles from "./sidebar.module.scss";
 import { Icon, List, NavBar } from "antd-mobile";
 import { Link } from "react-router-dom";
+import styles from "./sidebar.module.scss";
 
 interface SidebarProps {
   onClose: any;
@@ -10,7 +10,7 @@ interface SidebarProps {
 const Sidebar = ({ onClose }: SidebarProps) => {
   return (
     <div className={styles.sidebar}>
-      <NavBar leftContent={<span>Keypering</span>} rightContent={<Icon type={"cross"} onClick={onClose} />}></NavBar>
+      <NavBar leftContent={<span>Keypering</span>} rightContent={<Icon type="cross" onClick={onClose} />} />
       <List renderHeader={<span>Wallet</span>} className={styles.list}>
         <List.Item arrow="horizontal">
           <Link to="/create_wallet" className={styles.link}>

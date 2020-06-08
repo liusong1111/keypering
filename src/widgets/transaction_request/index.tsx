@@ -1,6 +1,6 @@
 import React from "react";
-import styles from "./transaction_request.module.scss";
 import { Button, Card, Flex, Icon, List, Modal, NavBar, WhiteSpace, WingBlank } from "antd-mobile";
+import styles from "./transaction_request.module.scss";
 import Address from "../address";
 import Balance from "../balance";
 
@@ -38,7 +38,8 @@ const InputOutput = ({ inner }: InputOutputProps) => {
         multipleLine
         extra={
           <div>
-            <Balance value={capacity} /> CKB
+            <Balance value={capacity} />
+            CKB
           </div>
         }
       >

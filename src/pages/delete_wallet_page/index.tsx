@@ -1,7 +1,7 @@
 import React from "react";
-import styles from "./delete_wallet.module.scss";
 import { Button, Icon, InputItem, List, NavBar } from "antd-mobile";
-import {withRouter} from "react-router";
+import { withRouter } from "react-router";
+import styles from "./delete_wallet.module.scss";
 
 class DeleteWalletPage extends React.Component<any, any> {
   render() {
@@ -13,7 +13,9 @@ class DeleteWalletPage extends React.Component<any, any> {
         </NavBar>
         <List renderHeader="Enter password to delete wallet">
           <List.Item>
-            <InputItem type="password" labelNumber={20}>Password</InputItem>
+            <InputItem type="password" labelNumber={20}>
+              Password
+            </InputItem>
           </List.Item>
           <List.Item>
             <Button type="warning">Delete</Button>

@@ -1,13 +1,11 @@
 import React from "react";
-import styles from "./address_list.module.scss";
 import { Flex } from "antd-mobile";
+import styles from "./address_list.module.scss";
 import Balance from "../balance";
 import Address from "../address";
 import Tag from "../tag";
 
-interface AddressListProps {
-
-}
+interface AddressListProps {}
 
 enum AddressType {
   secp256k1 = "secp256k1 blake160",
@@ -21,14 +19,14 @@ const getAddressType = (addr: AddressListProps) => {
   // } else {
   //   return "anyone-cay-pay";
   // }
-    return AddressType.secp256k1;
+  return AddressType.secp256k1;
 };
 
 const AddressList = (props: AddressListProps) => {
   return (
     <div className={styles.item}>
       <Tag>{getAddressType(props)}</Tag>
-      <Address className={styles.address} value={"ckt1qyqd5eyygtdmwdr7ge736zw6z0ju6wsw7rssu8fcve"}></Address>
+      <Address className={styles.address} value="ckt1qyqd5eyygtdmwdr7ge736zw6z0ju6wsw7rssu8fcve" />
       <Flex>
         <Flex.Item className={styles.freeContainer}>
           <div className={styles.freeLabel}>Free</div>
