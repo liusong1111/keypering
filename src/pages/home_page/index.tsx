@@ -10,7 +10,7 @@ import AuthorizationList from "../../widgets/authorization_list";
 import Sidebar from "../../widgets/sidebar";
 import WalletSelector from "../../widgets/wallet_selector";
 import TransactionRequest from "../../widgets/transaction_request";
-import CogImg from "../../imgs/cog.svg";
+import Storage from "../../services/storage";
 
 const tabNames = [
   { title: "Addresses", key: "Addresses" },
@@ -21,20 +21,24 @@ const tabNames = [
 class HomePage extends React.Component<any, any> {
   constructor(props: any) {
     super(props);
+    const { history } = this.props;
+    const storage = Storage.getStorage();
+    const wallets = storage.getWallets();
+    let { currentWalletName } = storage;
+    if (!currentWalletName && wallets.length > 0) {
+      currentWalletName = wallets[0].name;
+    }
+    const currentWallet = storage.getWalletByName(currentWalletName);
+
     this.state = {
       drawerOpen: false,
-      wallets: [
-        {
-          name: "Wallet1",
-        },
-        {
-          name: "Wallet2",
-        },
-      ],
-      currentWallet: {
-        name: "Wallet1",
-      },
+      wallets,
+      currentWallet,
     };
+
+    if (!currentWallet) {
+      history.push("/welcome");
+    }
   }
 
   handleToggleDrawer = () => {
@@ -155,6 +159,9 @@ class HomePage extends React.Component<any, any> {
 
   render() {
     const { drawerOpen, walletSelectorOpen, wallets, currentWallet, transactionRequest } = this.state;
+    if (wallets.length <= 0) {
+      return null;
+    }
     return (
       <Flex direction="column">
         {transactionRequest && (
@@ -173,7 +180,7 @@ class HomePage extends React.Component<any, any> {
             onLeftClick={this.handleToggleDrawer}
           >
             <div onClick={this.handleToggleWalletSelector}>
-              Wallet1
+              {currentWallet.name}
               <Icon type="down" className={styles.downButton} />
             </div>
           </NavBar>

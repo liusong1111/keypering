@@ -1,5 +1,5 @@
-import React, { useState, MouseEvent } from "react";
-import { Button, Card, InputItem, Toast, List, NoticeBar, TextareaItem, WhiteSpace, Flex} from "antd-mobile";
+import React, { useState, MouseEvent, createRef } from "react";
+import { Button, Card, InputItem, Toast, List, NoticeBar, TextareaItem, WhiteSpace, Flex } from "antd-mobile";
 import { useRouteMatch, withRouter } from "react-router";
 import { AlertCircle as AlertCircleIcon } from "react-feather";
 import CopyToClipboard from "react-copy-to-clipboard";
@@ -24,8 +24,7 @@ const GenerateMnemonic = ({ mnemonic, onRegenerate, onCancel, onNext }: Generate
         </CopyToClipboard>
         <Flex>
           <Flex.Item className={styles.info}>
-            <AlertCircleIcon size={12} /> &nbsp;
-            Write down your wallet seed and save it in a safe place
+            <AlertCircleIcon size={12} /> &nbsp; Write down your wallet seed and save it in a safe place
           </Flex.Item>
           <Button inline size="small" className={styles.rightButton} onClick={onRegenerate}>
             Regenerate
@@ -55,11 +54,17 @@ interface EnterMnemonicProps {
 }
 
 class EnterMnemonic extends React.Component<EnterMnemonicProps, any> {
+  private textareaRef = createRef<any>();
+
   constructor(props: EnterMnemonicProps) {
     super(props);
     this.state = {
       inputMnemonic: "",
     };
+  }
+
+  componentDidMount() {
+    this.textareaRef.current.focus();
   }
 
   handleInputMnemonic = (value: any) => {
@@ -83,7 +88,13 @@ class EnterMnemonic extends React.Component<EnterMnemonicProps, any> {
       <Card className={styles.card}>
         <Card.Header className={styles.cardHeader} title="Enter mnemonic" />
         <Card.Body>
-          <TextareaItem value={inputMnemonic} rows={5} onChange={this.handleInputMnemonic} className={styles.inputMnemonic} />
+          <TextareaItem
+            value={inputMnemonic}
+            rows={5}
+            ref={this.textareaRef}
+            onChange={this.handleInputMnemonic}
+            className={styles.inputMnemonic}
+          />
         </Card.Body>
         <Card.Footer
           content={
@@ -242,14 +253,15 @@ class CreateWalletPage extends React.Component<any, any> {
 
   handleConfirm = (walletName: string, password: string) => {
     const { mnemonic } = this.state;
+    const { history } = this.props;
     const privateKey = wallet.mnemonicToEntropy(mnemonic);
     const ks = wallet.generateKey(privateKey, password);
     const storage = Storage.getStorage();
-    storage.setItem(walletName, JSON.stringify({
+    storage.addWallet(walletName, {
       ks,
-    }));
-    // todo: leak password and mnemonic
-    // console.log(`onConfirm, walletName=${walletName}, password=${password}, mnemonic=${mnemonic}`);
+    });
+    storage.currentWalletName = walletName;
+    history.push("/");
   };
 
   render() {
