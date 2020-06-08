@@ -1,9 +1,10 @@
 import React, { useState, MouseEvent } from "react";
-import {Button, Card, InputItem, Toast, List, NoticeBar, TextareaItem, WhiteSpace, Flex} from "antd-mobile";
+import { Button, Card, InputItem, Toast, List, NoticeBar, TextareaItem, WhiteSpace, Flex} from "antd-mobile";
 import { useRouteMatch, withRouter } from "react-router";
-import styles from "./create_wallet_page.module.scss";
-import * as wallet from "../../services/wallet";
 import { AlertCircle as AlertCircleIcon } from "react-feather";
+import CopyToClipboard from "react-copy-to-clipboard";
+import * as wallet from "../../services/wallet";
+import styles from "./create_wallet_page.module.scss";
 
 interface GenerateMnemonicProps {
   mnemonic: string;
@@ -17,7 +18,9 @@ const GenerateMnemonic = ({ mnemonic, onRegenerate, onCancel, onNext }: Generate
     <Card className={styles.card}>
       <Card.Header className={styles.cardHeader} title="Your wallet seed has been generated" />
       <Card.Body>
-        <div className={styles.mnemonic}>{mnemonic}</div>
+        <CopyToClipboard text={mnemonic} onCopy={() => Toast.info("Copied")}>
+          <div className={styles.mnemonic}>{mnemonic}</div>
+        </CopyToClipboard>
         <Flex>
           <Flex.Item className={styles.info}>
             <AlertCircleIcon size={12} /> &nbsp;
@@ -79,7 +82,7 @@ class EnterMnemonic extends React.Component<EnterMnemonicProps, any> {
       <Card className={styles.card}>
         <Card.Header className={styles.cardHeader} title="Enter mnemonic" />
         <Card.Body>
-          <TextareaItem value={inputMnemonic} onChange={this.handleInputMnemonic} />
+          <TextareaItem value={inputMnemonic} rows={5} onChange={this.handleInputMnemonic} className={styles.inputMnemonic} />
         </Card.Body>
         <Card.Footer
           content={
