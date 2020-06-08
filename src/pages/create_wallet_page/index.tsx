@@ -1,7 +1,9 @@
 import React, { useState, MouseEvent } from "react";
-import { Button, Card, InputItem, Toast, List, NoticeBar, TextareaItem, WhiteSpace } from "antd-mobile";
+import {Button, Card, InputItem, Toast, List, NoticeBar, TextareaItem, WhiteSpace, Flex} from "antd-mobile";
 import { useRouteMatch, withRouter } from "react-router";
 import styles from "./create_wallet_page.module.scss";
+import * as wallet from "../../services/wallet";
+import { AlertCircle as AlertCircleIcon } from "react-feather";
 
 interface GenerateMnemonicProps {
   mnemonic: string;
@@ -15,13 +17,16 @@ const GenerateMnemonic = ({ mnemonic, onRegenerate, onCancel, onNext }: Generate
     <Card className={styles.card}>
       <Card.Header className={styles.cardHeader} title="Your wallet seed has been generated" />
       <Card.Body>
-        <TextareaItem value={mnemonic} disabled />
-        <NoticeBar action={<Button>Regenerate</Button>}>
-          Write down your wallet seed and save it in a safe place
-        </NoticeBar>
-        <Button inline size="small" className={styles.rightButton} onClick={onRegenerate}>
-          Regenerate
-        </Button>
+        <div className={styles.mnemonic}>{mnemonic}</div>
+        <Flex>
+          <Flex.Item className={styles.info}>
+            <AlertCircleIcon size={12} /> &nbsp;
+            Write down your wallet seed and save it in a safe place
+          </Flex.Item>
+          <Button inline size="small" className={styles.rightButton} onClick={onRegenerate}>
+            Regenerate
+          </Button>
+        </Flex>
         <WhiteSpace />
       </Card.Body>
       <Card.Footer
@@ -194,14 +199,21 @@ class SetNameAndPassword extends React.Component<SetNameAndPasswordProps, any> {
 class CreateWalletPage extends React.Component<any, any> {
   constructor(props: any) {
     super(props);
+    const privateKey = wallet.generatePrivateKey();
+    const mnemonic = wallet.entropyToMnemonic(privateKey);
     this.state = {
       step: 0,
-      mnemonic: "abc",
+      mnemonic,
     };
   }
 
   handleRegenerate = () => {
     // console.log("onRegenerate");
+    const privateKey = wallet.generatePrivateKey();
+    const mnemonic = wallet.entropyToMnemonic(privateKey);
+    this.setState({
+      mnemonic,
+    });
   };
 
   handleCancel = () => {
