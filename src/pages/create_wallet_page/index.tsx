@@ -4,6 +4,7 @@ import { useRouteMatch, withRouter } from "react-router";
 import { AlertCircle as AlertCircleIcon } from "react-feather";
 import CopyToClipboard from "react-copy-to-clipboard";
 import * as wallet from "../../services/wallet";
+import Storage from "../../services/storage";
 import styles from "./create_wallet_page.module.scss";
 
 interface GenerateMnemonicProps {
@@ -18,7 +19,7 @@ const GenerateMnemonic = ({ mnemonic, onRegenerate, onCancel, onNext }: Generate
     <Card className={styles.card}>
       <Card.Header className={styles.cardHeader} title="Your wallet seed has been generated" />
       <Card.Body>
-        <CopyToClipboard text={mnemonic} onCopy={() => Toast.info("Copied")}>
+        <CopyToClipboard text={mnemonic} onCopy={() => Toast.info("Copied", 1)}>
           <div className={styles.mnemonic}>{mnemonic}</div>
         </CopyToClipboard>
         <Flex>
@@ -179,7 +180,7 @@ class SetNameAndPassword extends React.Component<SetNameAndPasswordProps, any> {
               value={password2}
               onChange={this.handleInputPassword2}
             >
-              Confirm Pwd
+              Confirm Password
             </InputItem>
           </List>
         </Card.Body>
@@ -202,8 +203,7 @@ class SetNameAndPassword extends React.Component<SetNameAndPasswordProps, any> {
 class CreateWalletPage extends React.Component<any, any> {
   constructor(props: any) {
     super(props);
-    const privateKey = wallet.generatePrivateKey();
-    const mnemonic = wallet.entropyToMnemonic(privateKey);
+    const mnemonic = wallet.generateMnemonic();
     this.state = {
       step: 0,
       mnemonic,
@@ -212,8 +212,7 @@ class CreateWalletPage extends React.Component<any, any> {
 
   handleRegenerate = () => {
     // console.log("onRegenerate");
-    const privateKey = wallet.generatePrivateKey();
-    const mnemonic = wallet.entropyToMnemonic(privateKey);
+    const mnemonic = wallet.generateMnemonic();
     this.setState({
       mnemonic,
     });
@@ -243,8 +242,14 @@ class CreateWalletPage extends React.Component<any, any> {
 
   handleConfirm = (walletName: string, password: string) => {
     const { mnemonic } = this.state;
+    const privateKey = wallet.mnemonicToEntropy(mnemonic);
+    const ks = wallet.generateKey(privateKey, password);
+    const storage = Storage.getStorage();
+    storage.setItem(walletName, JSON.stringify({
+      ks,
+    }));
     // todo: leak password and mnemonic
-    console.log(`onConfirm, walletName=${walletName}, password=${password}, mnemonic=${mnemonic}`);
+    // console.log(`onConfirm, walletName=${walletName}, password=${password}, mnemonic=${mnemonic}`);
   };
 
   render() {
