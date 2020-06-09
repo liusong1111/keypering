@@ -56,6 +56,14 @@ class HomePage extends React.Component<any, any> {
     });
   };
 
+  handleDrawerOpenChange = () => {
+    let { drawerOpen } = this.state;
+    drawerOpen = !drawerOpen;
+    this.setState({
+      drawerOpen,
+    });
+  };
+
   handleToggleWalletSelector = () => {
     const { walletSelectorOpen } = this.state;
     this.setState({
@@ -197,7 +205,7 @@ class HomePage extends React.Component<any, any> {
         {walletSelectorOpen && (
           <WalletSelector wallets={wallets} currentWallet={currentWallet} onSelect={this.handleSelectWallet} />
         )}
-        <Drawer className={styles.drawer} sidebar={<Sidebar onClose={this.handleCloseDrawer} />} open={drawerOpen} />
+        <Drawer className={styles.drawer} sidebar={<Sidebar onClose={this.handleCloseDrawer} />} open={drawerOpen} onOpenChange={this.handleDrawerOpenChange} />
         <Flex.Item className={styles.tabs}>
           <Tabs
             tabs={tabNames}
