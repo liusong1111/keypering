@@ -1,5 +1,6 @@
 import React from "react";
 import styles from "./balance.module.scss";
+import BN from "bn.js";
 
 interface BalanceProps {
   value: number | string;
@@ -8,21 +9,25 @@ interface BalanceProps {
 }
 
 function formatCkb(_value: number | string) {
-  let value: number;
+  let value: BN;
   if (typeof _value === "string") {
     if (_value.startsWith("0x")) {
-      value = parseInt(_value, 16);
+      // value = parseInt(_value, 16);
+      value = new BN(_value.slice(2), 16);
     } else {
       throw new Error(`format error: ${_value}`);
     }
   } else if (typeof _value === "number") {
-    value = _value;
+    // value = _value;
+    value = new BN(_value);
   } else {
     throw new Error(`format error: ${_value}`);
   }
 
-  const m = Math.floor(value / 100000000);
-  const n = value % 100000000;
+  const m = value.div(new BN(100000000)).toNumber();
+  // const m = Math.floor(value / 100000000);
+  // const n = value % 100000000;
+  const n = value.mod(new BN(100000000)).toNumber();
   const f = Intl.NumberFormat();
   const mf = f.format(m);
   const nf = n.toString().padStart(8, "0");

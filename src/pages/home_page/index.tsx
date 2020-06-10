@@ -2,6 +2,7 @@ import React, { useCallback, useState } from "react";
 import { Button, NavBar, Tabs, Drawer, Icon, Flex, WhiteSpace, ActionSheet, WingBlank } from "antd-mobile";
 import { withRouter } from "react-router";
 import { Settings as SettingsIcon, Menu as MenuIcon } from "react-feather";
+import { addressToScript } from "@keyper/specs";
 import Balance from "../../widgets/balance";
 import AddressList from "../../widgets/address_list";
 import styles from "./home.module.scss";
@@ -11,6 +12,7 @@ import Sidebar from "../../widgets/sidebar";
 import WalletSelector from "../../widgets/wallet_selector";
 import TransactionRequest from "../../widgets/transaction_request";
 import { WalletManager } from "../../services/wallet";
+import * as indexer from "../../services/indexer";
 
 const tabNames = [
   { title: "Addresses", key: "Addresses" },
@@ -37,6 +39,9 @@ class HomePage extends React.Component<any, any> {
     if (!currentWallet) {
       history.push("/welcome");
     }
+  }
+
+  componentDidMount() {
     this.loadCurrentWalletAddressList();
   }
 
@@ -44,6 +49,16 @@ class HomePage extends React.Component<any, any> {
     const { currentWallet } = this.state;
     const manager = WalletManager.getInstance();
     const addresses = await manager.loadCurrentWalletAddressList();
+    const cellsPromises = addresses.map((address: any) => indexer.getCells(address.meta.script));
+    // const cellsPromises = addresses.map((address: any) =>
+    //   indexer.getCells(addressToScript("ckt1qjr2r35c0f9vhcdgslx2fjwa9tylevr5qka7mfgmscd33wlhfykyhy3gzjh8k5zkkmyd4k58khyvggc2ks2uzrap8gu"))
+    // );
+    const addressCells = await Promise.all(cellsPromises);
+    const addressSummary = addressCells.map((cells: any) => indexer.getSummary(cells));
+    addressCells.forEach((address: any, i) => {
+      addresses[i].freeAmount = `0x${addressSummary[i].free.toString(16)}`;
+      addresses[i].inUseAmount = `0x${addressSummary[i].inuse.toString(16)}`;
+    });
     this.setState({
       addresses,
     });
