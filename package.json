@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@keyper/container": "file:../keyper/packages/container",
     "@keyper/specs": "^0.0.7",
+    "@nervosnetwork/ckb-sdk-utils": "^0.32.0",
     "@types/node": "^12.0.0",
     "@types/react": "^16.9.0",
     "@types/react-copy-to-clipboard": "^4.3.0",
@@ -59,6 +61,7 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "@types/elliptic": "^6.4.12",
     "@types/jest": "^24.0.0",
     "eslint-config-airbnb": "^18.1.0",
     "eslint-config-prettier": "^6.11.0",

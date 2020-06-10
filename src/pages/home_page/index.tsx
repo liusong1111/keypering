@@ -10,7 +10,7 @@ import AuthorizationList from "../../widgets/authorization_list";
 import Sidebar from "../../widgets/sidebar";
 import WalletSelector from "../../widgets/wallet_selector";
 import TransactionRequest from "../../widgets/transaction_request";
-import Storage from "../../services/storage";
+import { WalletManager } from "../../services/wallet";
 
 const tabNames = [
   { title: "Addresses", key: "Addresses" },
@@ -22,24 +22,32 @@ class HomePage extends React.Component<any, any> {
   constructor(props: any) {
     super(props);
     const { history } = this.props;
-    const storage = Storage.getStorage();
-    const wallets = storage.getWallets();
-    let { currentWalletName } = storage;
-    if (!currentWalletName && wallets.length > 0) {
-      currentWalletName = wallets[0].name;
-    }
-    const currentWallet = storage.getWalletByName(currentWalletName);
+    const manager = WalletManager.getInstance();
+    manager.loadWallets();
+    const wallets = manager.getWallets();
+    const { currentWallet } = manager;
 
     this.state = {
       drawerOpen: false,
       wallets,
       currentWallet,
+      addresses: [],
     };
 
     if (!currentWallet) {
       history.push("/welcome");
     }
+    this.loadCurrentWalletAddressList();
   }
+
+  loadCurrentWalletAddressList = async () => {
+    const { currentWallet } = this.state;
+    const manager = WalletManager.getInstance();
+    const addresses = await manager.loadCurrentWalletAddressList();
+    this.setState({
+      addresses,
+    });
+  };
 
   handleToggleDrawer = () => {
     const { drawerOpen } = this.state;
@@ -166,7 +174,7 @@ class HomePage extends React.Component<any, any> {
   };
 
   render() {
-    const { drawerOpen, walletSelectorOpen, wallets, currentWallet, transactionRequest } = this.state;
+    const { drawerOpen, walletSelectorOpen, wallets, currentWallet, transactionRequest, addresses } = this.state;
     if (wallets.length <= 0) {
       return null;
     }
@@ -205,7 +213,12 @@ class HomePage extends React.Component<any, any> {
         {walletSelectorOpen && (
           <WalletSelector wallets={wallets} currentWallet={currentWallet} onSelect={this.handleSelectWallet} />
         )}
-        <Drawer className={styles.drawer} sidebar={<Sidebar onClose={this.handleCloseDrawer} />} open={drawerOpen} onOpenChange={this.handleDrawerOpenChange} />
+        <Drawer
+          className={styles.drawer}
+          sidebar={<Sidebar onClose={this.handleCloseDrawer} />}
+          open={drawerOpen}
+          onOpenChange={this.handleDrawerOpenChange}
+        />
         <Flex.Item className={styles.tabs}>
           <Tabs
             tabs={tabNames}
@@ -214,7 +227,7 @@ class HomePage extends React.Component<any, any> {
             }}
           >
             <WingBlank key="Addresses" className={styles.addresses}>
-              <AddressList />
+              <AddressList addresses={addresses} />
             </WingBlank>
             <WingBlank key="Transactions" className={styles.transactions}>
               <TransactionList />

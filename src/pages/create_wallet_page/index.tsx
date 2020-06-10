@@ -3,6 +3,7 @@ import { Button, Card, InputItem, Toast, List, NoticeBar, TextareaItem, WhiteSpa
 import { useRouteMatch, withRouter } from "react-router";
 import { AlertCircle as AlertCircleIcon } from "react-feather";
 import CopyToClipboard from "react-copy-to-clipboard";
+import { WalletManager } from "../../services/wallet";
 import * as wallet from "../../services/wallet";
 import Storage from "../../services/storage";
 import styles from "./create_wallet_page.module.scss";
@@ -255,12 +256,9 @@ class CreateWalletPage extends React.Component<any, any> {
     const { mnemonic } = this.state;
     const { history } = this.props;
     const privateKey = wallet.mnemonicToEntropy(mnemonic);
-    const ks = wallet.generateKey(privateKey, password);
-    const storage = Storage.getStorage();
-    storage.addWallet(walletName, {
-      ks,
-    });
-    storage.currentWalletName = walletName;
+    const manager = WalletManager.getInstance();
+    manager.createWallet(walletName, privateKey, password);
+    manager.currentWalletName = walletName;
     history.push("/");
   };
 
