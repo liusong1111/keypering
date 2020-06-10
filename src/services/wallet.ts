@@ -80,6 +80,17 @@ function initializeContainer() {
       },
     ])
   );
+  container.addLockScript(
+    new AnyPayLockScript("0x6a3982f9d018be7e7228f9e0b765f28ceff6d36e634490856d2b186acf78e79b", "type", [
+      {
+        outPoint: {
+          txHash: "0x9af66408df4703763acb10871365e4a21f2c3d3bdc06b0ae634a3ad9f18a6525",
+          index: "0x0",
+        },
+        depType: "depGroup",
+      },
+    ])
+  );
   return container;
 }
 
