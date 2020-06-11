@@ -13,6 +13,7 @@ import WalletSelector from "../../widgets/wallet_selector";
 import TransactionRequest from "../../widgets/transaction_request";
 import { WalletManager } from "../../services/wallet";
 import * as indexer from "../../services/indexer";
+import BN from "bn.js";
 
 const tabNames = [
   { title: "Addresses", key: "Addresses" },
@@ -34,6 +35,7 @@ class HomePage extends React.Component<any, any> {
       wallets,
       currentWallet,
       addresses: [],
+      balance: "0x0",
     };
 
     if (!currentWallet) {
@@ -55,12 +57,15 @@ class HomePage extends React.Component<any, any> {
     // );
     const addressCells = await Promise.all(cellsPromises);
     const addressSummary = addressCells.map((cells: any) => indexer.getSummary(cells));
+    let balance = new BN(0);
     addressCells.forEach((address: any, i) => {
       addresses[i].freeAmount = `0x${addressSummary[i].free.toString(16)}`;
       addresses[i].inUseAmount = `0x${addressSummary[i].inuse.toString(16)}`;
+      balance.iadd(addressSummary[i].free);
     });
     this.setState({
       addresses,
+      balance: `0x${balance.toString(16)}`,
     });
   };
 
@@ -189,7 +194,7 @@ class HomePage extends React.Component<any, any> {
   };
 
   render() {
-    const { drawerOpen, walletSelectorOpen, wallets, currentWallet, transactionRequest, addresses } = this.state;
+    const { drawerOpen, walletSelectorOpen, wallets, currentWallet, transactionRequest, addresses, balance } = this.state;
     if (wallets.length <= 0) {
       return null;
     }
@@ -217,7 +222,7 @@ class HomePage extends React.Component<any, any> {
           </NavBar>
           <div className={styles.summary}>
             <div className={styles.balanceLabel}>Balance</div>
-            <Balance value={1234_78000000} size="large" />
+            <Balance value={balance} size="large" />
             <div className={styles.ops}>
               <Button inline type="primary" size="small">
                 Send
