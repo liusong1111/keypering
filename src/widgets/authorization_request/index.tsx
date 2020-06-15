@@ -17,15 +17,11 @@ class AuthorizationRequest extends React.Component<any, any> {
     super(props);
   }
 
-  handleDecline = () => {};
-
-  handleApprove = () => {};
-
   render() {
-    const { origin, description, history } = this.props;
+    const { origin, description, history, handleApprove, handleDecline } = this.props;
     return (
       <div>
-        <NavBar icon={<Icon type="left" />} onLeftClick={() => this.props.history.goBack()}>
+        <NavBar icon={<Icon type="left" />} onLeftClick={() => history.goBack()}>
           Authorization Request
         </NavBar>
         <List>
@@ -45,10 +41,10 @@ class AuthorizationRequest extends React.Component<any, any> {
             <Checkbox defaultChecked>Address, balance and related cells on CKB *</Checkbox>
           </List.Item>
           <List.Item className={styles.footer}>
-            <Button inline onClick={this.handleDecline}>
+            <Button inline onClick={handleDecline}>
               Decline
             </Button>
-            <Button inline type="primary" onClick={this.handleApprove}>
+            <Button inline type="primary" onClick={handleApprove}>
               Approve
             </Button>
           </List.Item>

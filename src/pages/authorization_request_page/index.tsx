@@ -22,7 +22,8 @@ class AuthorizationRequestPage extends React.Component<any, any> {
   };
 
   handleDecline = () => {
-    sendAck({
+    console.log("handleDecline");
+    sendAck(0, {
       type: "auth",
       success: false,
       message: "declined",

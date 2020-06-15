@@ -199,6 +199,12 @@ class HomePage extends React.Component<any, any> {
 
   handleTestAuthorizationRequest = () => {
     const { history } = this.props;
+    const storage = Storage.getStorage();
+    storage.request = {
+      type: "auth",
+      origin: "http://demodapp.com",
+      description: "it is a demo dApp",
+    };
     history.push("/authorization_request");
   };
 
