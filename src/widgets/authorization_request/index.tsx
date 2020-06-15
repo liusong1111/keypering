@@ -4,8 +4,11 @@ import { withRouter } from "react-router";
 import styles from "./authorization_request.module.scss";
 
 interface AuthorizationRequestProps {
-  url: string;
+  origin: string;
+  description: string;
   history: any;
+  handleApprove: any;
+  handleDecline: any;
   [key: string]: any;
 }
 
@@ -19,7 +22,7 @@ class AuthorizationRequest extends React.Component<any, any> {
   handleApprove = () => {};
 
   render() {
-    const { url, history } = this.props;
+    const { origin, description, history } = this.props;
     return (
       <div>
         <NavBar icon={<Icon type="left" />} onLeftClick={() => this.props.history.goBack()}>
@@ -28,9 +31,12 @@ class AuthorizationRequest extends React.Component<any, any> {
         <List>
           <List.Item>
             Request from:
-            <a className={styles.link} href={url} target="_blank">
-              {url}
+            <a className={styles.link} href={origin} target="_blank">
+              {origin}
             </a>
+          </List.Item>
+          <List.Item>
+            Description: {description}
           </List.Item>
           <List.Item>
             You are going to share the following information to <span className={styles.domain}>demo-app.com</span>

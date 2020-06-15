@@ -45,18 +45,15 @@ export default class Storage {
     const wallets = this.getWallets();
     const index = wallets.findIndex((w: any) => w.name === walletName);
     if (index === -1) {
-      wallets.push({
-        name: walletName,
-        ...wallet,
-      });
+      const newWallet = Object.assign(wallet, { name: walletName });
+      wallets.push(newWallet);
     } else {
-      wallets[index] = {
-        name: walletName,
-        ...wallet,
-      };
+      const newWallet = Object.assign(wallet, { name: walletName });
+      wallets[index] = newWallet;
+
+      this.setItem("wallets", JSON.stringify(wallets));
+      return wallets;
     }
-    this.setItem("wallets", JSON.stringify(wallets));
-    return wallets;
   };
 
   removeWallet = (walletName: string) => {
@@ -69,6 +66,18 @@ export default class Storage {
     this.setItem("wallets", JSON.stringify(wallets));
     return wallets;
   };
+
+  set request(_request: any) {
+    this.setItem("request", JSON.stringify(_request));
+  }
+
+  get request() {
+    const request = this.getItem("request");
+    if (!request) {
+      return null;
+    }
+    return JSON.parse(request);
+  }
 
   static defaultStorage = new Storage();
 

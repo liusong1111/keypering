@@ -162,14 +162,14 @@ export class WalletManager {
     console.log(all);
     const lockScripts = all.filter((item: any) => item.meta.publicKey.payload === `0x${publicKeyPayload}`);
     const addresses = lockScripts.map((script: any) => {
-      return {
+      const address = Object.assign({}, script, {
         address: scriptToAddress(script.meta.script, { networkPrefix: "ckt", short: true }),
         type: script.meta.name,
         lock: script.hash,
         freeAmount: "0x0",
         inUseAmount: "0x0",
-        ...script,
-      };
+      });
+      return address;
     });
 
     return addresses;

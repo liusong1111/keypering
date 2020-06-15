@@ -14,6 +14,7 @@ import TransactionRequest from "../../widgets/transaction_request";
 import { WalletManager } from "../../services/wallet";
 import * as indexer from "../../services/indexer";
 import BN from "bn.js";
+import Storage from "../../services/storage";
 
 const tabNames = [
   { title: "Addresses", key: "Addresses" },
@@ -45,7 +46,23 @@ class HomePage extends React.Component<any, any> {
 
   componentDidMount() {
     this.loadCurrentWalletAddressList();
+    window.document.addEventListener("ws-event", this.handleWsEvent);
   }
+
+  componentWillUnmount() {
+    window.document.removeEventListener("ws-event", this.handleWsEvent);
+  }
+
+  handleWsEvent = (msg: any) => {
+    const { detail } = msg;
+    console.log(detail);
+    const storage = Storage.getStorage();
+    storage.request = detail;
+    const { history } = this.props;
+    if (detail.type === "auth") {
+      history.push("/authorization_request");
+    }
+  };
 
   loadCurrentWalletAddressList = async () => {
     const { currentWallet } = this.state;
@@ -259,7 +276,7 @@ class HomePage extends React.Component<any, any> {
         </Flex.Item>
         <div className={styles.testRegion}>
           <Button inline size="small" onClick={this.handleTestAuthorizationRequest}>
-            Request Addr(test)
+            Request Auth(test)
           </Button>
           <Button inline size="small" onClick={this.handleTestRequestSigning}>
             Request Signing(test)

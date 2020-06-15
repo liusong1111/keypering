@@ -10,7 +10,7 @@ import CreateWalletPage from "./pages/create_wallet_page";
 import ChangeWalletNamePage from "./pages/change_wallet_name_page";
 import ChangePasswordPage from "./pages/change_password_page";
 import DeleteWalletPage from "./pages/delete_wallet_page";
-import AuthorizationRequest from "./widgets/authorization_request";
+import AuthorizationRequestPage from "./pages/authorization_request_page";
 
 require("typeface-source-code-pro");
 require("typeface-lato");
@@ -39,7 +39,7 @@ function App() {
             <DeleteWalletPage />
           </Route>
           <Route path="/authorization_request">
-            <AuthorizationRequest url="https://demoapp.com/abc.html" />
+            <AuthorizationRequestPage />
           </Route>
           <Route path="/">
             <HomePage />
