@@ -4,6 +4,7 @@ import { withRouter } from "react-router";
 import styles from "./authorization_request.module.scss";
 
 interface AuthorizationRequestProps {
+  token: number;
   origin: string;
   description: string;
   history: any;

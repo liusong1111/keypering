@@ -56,10 +56,11 @@ class HomePage extends React.Component<any, any> {
   handleWsEvent = (msg: any) => {
     const { detail } = msg;
     console.log(detail);
+    detail.data = JSON.parse(detail.data);
     const storage = Storage.getStorage();
     storage.request = detail;
     const { history } = this.props;
-    if (detail.type === "auth") {
+    if (detail.data.type === "auth") {
       history.push("/authorization_request");
     }
   };
