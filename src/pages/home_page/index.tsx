@@ -28,15 +28,17 @@ class HomePage extends React.Component<any, any> {
     const { history } = this.props;
     const manager = WalletManager.getInstance();
     const currentWallet = manager.getCurrentWallet();
+    // sth weird...
     manager.loadWallets();
     const wallets = manager.getWallets();
-
+    const { authorizations } = Storage.getStorage();
     this.state = {
       drawerOpen: false,
       wallets,
       currentWallet,
       addresses: [],
       balance: "0x0",
+      authorizations,
     };
 
     if (!currentWallet) {
@@ -46,6 +48,7 @@ class HomePage extends React.Component<any, any> {
 
   componentDidMount() {
     this.loadCurrentWalletAddressList();
+    this.loadAuthorizationList();
     window.document.addEventListener("ws-event", this.handleWsEvent);
   }
 
@@ -89,6 +92,11 @@ class HomePage extends React.Component<any, any> {
       addresses,
       balance: `0x${balance.toString(16)}`,
     });
+  };
+
+  loadAuthorizationList = () => {
+    const { authorizations } = Storage.getStorage();
+    this.setState({ authorizations });
   };
 
   handleToggleDrawer = () => {
@@ -224,6 +232,11 @@ class HomePage extends React.Component<any, any> {
     });
   };
 
+  handleRevokeAuthorization = (authToken: string) => {
+    Storage.getStorage().removeAuthorization(authToken);
+    this.loadAuthorizationList();
+  };
+
   render() {
     const {
       drawerOpen,
@@ -233,6 +246,7 @@ class HomePage extends React.Component<any, any> {
       transactionRequest,
       addresses,
       balance,
+      authorizations,
     } = this.state;
     if (wallets.length <= 0 || !currentWallet) {
       return null;
@@ -292,7 +306,7 @@ class HomePage extends React.Component<any, any> {
               <TransactionList />
             </WingBlank>
             <WingBlank key="Authorization" className={styles.authorizations}>
-              <AuthorizationList />
+              <AuthorizationList authorizations={authorizations} onRevoke={this.handleRevokeAuthorization} />
             </WingBlank>
           </Tabs>
         </Flex.Item>

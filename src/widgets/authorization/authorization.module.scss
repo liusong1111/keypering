@@ -12,10 +12,12 @@
   font-weight: bold;
 }
 
-.timestamp {
-  font-size: 90%;
+.container {
+  display: flex;
 }
 
-.revokeButton {
-  float: right;
+.timestamp {
+  font-size: 90%;
+  flex: 1;
 }
+

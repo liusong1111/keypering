@@ -78,6 +78,41 @@ export default class Storage {
     return JSON.parse(request);
   }
 
+  get authorizations() {
+    const auths = this.getItem("authorizations");
+    if (!auths) {
+      return [];
+    }
+
+    return JSON.parse(auths);
+  }
+
+  listAuthorization = () => {
+    return this.authorizations;
+  };
+
+  removeAuthorization = (token: string) => {
+    const auths = this.authorizations;
+    const index = auths.findIndex((auth: any) => auth.token === token);
+    if (index === -1) {
+      return auths;
+    }
+    auths.splice(index, 1);
+    this.setItem("authorizations", JSON.stringify(auths));
+    return auths;
+  };
+
+  addAuthorization = (auth: any) => {
+    const auths = this.authorizations;
+    const index = auths.findIndex((_auth: any) => _auth.token === auth.token);
+    if (index !== -1) {
+      auths.splice(index, 1);
+    }
+    auths.unshift(auth);
+    this.setItem("authorizations", JSON.stringify(auths));
+    return auths;
+  };
+
   static defaultStorage = new Storage();
 
   static getStorage = () => {

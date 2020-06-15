@@ -4,23 +4,25 @@ import styles from "./authorization.module.scss";
 import Timestamp from "../timestamp";
 
 interface AuthorizationProps {
-  url: string;
-  timestamp: string;
+  origin: string;
+  token: string;
+  timestamp: string | number | Date;
+  onRevoke: any;
   [key: string]: any;
 }
 
-const Authorization = ({ url, timestamp }: AuthorizationProps) => {
+const Authorization = ({ origin, token, timestamp, onRevoke }: AuthorizationProps) => {
   return (
     <div>
       <div className={styles.applicationContainer}>
         <span className={styles.applicationLabel}>Application: </span>
-        <a className={styles.link} href={url} target="_blank">
-          {url}
+        <a className={styles.link} href={origin} target="_blank">
+          {origin}
         </a>
       </div>
-      <div>
+      <div className={styles.container}>
         <Timestamp className={styles.timestamp} value={timestamp} />
-        <Button inline size="small" className={styles.revokeButton}>
+        <Button inline size="small" onClick={() => onRevoke(token)} className={styles.revokeButton}>
           Revoke
         </Button>
       </div>

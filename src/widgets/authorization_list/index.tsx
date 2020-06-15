@@ -1,13 +1,20 @@
 import React from "react";
-import styles from "./authorization_list.module.scss";
 import Authorization from "../authorization";
+import styles from "./authorization_list.module.scss";
 
-const AuthorizationList = () => {
-  return (
-    <div>
-      <Authorization url="https://demoapp.com" timestamp="2020-05-20 13:33:34" />
+interface AuthorizationListProps {
+  authorizations: any[];
+  onRevoke: any;
+}
+
+const AuthorizationList = (props: AuthorizationListProps) => {
+  const { authorizations, onRevoke } = props;
+  const items = authorizations.map(({ origin, timestamp, token }) => (
+    <div className={styles.item} key={token}>
+      <Authorization origin={origin} timestamp={timestamp} token={token} onRevoke={onRevoke} />
     </div>
-  );
+  ));
+  return <div>{items}</div>;
 };
 
 export default AuthorizationList;
