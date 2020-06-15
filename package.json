@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@keyper/container": "file:../keyper/packages/container",
-    "@keyper/specs": "^0.0.7",
+    "@keyper/specs": "file:../keyper/packages/specs",
     "@nervosnetwork/ckb-sdk-utils": "^0.32.0",
     "@types/node": "^12.0.0",
     "@types/react": "^16.9.0",
