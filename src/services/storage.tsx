@@ -50,10 +50,9 @@ export default class Storage {
     } else {
       const newWallet = Object.assign(wallet, { name: walletName });
       wallets[index] = newWallet;
-
-      this.setItem("wallets", JSON.stringify(wallets));
-      return wallets;
     }
+    this.setItem("wallets", JSON.stringify(wallets));
+    return wallets;
   };
 
   removeWallet = (walletName: string) => {

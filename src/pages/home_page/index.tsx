@@ -3,6 +3,7 @@ import { Button, NavBar, Tabs, Drawer, Icon, Flex, WhiteSpace, ActionSheet, Wing
 import { withRouter } from "react-router";
 import { Settings as SettingsIcon, Menu as MenuIcon } from "react-feather";
 import { addressToScript } from "@keyper/specs";
+import BN from "bn.js";
 import Balance from "../../widgets/balance";
 import AddressList from "../../widgets/address_list";
 import styles from "./home.module.scss";
@@ -13,7 +14,6 @@ import WalletSelector from "../../widgets/wallet_selector";
 import TransactionRequest from "../../widgets/transaction_request";
 import { WalletManager } from "../../services/wallet";
 import * as indexer from "../../services/indexer";
-import BN from "bn.js";
 import Storage from "../../services/storage";
 
 const tabNames = [
@@ -27,9 +27,9 @@ class HomePage extends React.Component<any, any> {
     super(props);
     const { history } = this.props;
     const manager = WalletManager.getInstance();
+    const currentWallet = manager.getCurrentWallet();
     manager.loadWallets();
     const wallets = manager.getWallets();
-    const { currentWallet } = manager;
 
     this.state = {
       drawerOpen: false,
@@ -66,6 +66,10 @@ class HomePage extends React.Component<any, any> {
 
   loadCurrentWalletAddressList = async () => {
     const { currentWallet } = this.state;
+    if (!currentWallet) {
+      return;
+    }
+
     const manager = WalletManager.getInstance();
     const addresses = await manager.loadCurrentWalletAddressList();
     const cellsPromises = addresses.map((address: any) => indexer.getCells(address.meta.script));
@@ -74,7 +78,7 @@ class HomePage extends React.Component<any, any> {
     // );
     const addressCells = await Promise.all(cellsPromises);
     const addressSummary = addressCells.map((cells: any) => indexer.getSummary(cells));
-    let balance = new BN(0);
+    const balance = new BN(0);
     addressCells.forEach((address: any, i) => {
       addresses[i].freeAmount = `0x${addressSummary[i].free.toString(16)}`;
       addresses[i].inUseAmount = `0x${addressSummary[i].inuse.toString(16)}`;
@@ -211,8 +215,16 @@ class HomePage extends React.Component<any, any> {
   };
 
   render() {
-    const { drawerOpen, walletSelectorOpen, wallets, currentWallet, transactionRequest, addresses, balance } = this.state;
-    if (wallets.length <= 0) {
+    const {
+      drawerOpen,
+      walletSelectorOpen,
+      wallets,
+      currentWallet,
+      transactionRequest,
+      addresses,
+      balance,
+    } = this.state;
+    if (wallets.length <= 0 || !currentWallet) {
       return null;
     }
     return (

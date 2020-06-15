@@ -156,7 +156,7 @@ export class WalletManager {
   };
 
   loadCurrentWalletAddressList = async () => {
-    const wallet = this.currentWallet;
+    const wallet = this.getCurrentWallet();
     const publicKeyPayload = wallet.ks.publicKey;
     const all = await this.container.getAllLockHashesAndMeta();
     console.log(all);
@@ -183,7 +183,7 @@ export class WalletManager {
     Storage.getStorage().currentWalletName = walletName;
   }
 
-  get currentWallet() {
+  getCurrentWallet = () => {
     return Storage.getStorage().getWalletByName(this.currentWalletName);
-  }
+  };
 }
