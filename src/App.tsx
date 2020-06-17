@@ -11,6 +11,7 @@ import ChangeWalletNamePage from "./pages/change_wallet_name_page";
 import ChangePasswordPage from "./pages/change_password_page";
 import DeleteWalletPage from "./pages/delete_wallet_page";
 import AuthorizationRequestPage from "./pages/authorization_request_page";
+import TransactionRequestPage from "./pages/transaction_request_page";
 
 require("typeface-source-code-pro");
 require("typeface-lato");
@@ -40,6 +41,9 @@ function App() {
           </Route>
           <Route path="/authorization_request">
             <AuthorizationRequestPage />
+          </Route>
+          <Route path="/transaction_request">
+            <TransactionRequestPage />
           </Route>
           <Route path="/">
             <HomePage />

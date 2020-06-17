@@ -11,7 +11,6 @@ import TransactionList from "../../widgets/transaction_list";
 import AuthorizationList from "../../widgets/authorization_list";
 import Sidebar from "../../widgets/sidebar";
 import WalletSelector from "../../widgets/wallet_selector";
-import TransactionRequest from "../../widgets/transaction_request";
 import { WalletManager } from "../../services/wallet";
 import * as indexer from "../../services/indexer";
 import Storage from "../../services/storage";
@@ -95,6 +94,8 @@ class HomePage extends React.Component<any, any> {
             locks,
           },
         });
+      } else if (method === "sign") {
+        history.push("/transaction_request");
       }
     }
   };
@@ -251,18 +252,6 @@ class HomePage extends React.Component<any, any> {
     history.push("/authorization_request");
   };
 
-  handleDeclineTransactionRequest = () => {
-    this.setState({
-      transactionRequest: undefined,
-    });
-  };
-
-  handleApproveTransactionRequest = () => {
-    this.setState({
-      transactionRequest: undefined,
-    });
-  };
-
   handleRevokeAuthorization = (authToken: string) => {
     Storage.getStorage().removeAuthorization(authToken);
     this.loadAuthorizationList();
@@ -284,14 +273,6 @@ class HomePage extends React.Component<any, any> {
     }
     return (
       <Flex direction="column">
-        {transactionRequest && (
-          <TransactionRequest
-            inner={transactionRequest}
-            visible
-            onDecline={this.handleDeclineTransactionRequest}
-            onApprove={this.handleApproveTransactionRequest}
-          />
-        )}
         <div className={styles.header}>
           <NavBar
             className={styles.navbar}

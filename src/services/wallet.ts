@@ -1,6 +1,6 @@
 import { ec as EC } from "elliptic";
 import { Buffer } from "buffer";
-import { scriptToAddress, SignatureAlgorithm } from "@keyper/specs";
+import { Config, RawTransaction, scriptToAddress, SignatureAlgorithm, SignContext } from "@keyper/specs";
 import { hexToBytes } from "@nervosnetwork/ckb-sdk-utils";
 import Storage from "./storage";
 
@@ -185,5 +185,10 @@ export class WalletManager {
 
   getCurrentWallet = () => {
     return Storage.getStorage().getWalletByName(this.currentWalletName);
+  };
+
+  sign = async (context: SignContext, tx: RawTransaction, config: Config) => {
+    const result = await this.container.sign(context, tx, config);
+    return result;
   };
 }
