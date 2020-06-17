@@ -15,6 +15,7 @@ import TransactionRequest from "../../widgets/transaction_request";
 import { WalletManager } from "../../services/wallet";
 import * as indexer from "../../services/indexer";
 import Storage from "../../services/storage";
+import { sendAck } from "../../services/messaging";
 
 const tabNames = [
   { title: "Addresses", key: "Addresses" },
@@ -56,15 +57,43 @@ class HomePage extends React.Component<any, any> {
     window.document.removeEventListener("ws-event", this.handleWsEvent);
   }
 
-  handleWsEvent = (msg: any) => {
+  handleWsEvent = async (msg: any) => {
+    const storage = Storage.getStorage();
     const { detail } = msg;
     console.log(detail);
     detail.data = JSON.parse(detail.data);
-    const storage = Storage.getStorage();
+    const wsToken = detail.token;
     storage.request = detail;
     const { history } = this.props;
     if (detail.data.type === "auth") {
       history.push("/authorization_request");
+    } else {
+      const { type, token, requestId } = detail.data;
+      const auth = storage.getAuthorization(token);
+      if (!auth) {
+        sendAck(wsToken, {
+          type,
+          requestId,
+          success: false,
+          message: "error_wrong_token",
+        });
+        return;
+      }
+
+      if (type === "query_locks") {
+        const manager = WalletManager.getInstance();
+        const addresses = await manager.loadCurrentWalletAddressList();
+        // todo: addressToScript normalize
+        const locks = addresses.map((addr: any) => addressToScript(addr.address));
+        sendAck(wsToken, {
+          type: "locks",
+          requestId,
+          success: true,
+          data: {
+            locks,
+          },
+        });
+      }
     }
   };
 

@@ -91,6 +91,12 @@ export default class Storage {
     return this.authorizations;
   };
 
+  getAuthorization = (token: string) => {
+    const auths = this.authorizations;
+    const auth = auths.find((_auth: any) => _auth.token === token);
+    return auth;
+  };
+
   removeAuthorization = (token: string) => {
     const auths = this.authorizations;
     const index = auths.findIndex((auth: any) => auth.token === token);
