@@ -62,34 +62,36 @@ class HomePage extends React.Component<any, any> {
     const { detail } = msg;
     console.log(detail);
     detail.data = JSON.parse(detail.data);
-    const wsToken = detail.token;
+    const { data, token: wsToken } = detail;
+    const { id, method, params } = data;
     storage.request = detail;
     const { history } = this.props;
-    if (detail.data.type === "auth") {
+    if (method === "auth") {
       history.push("/authorization_request");
     } else {
-      const { type, token, requestId } = detail.data;
+      const { token } = params;
       const auth = storage.getAuthorization(token);
       if (!auth) {
         sendAck(wsToken, {
-          type,
-          requestId,
-          success: false,
-          message: "error_wrong_token",
+          id,
+          jsonrpc: "2.0",
+          error: {
+            code: 2,
+            message: "invalid_token",
+          },
         });
         return;
       }
 
-      if (type === "query_locks") {
+      if (method === "query_locks") {
         const manager = WalletManager.getInstance();
         const addresses = await manager.loadCurrentWalletAddressList();
         // todo: addressToScript normalize
         const locks = addresses.map((addr: any) => addressToScript(addr.address));
         sendAck(wsToken, {
-          type: "locks",
-          requestId,
-          success: true,
-          data: {
+          id,
+          jsonrpc: "2.0",
+          result: {
             locks,
           },
         });

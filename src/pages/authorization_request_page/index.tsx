@@ -21,8 +21,9 @@ class AuthorizationRequestPage extends React.Component<any, any> {
   handleApprove = () => {
     const { history } = this.props;
     const { request } = this.state;
-    const { token, data } = request;
-    const { origin, description } = data;
+    const { token: wsToken, data } = request;
+    const { id, method, params } = data;
+    const { origin, description } = params;
     // const timestamp = formatDate(new Date(), "yyyy-MM-dd HH:mm:ss");
     const timestamp = new Date().getTime();
     const authToken = sha256(origin).toString();
@@ -32,11 +33,12 @@ class AuthorizationRequestPage extends React.Component<any, any> {
       description,
       timestamp,
     });
-    sendAck(token, {
-      type: "auth",
-      success: true,
-      message: "authorized",
-      token: authToken,
+    sendAck(wsToken, {
+      id,
+      jsonrpc: "2.0",
+      result: {
+        token: authToken,
+      },
     });
     history.push("/");
   };
@@ -44,10 +46,16 @@ class AuthorizationRequestPage extends React.Component<any, any> {
   handleDecline = () => {
     console.log("handleDecline");
     const { history } = this.props;
+    const { request } = this.state;
+    const { token: wsToken, data } = request;
+    const { id, method, params } = data;
     sendAck(0, {
-      type: "auth",
-      success: false,
-      message: "declined",
+      id,
+      jsonrpc: "2.0",
+      error: {
+        code: 1,
+        message: "declined",
+      },
     });
     history.push("/");
   };
@@ -60,7 +68,8 @@ class AuthorizationRequestPage extends React.Component<any, any> {
       return null;
     }
     const { token, data } = request;
-    const { origin, description } = data;
+    const { id, method, params } = data;
+    const { origin, description } = params;
     return (
       <AuthorizationRequest
         token={token}
