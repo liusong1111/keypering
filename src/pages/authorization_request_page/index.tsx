@@ -67,12 +67,12 @@ class AuthorizationRequestPage extends React.Component<any, any> {
       console.log("request is null");
       return null;
     }
-    const { token, data } = request;
+    const { token: wsToken, data } = request;
     const { id, method, params } = data;
     const { origin, description } = params;
     return (
       <AuthorizationRequest
-        token={token}
+        token={wsToken}
         origin={origin}
         description={description}
         history={history}
