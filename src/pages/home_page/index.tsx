@@ -46,9 +46,12 @@ class HomePage extends React.Component<any, any> {
     }
   }
 
-  componentDidMount() {
-    this.loadCurrentWalletAddressList();
-    this.loadAuthorizationList();
+  async componentDidMount() {
+    // this.loadCurrentWalletAddressList();
+    // this.loadAuthorizationList();
+    const manager = WalletManager.getInstance();
+    const { currentWalletName } = manager;
+    await this.switchWallet(currentWalletName);
     window.document.addEventListener("ws-event", this.handleWsEvent);
   }
 
@@ -162,7 +165,9 @@ class HomePage extends React.Component<any, any> {
   };
 
   handleSelectWallet = (e: any) => {
-    // console.log(e);
+    console.log(e);
+    const walletName = e[0];
+    this.switchWallet(walletName);
     this.setState({
       walletSelectorOpen: false,
     });
@@ -197,46 +202,7 @@ class HomePage extends React.Component<any, any> {
     );
   };
 
-  handleTestRequestSigning = () => {
-    this.setState({
-      transactionRequest: {
-        requestFrom: "https://demoapp.com/abc.html",
-        metaInfo: "Send 1000.00 CKB to xxx",
-        inputs: [
-          {
-            address: "ckt1qjr2r35c0f9vhcdgslx2fjwa9tylevr5qka7mfgmscd33wlhfykyhxuy3pat96shpxvvl7vf2e6ae55u6fk564sc527",
-            capacity: 123_45000000,
-            type: null,
-            data: null,
-            algorithm: "secp256k1",
-          },
-          {
-            address: "ckt1qjr2r35c0f9vhcdgslx2fjwa9tylevr5qka7mfgmscd33wlhfykyhxuy3pat96shpxvvl7vf2e6ae55u6fk564sc527",
-            capacity: 123_45000000,
-            type: null,
-            data: null,
-            algorithm: "secp256k1",
-          },
-        ],
-        outputs: [
-          {
-            address: "ckt1qjr2r35c0f9vhcdgslx2fjwa9tylevr5qka7mfgmscd33wlhfykyhxuy3pat96shpxvvl7vf2e6ae55u6fk564sc527",
-            capacity: 123_45000000,
-            type: null,
-            data: null,
-            algorithm: "secp256k1",
-          },
-          {
-            address: "ckt1qjr2r35c0f9vhcdgslx2fjwa9tylevr5qka7mfgmscd33wlhfykyhxuy3pat96shpxvvl7vf2e6ae55u6fk564sc527",
-            capacity: 123_45000000,
-            type: null,
-            data: null,
-            algorithm: "secp256k1",
-          },
-        ],
-      },
-    });
-  };
+  handleTestRequestSigning = () => {};
 
   handleTestAuthorizationRequest = () => {
     const { history } = this.props;
@@ -256,6 +222,17 @@ class HomePage extends React.Component<any, any> {
     Storage.getStorage().removeAuthorization(authToken);
     this.loadAuthorizationList();
   };
+
+  async switchWallet(walletName: string) {
+    const manager = WalletManager.getInstance();
+    manager.currentWalletName = walletName;
+    const currentWallet = manager.getCurrentWallet();
+    this.setState({
+      currentWallet,
+    });
+    await this.loadCurrentWalletAddressList();
+    await this.loadAuthorizationList();
+  }
 
   render() {
     const {
