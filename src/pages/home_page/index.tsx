@@ -97,7 +97,7 @@ class HomePage extends React.Component<any, any> {
             locks,
           },
         });
-      } else if (method === "sign") {
+      } else if (method === "sign" || method === "signAndSend") {
         history.push("/transaction_request");
       }
     }

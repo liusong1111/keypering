@@ -147,7 +147,8 @@ class TransactionRequestPage extends React.Component<any, any> {
             <List renderHeader={<div className={styles.inputLabel}>Inputs</div>}>
               {inputs.map((input) => (
                 // <InputOutput {...input} />
-                <div>{input.previousOutput}</div>
+                // <div>{input.previousOutput}</div>
+                <div>TODO: input need to be retrieved and displayed</div>
               ))}
             </List>
             <List renderHeader={<div className={styles.outputLabel}>Outputs</div>}>

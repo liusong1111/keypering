@@ -63,6 +63,12 @@ export default class Storage {
     }
     wallets = wallets.splice(index, 1);
     this.setItem("wallets", JSON.stringify(wallets));
+    if (wallets.length > 0) {
+      const currentWalletName = wallets[0].name;
+      this.currentWalletName = currentWalletName;
+    } else {
+      this.currentWalletName = "";
+    }
     return wallets;
   };
 

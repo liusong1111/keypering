@@ -132,6 +132,42 @@ export class WalletManager {
     });
   };
 
+  getCurrentWalletPrivateKey = (password: string) => {
+    const currentWallet = this.getCurrentWallet();
+    if (!currentWallet) {
+      return null;
+    }
+    let privateKey: string;
+    try {
+      privateKey = keystore.decrypt(currentWallet.ks, password);
+    } catch (e) {
+      console.log(e);
+      return null;
+    }
+    return privateKey;
+  };
+
+  removeCurrentWallet = (password: string) => {
+    const currentWallet = this.getCurrentWallet();
+    const thePrivateKey = this.getCurrentWalletPrivateKey(password);
+    if (!thePrivateKey) {
+      return false;
+    }
+    const { publicKey } = currentWallet.ks;
+    // const ec = new EC("secp256k1");
+    // const keyPair = ec.keyFromPrivate(_privateKey);
+    // const privateKey = keyPair.getPrivate();
+    // const publicKey = Buffer.from(keyPair.getPublic().encodeCompressed()).toString("hex");
+
+    const storage = Storage.getStorage();
+    storage.removeWallet(currentWallet.name);
+    this.container.removePublicKey({
+      payload: `0x${publicKey}`,
+      algorithm: SignatureAlgorithm.secp256k1,
+    });
+    return true;
+  };
+
   loadWallets = () => {
     const storage = Storage.getStorage();
     const wallets = storage.getWallets();
