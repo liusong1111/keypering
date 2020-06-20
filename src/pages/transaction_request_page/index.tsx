@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Card, Flex, Icon, List, Modal, NavBar, WhiteSpace, WingBlank } from "antd-mobile";
+import { Button, Card, Flex, Icon, InputItem, List, Modal, NavBar, WhiteSpace, WingBlank } from "antd-mobile";
 import { Bytes, Output, RawTransaction, Script, scriptToAddress } from "@keyper/specs";
 import { withRouter } from "react-router";
 import styles from "./transaction_request.module.scss";
@@ -68,7 +68,9 @@ const InputOutput = ({ capacity, lock, type, data }: Cell) => {
 class TransactionRequestPage extends React.Component<any, any> {
   constructor(props: any) {
     super(props);
-    this.state = {};
+    this.state = {
+      password: undefined,
+    };
   }
 
   componentDidMount() {
@@ -77,6 +79,12 @@ class TransactionRequestPage extends React.Component<any, any> {
       request,
     });
   }
+
+  handleInputPassword = (password: string) => {
+    this.setState({
+      password,
+    });
+  };
 
   handleDecline = () => {
     const { request } = this.state;
@@ -95,16 +103,17 @@ class TransactionRequestPage extends React.Component<any, any> {
   };
 
   handleApprove = async () => {
-    const { request } = this.state;
+    const { request, password } = this.state;
     const { history } = this.props;
     const { token: wsToken, data } = request;
     const { id, params } = data;
     const { target, tx, config, meta } = params;
     const manager = WalletManager.getInstance();
     const context = {
-      lockHash: target,
+      lockHash: target.lockHash,
     };
-    const txSigned = await manager.sign(context, tx, config);
+    const txSigned = await manager.signAndSend(password, context, tx, config);
+    console.log("signAndSendOK:", txSigned);
     sendAck(wsToken, {
       id,
       jsonrpc: "2.0",
@@ -158,12 +167,15 @@ class TransactionRequestPage extends React.Component<any, any> {
             </List>
           </Flex.Item>
         </Flex>
+        <div>
+          Password: <InputItem type="password" onChange={this.handleInputPassword} />
+        </div>
         <div className={styles.footer}>
           <Button inline className={styles.declineButton} onClick={this.handleDecline}>
             Decline
           </Button>
           <Button inline type="primary" className={styles.approveButton} onClick={this.handleApprove}>
-            Approve
+            Approve(Sign And Send)
           </Button>
         </div>
       </div>

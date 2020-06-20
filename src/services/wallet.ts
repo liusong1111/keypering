@@ -3,6 +3,10 @@ import { Buffer } from "buffer";
 import { Config, RawTransaction, scriptToAddress, SignatureAlgorithm, SignContext } from "@keyper/specs";
 import { hexToBytes } from "@nervosnetwork/ckb-sdk-utils";
 import Storage from "./storage";
+import * as rpc from "./rpc";
+
+// const CKB = require("@nervosnetwork/ckb-sdk-rpc");
+// import CKB from "@nervosnetwork/ckb-sdk-rpc";
 
 const { Secp256k1LockScript } = require("@keyper/container/lib/locks/secp256k1");
 const { AnyPayLockScript } = require("@keyper/container/lib/locks/anyone-can-pay");
@@ -73,7 +77,7 @@ function initializeContainer() {
     new Secp256k1LockScript("0x9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8", "type", [
       {
         outPoint: {
-          txHash: "0x6495cede8d500e4309218ae50bbcadb8f722f24cc7572dd2274f5876cb603e4e",
+          txHash: "0xf8de3bb47d055cdf460d93a2a6e1b05f7432f9777c8c474abf4eec1d4aee5d37",
           index: "0x0",
         },
         depType: "depGroup",
@@ -226,5 +230,23 @@ export class WalletManager {
   sign = async (context: SignContext, tx: RawTransaction, config: Config) => {
     const result = await this.container.sign(context, tx, config);
     return result;
+  };
+
+  signAndSend = async (password: string, context: SignContext, tx: RawTransaction, config: Config) => {
+    // const privateKey = this.getCurrentWalletPrivateKey(password);
+    try {
+      context.address = "...";
+      const currentWallet = this.getCurrentWallet();
+      context.ks = currentWallet.ks;
+      context.password = password;
+      const signedTx = await this.container.sign(context, tx, config);
+      // todo
+      await rpc.sendTransaction(signedTx);
+      // const ckb = new CKB("https://prototype.ckbapp.dev/testnet/rpc");
+      // await ckb.sendTransaction(signedTx);
+      return signedTx;
+    } catch (e) {
+      console.log("error", e);
+    }
   };
 }

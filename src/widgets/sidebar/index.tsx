@@ -17,7 +17,11 @@ const Sidebar = ({ onClose }: SidebarProps) => {
             Create new wallet
           </Link>
         </List.Item>
-        <List.Item arrow="horizontal">Import from mnemonic</List.Item>
+        <List.Item arrow="horizontal">
+          <Link to="/import_wallet" className={styles.link}>
+            Import from mnemonic
+          </Link>
+        </List.Item>
         <List.Item arrow="horizontal">Import from keystore</List.Item>
       </List>
       <List renderHeader={<span>Setting</span>} className={styles.list}>

@@ -7,6 +7,8 @@ import { WalletManager } from "../../services/wallet";
 import * as wallet from "../../services/wallet";
 import Storage from "../../services/storage";
 import styles from "./create_wallet_page.module.scss";
+import EnterMnemonic from "../../widgets/enter_mnemonic";
+import SetWalletNameAndPassword from "../../widgets/set_wallet_name_and_password";
 
 interface GenerateMnemonicProps {
   mnemonic: string;
@@ -48,170 +50,6 @@ const GenerateMnemonic = ({ mnemonic, onRegenerate, onCancel, onNext }: Generate
   );
 };
 
-interface EnterMnemonicProps {
-  mnemonic: string;
-  onBack: any;
-  onNext: any;
-}
-
-class EnterMnemonic extends React.Component<EnterMnemonicProps, any> {
-  private textareaRef = createRef<any>();
-
-  constructor(props: EnterMnemonicProps) {
-    super(props);
-    this.state = {
-      inputMnemonic: "",
-    };
-  }
-
-  componentDidMount() {
-    this.textareaRef.current.focus();
-  }
-
-  handleInputMnemonic = (value: any) => {
-    this.setState({ inputMnemonic: value });
-  };
-
-  handleNext = () => {
-    const { mnemonic, onNext } = this.props;
-    const { inputMnemonic } = this.state;
-    if (mnemonic === inputMnemonic) {
-      onNext();
-    } else {
-      Toast.fail("please input correct mnemonic", 3);
-    }
-  };
-
-  render() {
-    const { inputMnemonic } = this.state;
-    const { onBack } = this.props;
-    return (
-      <Card className={styles.card}>
-        <Card.Header className={styles.cardHeader} title="Enter mnemonic" />
-        <Card.Body>
-          <TextareaItem
-            value={inputMnemonic}
-            rows={5}
-            ref={this.textareaRef}
-            onChange={this.handleInputMnemonic}
-            className={styles.inputMnemonic}
-          />
-        </Card.Body>
-        <Card.Footer
-          content={
-            <div>
-              <Button onClick={onBack}>Back</Button>
-              <WhiteSpace />
-              <Button onClick={this.handleNext} type="primary">
-                Next
-              </Button>
-            </div>
-          }
-        />
-      </Card>
-    );
-  }
-}
-
-interface SetNameAndPasswordProps {
-  onBack: any;
-  onConfirm: any;
-}
-
-class SetNameAndPassword extends React.Component<SetNameAndPasswordProps, any> {
-  constructor(props: SetNameAndPasswordProps) {
-    super(props);
-    this.state = {
-      walletName: "",
-      password: "",
-      password2: "",
-    };
-  }
-
-  handleConfirm = () => {
-    const { onConfirm } = this.props;
-    const { password, password2, walletName } = this.state;
-    if (!walletName) {
-      Toast.fail("please specify wallet name");
-      return;
-    }
-    if (!password) {
-      Toast.fail("password should not be empty");
-      return;
-    }
-    if (password !== password2) {
-      Toast.fail("password is not the same");
-      return;
-    }
-    onConfirm(walletName, password);
-  };
-
-  handleInputWalletName = (value: string) => {
-    this.setState({
-      walletName: value,
-    });
-  };
-
-  handleInputPassword = (value: string) => {
-    this.setState({
-      password: value,
-    });
-  };
-
-  handleInputPassword2 = (value: string) => {
-    this.setState({
-      password2: value,
-    });
-  };
-
-  render() {
-    const { onBack } = this.props;
-    const { walletName, password, password2 } = this.state;
-
-    return (
-      <Card className={styles.card}>
-        <Card.Header className={styles.cardHeader} title="Setup your new wallet" />
-        <Card.Body>
-          <List>
-            <InputItem placeholder="" labelNumber={7} value={walletName} onChange={this.handleInputWalletName}>
-              Wallet Name
-            </InputItem>
-            <InputItem
-              placeholder=""
-              labelNumber={7}
-              type="password"
-              value={password}
-              onChange={this.handleInputPassword}
-            >
-              Password
-            </InputItem>
-            <InputItem
-              placeholder=""
-              labelNumber={7}
-              type="password"
-              value={password2}
-              onChange={this.handleInputPassword2}
-            >
-              Confirm Password
-            </InputItem>
-          </List>
-        </Card.Body>
-        <Card.Footer
-          content={
-            <div>
-              <Button onClick={onBack}>Back</Button>
-              <WhiteSpace />
-              <Button onClick={this.handleConfirm} type="primary">
-                Confirm
-              </Button>
-            </div>
-          }
-        />
-      </Card>
-    );
-  }
-}
-
 class CreateWalletPage extends React.Component<any, any> {
   constructor(props: any) {
     super(props);
@@ -252,6 +90,14 @@ class CreateWalletPage extends React.Component<any, any> {
     });
   };
 
+  handleEnterMnemonic = (inputMnemonic: string) => {
+    const { mnemonic } = this.props;
+    if (inputMnemonic !== mnemonic) {
+      Toast.fail("Please enter mnemonic just generated");
+    }
+    this.handleNext();
+  };
+
   handleConfirm = (walletName: string, password: string) => {
     const { mnemonic } = this.state;
     const { history } = this.props;
@@ -276,9 +122,9 @@ class CreateWalletPage extends React.Component<any, any> {
       );
     }
     if (step === 1) {
-      return <EnterMnemonic mnemonic={mnemonic} onBack={this.handleBack} onNext={this.handleNext} />;
+      return <EnterMnemonic onBack={this.handleBack} onNext={this.handleEnterMnemonic} />;
     }
-    return <SetNameAndPassword onBack={this.handleBack} onConfirm={this.handleConfirm} />;
+    return <SetWalletNameAndPassword onBack={this.handleBack} onConfirm={this.handleConfirm} />;
   }
 }
 
