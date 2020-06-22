@@ -193,7 +193,7 @@ export class WalletManager {
     return wallets;
   };
 
-  async loadCurrentWalletAddressList(): Promise<any[]> {
+  loadCurrentWalletAddressList = async (): Promise<any[]> => {
     const storage = Storage.getStorage();
     const wallet = await storage.getCurrentWallet();
     if (!wallet) {
@@ -216,19 +216,19 @@ export class WalletManager {
     });
 
     return addresses;
-  }
+  };
 
-  async getCurrentWalletName(): Promise<string> {
+  getCurrentWalletName = async (): Promise<string> => {
     return Storage.getStorage().getCurrentWalletName();
-  }
+  };
 
-  async setCurrentWalletName(walletName: string) {
+  setCurrentWalletName = async (walletName: string) => {
     await Storage.getStorage().setCurrentWalletName(walletName);
-  }
+  };
 
-  async getCurrentWallet(): Promise<any> {
+  getCurrentWallet = async (): Promise<any> => {
     return Storage.getStorage().getCurrentWallet();
-  }
+  };
 
   sign = async (context: SignContext, tx: RawTransaction, config: Config) => {
     const result = await this.container.sign(context, tx, config);
@@ -252,6 +252,7 @@ export class WalletManager {
       return signedTx;
     } catch (e) {
       console.log("error", e);
+      return null;
     }
   };
 }

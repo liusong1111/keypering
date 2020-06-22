@@ -36,7 +36,7 @@ class HomePage extends React.Component<any, any> {
     this.init();
   }
 
-  async init() {
+  init = async () => {
     const storage = Storage.getStorage();
     await storage.ready;
     const manager = WalletManager.getInstance();
@@ -55,7 +55,7 @@ class HomePage extends React.Component<any, any> {
     if (!currentWallet) {
       history.push("/welcome");
     }
-  }
+  };
 
   async componentDidMount() {
     // this.loadCurrentWalletAddressList();
