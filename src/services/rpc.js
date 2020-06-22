@@ -1,42 +1,19 @@
 // import CKB from "@nervosnetwork/ckb-sdk-rpc";
 
 // import snakecaseKeys from "snakecase-keys";
-function snakeCase(key) {
-  return key.replace("-", "_").replace(/[A-Z]/g, (e) => `_${e.toLowerCase()}`);
-}
-function snakeCaseKeyValue(obj) {
-  if (typeof obj === "string") {
-    return snakeCase(obj);
-  }
-  if (typeof obj !== "object") {
-    return obj;
-  }
-  if (Array.isArray(obj)) {
-    const result = [];
-    for (let i = 0; i < obj.length; i++) {
-      result.push(snakeCaseKeyValue(obj[i]));
-    }
-    return result;
-  }
-  const result = {};
-  Object.keys(obj).forEach((k) => {
-    result[snakeCase(k)] = snakeCaseKeyValue(obj[k]);
-  });
-  return result;
-}
-export async function sendTransaction(theSignedTx) {
-  // const ckb = new CKB("https://prototype.ckbapp.dev/testnet/rpc");
-  // await ckb.sendTransaction(signedTx);
-  // return signedTx;
-  const signedTx = snakeCaseKeyValue(theSignedTx);
+import { snakeCaseKeyValue } from "./misc";
+
+async function callRpc(method, params) {
+  const id = new Date().getTime();
   const requestBody = JSON.stringify(
     {
-      id: 2,
+      id,
       jsonrpc: "2.0",
-      method: "send_transaction",
-      params: [signedTx],
+      method,
+      params,
     },
-    "  "
+    "  ",
+    2
   );
   console.log("requestBody:", requestBody);
   const response = await fetch("https://prototype.ckbapp.dev/testnet/rpc", {
@@ -47,8 +24,20 @@ export async function sendTransaction(theSignedTx) {
     body: requestBody,
   });
   const json = await response.json();
-  console.log("response:", response);
-  console.log("response json:", json);
+  return json;
+}
+export async function sendTransaction(theSignedTx) {
+  // const ckb = new CKB("https://prototype.ckbapp.dev/testnet/rpc");
+  // await ckb.sendTransaction(signedTx);
+  // return signedTx;
+  const signedTx = snakeCaseKeyValue(theSignedTx);
+  const response = await callRpc("send_transaction", [signedTx]);
+  return response;
   // if(response.error) {
   // }
+}
+
+export async function getLiveCell(params) {
+  const json = await callRpc("get_live_cell", params);
+  return json;
 }

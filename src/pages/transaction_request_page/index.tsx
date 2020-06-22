@@ -8,6 +8,8 @@ import Balance from "../../widgets/balance";
 import { sendAck } from "../../services/messaging";
 import Storage from "../../services/storage";
 import { WalletManager } from "../../services/wallet";
+import { getLiveCell } from "../../services/rpc";
+import { camelCaseKey } from "../../services/misc";
 
 interface Cell {
   capacity: string;
@@ -70,13 +72,35 @@ class TransactionRequestPage extends React.Component<any, any> {
     super(props);
     this.state = {
       password: undefined,
+      request: undefined,
+      inputs: [],
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const { request } = Storage.getStorage();
     this.setState({
       request,
+    });
+    console.log("request:", request);
+    const rawInputs = (request as any).data?.params?.tx?.inputs;
+    if (!rawInputs) {
+      return;
+    }
+    const inputs = await Promise.all(
+      rawInputs.map(async (input: any) => {
+        console.log("input:", input);
+        const response = await getLiveCell([
+          { tx_hash: input.previousOutput.txHash, index: input.previousOutput.index },
+          true,
+        ]);
+        const { cell: rawCell } = response.result;
+        const cell = camelCaseKey(rawCell);
+        return cell;
+      })
+    );
+    this.setState({
+      inputs,
     });
   }
 
@@ -125,7 +149,7 @@ class TransactionRequestPage extends React.Component<any, any> {
   };
 
   render() {
-    const { request } = this.state;
+    const { request, inputs } = this.state;
     if (!request) {
       return null;
     }
@@ -134,7 +158,7 @@ class TransactionRequestPage extends React.Component<any, any> {
       data: { id, params },
     } = request;
     const { tx, requestFrom, meta, config, target } = params as TransactionRequestParams;
-    const { inputs, outputs, outputsData } = tx;
+    const { outputs, outputsData } = tx;
     return (
       <div className={styles.page}>
         <NavBar icon={<Icon type="left" />} onLeftClick={this.handleDecline}>
@@ -154,10 +178,8 @@ class TransactionRequestPage extends React.Component<any, any> {
             </div>
             <div className={styles.line}>Transaction to sign:</div>
             <List renderHeader={<div className={styles.inputLabel}>Inputs</div>}>
-              {inputs.map((input) => (
-                // <InputOutput {...input} />
-                // <div>{input.previousOutput}</div>
-                <div>TODO: input need to be retrieved and displayed</div>
+              {inputs.map((input: any) => (
+                <InputOutput {...input.output} data={input.data.content} />
               ))}
             </List>
             <List renderHeader={<div className={styles.outputLabel}>Outputs</div>}>
