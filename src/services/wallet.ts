@@ -113,7 +113,7 @@ export class WalletManager {
     return WalletManager.manager;
   };
 
-  createWallet = (walletName: string, _privateKey: string, password: string) => {
+  createWallet = async (walletName: string, _privateKey: string, password: string) => {
     const ec = new EC("secp256k1");
     const keyPair = ec.keyFromPrivate(_privateKey);
     const privateKey = keyPair.getPrivate();
@@ -125,10 +125,10 @@ export class WalletManager {
     ks.publicKey = publicKey;
 
     const storage = Storage.getStorage();
-    storage.addWallet(walletName, {
+    await storage.addWallet(walletName, {
       ks,
     });
-    storage.currentWalletName = walletName;
+    await storage.setCurrentWalletName(walletName);
 
     this.container.addPublicKey({
       payload: `0x${ks.publicKey}`,
@@ -136,8 +136,9 @@ export class WalletManager {
     });
   };
 
-  getCurrentWalletPrivateKey = (password: string) => {
-    const currentWallet = this.getCurrentWallet();
+  getCurrentWalletPrivateKey = async (password: string) => {
+    const storage = Storage.getStorage();
+    const currentWallet = await storage.getCurrentWallet();
     if (!currentWallet) {
       return null;
     }
@@ -151,9 +152,13 @@ export class WalletManager {
     return privateKey;
   };
 
-  removeCurrentWallet = (password: string) => {
-    const currentWallet = this.getCurrentWallet();
-    const thePrivateKey = this.getCurrentWalletPrivateKey(password);
+  removeCurrentWallet = async (password: string) => {
+    const storage = Storage.getStorage();
+    const currentWallet = await storage.getCurrentWallet();
+    if (!currentWallet) {
+      return false;
+    }
+    const thePrivateKey = await this.getCurrentWalletPrivateKey(password);
     if (!thePrivateKey) {
       return false;
     }
@@ -163,8 +168,7 @@ export class WalletManager {
     // const privateKey = keyPair.getPrivate();
     // const publicKey = Buffer.from(keyPair.getPublic().encodeCompressed()).toString("hex");
 
-    const storage = Storage.getStorage();
-    storage.removeWallet(currentWallet.name);
+    await storage.removeWallet(currentWallet.name);
     this.container.removePublicKey({
       payload: `0x${publicKey}`,
       algorithm: SignatureAlgorithm.secp256k1,
@@ -172,32 +176,31 @@ export class WalletManager {
     return true;
   };
 
-  loadWallets = () => {
+  loadWallets = async () => {
     const storage = Storage.getStorage();
-    const wallets = storage.getWallets();
+    const wallets = await storage.getWallets();
     wallets.forEach((wallet: any) => {
       this.container.addPublicKey({
         payload: `0x${wallet.ks.publicKey}`,
         algorithm: SignatureAlgorithm.secp256k1,
       });
     });
-
-    let { currentWalletName } = storage;
-    if (!currentWalletName && wallets.length > 0) {
-      currentWalletName = wallets[0].name;
-      storage.currentWalletName = currentWalletName;
-    }
   };
 
-  getWallets = () => {
+  getWallets = async () => {
     const storage = Storage.getStorage();
-    const wallets = storage.getWallets();
+    const wallets = await storage.getWallets();
     return wallets;
   };
 
-  loadCurrentWalletAddressList = async () => {
-    const wallet = this.getCurrentWallet();
+  async loadCurrentWalletAddressList(): Promise<any[]> {
+    const storage = Storage.getStorage();
+    const wallet = await storage.getCurrentWallet();
+    if (!wallet) {
+      return [];
+    }
     const publicKeyPayload = wallet.ks.publicKey;
+
     const all = await this.container.getAllLockHashesAndMeta();
     console.log(all);
     const lockScripts = all.filter((item: any) => item.meta.publicKey.payload === `0x${publicKeyPayload}`);
@@ -213,19 +216,19 @@ export class WalletManager {
     });
 
     return addresses;
-  };
-
-  get currentWalletName() {
-    return Storage.getStorage().currentWalletName;
   }
 
-  set currentWalletName(walletName: string) {
-    Storage.getStorage().currentWalletName = walletName;
+  async getCurrentWalletName(): Promise<string> {
+    return Storage.getStorage().getCurrentWalletName();
   }
 
-  getCurrentWallet = () => {
-    return Storage.getStorage().getWalletByName(this.currentWalletName);
-  };
+  async setCurrentWalletName(walletName: string) {
+    await Storage.getStorage().setCurrentWalletName(walletName);
+  }
+
+  async getCurrentWallet(): Promise<any> {
+    return Storage.getStorage().getCurrentWallet();
+  }
 
   sign = async (context: SignContext, tx: RawTransaction, config: Config) => {
     const result = await this.container.sign(context, tx, config);
@@ -235,8 +238,10 @@ export class WalletManager {
   signAndSend = async (password: string, context: SignContext, tx: RawTransaction, config: Config) => {
     // const privateKey = this.getCurrentWalletPrivateKey(password);
     try {
+      // todo: need correct addr
       context.address = "...";
-      const currentWallet = this.getCurrentWallet();
+      const storage = Storage.getStorage();
+      const currentWallet = (await storage.getCurrentWallet())!;
       context.ks = currentWallet.ks;
       context.password = password;
       const signedTx = await this.container.sign(context, tx, config);

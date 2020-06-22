@@ -45,7 +45,7 @@ class ImportWalletPage extends React.Component<any, any> {
     this.handleNext();
   };
 
-  handleConfirm = (walletName: string, password: string) => {
+  handleConfirm = async (walletName: string, password: string) => {
     const { mnemonic } = this.state;
     const { history } = this.props;
     let privateKey = null;
@@ -56,8 +56,7 @@ class ImportWalletPage extends React.Component<any, any> {
       privateKey = wallet.mnemonicToEntropy(mnemonic);
     }
     const manager = WalletManager.getInstance();
-    manager.createWallet(walletName, privateKey, password);
-    manager.currentWalletName = walletName;
+    await manager.createWallet(walletName, privateKey, password);
     history.push("/");
   };
 

@@ -13,6 +13,7 @@ import DeleteWalletPage from "./pages/delete_wallet_page";
 import AuthorizationRequestPage from "./pages/authorization_request_page";
 import TransactionRequestPage from "./pages/transaction_request_page";
 import ImportWalletPage from "./pages/import_wallet_page";
+import "react-app-polyfill/stable";
 
 require("typeface-source-code-pro");
 require("typeface-lato");

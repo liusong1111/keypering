@@ -1,13 +1,73 @@
+import { IDBPDatabase, openDB } from "idb";
+
+interface Current {
+  id?: number;
+  currentWalletName: string;
+  currentRequest: any;
+}
+
+interface Wallet {
+  name: string;
+  ks: any;
+}
+
 export default class Storage {
+  constructor() {
+    this.db = null;
+    this.ready = new Promise((resolve) => {
+      this.readyFn = resolve;
+    });
+    this.init();
+  }
+
+  db: IDBPDatabase | null = null;
+
+  ready: any = null;
+
+  readyFn: any = null;
+
+  init = async () => {
+    this.db = await openDB("keypering", 1, {
+      async upgrade(db, oldVersion, newVersion, tx) {
+        db.createObjectStore("wallets", {
+          keyPath: "name",
+        });
+        db.createObjectStore("authorizations", {
+          keyPath: "token",
+        });
+        db.createObjectStore("current", {
+          keyPath: "id",
+        });
+      },
+    });
+    this.readyFn(true);
+  };
+
+  async getCurrent(): Promise<Current> {
+    const current = await this.db?.transaction("current").store.get(1);
+    if (!current) {
+      return {
+        currentWalletName: "",
+        currentRequest: null,
+      };
+    }
+    return current as Current;
+  }
+
+  async setCurrent(current: Current): Promise<void> {
+    const tx = this.db!.transaction("current", "readwrite");
+    const { store } = tx;
+
+    if (!current.id) {
+      current.id = 1;
+      await store.add(current);
+    } else {
+      await store.put(current);
+    }
+    await tx.done;
+  }
+
   getSalt = () => {};
-
-  setItem = (key: string, value: any) => {
-    window.localStorage.setItem(key, value);
-  };
-
-  getItem = (key: string) => {
-    return window.localStorage.getItem(key);
-  };
 
   theSalt: string = "SALTME!";
 
@@ -19,111 +79,84 @@ export default class Storage {
     this.theSalt = _salt;
   }
 
-  set currentWalletName(walletName: string) {
-    this.setItem("currentWalletName", walletName);
+  async setCurrentWalletName(walletName: string): Promise<void> {
+    const current = await this.getCurrent();
+    current.currentWalletName = walletName;
+    await this.setCurrent(current);
   }
 
-  get currentWalletName() {
-    return this.getItem("currentWalletName") || "";
+  async getCurrentWalletName(): Promise<string> {
+    const current = await this.getCurrent();
+    return current.currentWalletName;
   }
 
-  getWallets = () => {
-    const walletsJSON = this.getItem("wallets");
-    if (!walletsJSON) {
-      return [];
-    }
-    const wallets = JSON.parse(walletsJSON);
-    return wallets;
-  };
+  async getCurrentWallet(): Promise<Wallet | null> {
+    const currentWalletName = await this.getCurrentWalletName();
+    const wallet = await this.getWalletByName(currentWalletName);
+    return wallet;
+  }
 
-  getWalletByName = (walletName: string) => {
-    const wallets = this.getWallets();
-    return wallets.find((w: any) => w.name === walletName);
-  };
+  async getWallets(): Promise<Wallet[]> {
+    const wallets = await this.db!.getAll("wallets");
+    return wallets as Wallet[];
+  }
 
-  addWallet = (walletName: string, wallet: any) => {
-    const wallets = this.getWallets();
-    const index = wallets.findIndex((w: any) => w.name === walletName);
-    if (index === -1) {
-      const newWallet = Object.assign(wallet, { name: walletName });
-      wallets.push(newWallet);
+  async getWalletByName(walletName: string): Promise<Wallet | null> {
+    const wallet = await this.db!.get("wallets", walletName);
+    return wallet as Wallet | null;
+  }
+
+  addWallet = async (walletName: string, wallet: any) => {
+    const existingWallet = this.getWalletByName(walletName);
+    wallet.name = walletName;
+    const tx = this.db!.transaction("wallets", "readwrite");
+    const { store } = tx;
+    if (!existingWallet) {
+      await store.add(wallet);
     } else {
-      const newWallet = Object.assign(wallet, { name: walletName });
-      wallets[index] = newWallet;
+      await store.put(wallet);
     }
-    this.setItem("wallets", JSON.stringify(wallets));
-    return wallets;
+    await tx.done;
   };
 
-  removeWallet = (walletName: string) => {
-    let wallets = this.getWallets();
-    const index = wallets.findIndex((wallet: any) => wallet.name === walletName);
-    if (index === -1) {
-      return wallets;
-    }
-    wallets = wallets.splice(index, 1);
-    this.setItem("wallets", JSON.stringify(wallets));
+  removeWallet = async (walletName: string) => {
+    await this.db!.delete("wallets", walletName);
+    const wallets = await this.getWallets();
     if (wallets.length > 0) {
-      const currentWalletName = wallets[0].name;
-      this.currentWalletName = currentWalletName;
+      await this.setCurrentWalletName(wallets[0].name);
     } else {
-      this.currentWalletName = "";
+      await this.setCurrentWalletName("");
     }
-    return wallets;
   };
 
-  set request(_request: any) {
-    this.setItem("request", JSON.stringify(_request));
+  async setCurrentRequest(request: any) {
+    const current = await this.getCurrent();
+    current.currentRequest = request;
+    await this.setCurrent(current);
   }
 
-  get request() {
-    const request = this.getItem("request");
-    if (!request) {
-      return null;
-    }
-    return JSON.parse(request);
+  async getCurrentRequest(): Promise<any> {
+    const current = await this.getCurrent();
+    return current.currentRequest;
   }
 
-  get authorizations() {
-    const auths = this.getItem("authorizations");
-    if (!auths) {
-      return [];
-    }
-
-    return JSON.parse(auths);
+  async listAuthorization(): Promise<any[]> {
+    const result = await this.db!.getAll("authorizations");
+    return result;
   }
 
-  listAuthorization = () => {
-    return this.authorizations;
-  };
+  async getAuthorization(token: string): Promise<any> {
+    const result = await this.db!.get("authorizations", token);
+    return result;
+  }
 
-  getAuthorization = (token: string) => {
-    const auths = this.authorizations;
-    const auth = auths.find((_auth: any) => _auth.token === token);
-    return auth;
-  };
+  async removeAuthorization(token: string): Promise<void> {
+    await this.db!.delete("authorizations", token);
+  }
 
-  removeAuthorization = (token: string) => {
-    const auths = this.authorizations;
-    const index = auths.findIndex((auth: any) => auth.token === token);
-    if (index === -1) {
-      return auths;
-    }
-    auths.splice(index, 1);
-    this.setItem("authorizations", JSON.stringify(auths));
-    return auths;
-  };
-
-  addAuthorization = (auth: any) => {
-    const auths = this.authorizations;
-    const index = auths.findIndex((_auth: any) => _auth.token === auth.token);
-    if (index !== -1) {
-      auths.splice(index, 1);
-    }
-    auths.unshift(auth);
-    this.setItem("authorizations", JSON.stringify(auths));
-    return auths;
-  };
+  async addAuthorization(auth: any): Promise<void> {
+    await this.db!.add("authorizations", auth);
+  }
 
   static defaultStorage = new Storage();
 

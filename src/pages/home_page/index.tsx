@@ -25,22 +25,33 @@ const tabNames = [
 class HomePage extends React.Component<any, any> {
   constructor(props: any) {
     super(props);
-    const { history } = this.props;
-    const manager = WalletManager.getInstance();
-    const currentWallet = manager.getCurrentWallet();
-    // sth weird...
-    manager.loadWallets();
-    const wallets = manager.getWallets();
-    const { authorizations } = Storage.getStorage();
     this.state = {
       drawerOpen: false,
-      wallets,
-      currentWallet,
+      wallets: [],
+      currentWallet: null,
       addresses: [],
       balance: "0x0",
-      authorizations,
+      authorizations: [],
     };
+    this.init();
+  }
 
+  async init() {
+    const storage = Storage.getStorage();
+    await storage.ready;
+    const manager = WalletManager.getInstance();
+    const currentWallet = await manager.getCurrentWallet();
+    // sth weird...
+    await manager.loadWallets();
+
+    const authorizations = await storage.listAuthorization();
+    const wallets = await manager.getWallets();
+    this.setState({
+      currentWallet,
+      authorizations,
+      wallets,
+    });
+    const { history } = this.props;
     if (!currentWallet) {
       history.push("/welcome");
     }
@@ -49,8 +60,10 @@ class HomePage extends React.Component<any, any> {
   async componentDidMount() {
     // this.loadCurrentWalletAddressList();
     // this.loadAuthorizationList();
+    const storage = Storage.getStorage();
+    await storage.ready;
     const manager = WalletManager.getInstance();
-    const { currentWalletName } = manager;
+    const currentWalletName = await manager.getCurrentWalletName();
     await this.switchWallet(currentWalletName);
     window.document.addEventListener("ws-event", this.handleWsEvent);
   }
@@ -66,13 +79,13 @@ class HomePage extends React.Component<any, any> {
     detail.data = JSON.parse(detail.data);
     const { data, token: wsToken } = detail;
     const { id, method, params } = data;
-    storage.request = detail;
+    await storage.setCurrentRequest(detail);
     const { history } = this.props;
     if (method === "auth") {
       history.push("/authorization_request");
     } else {
       const { token } = params;
-      const auth = storage.getAuthorization(token);
+      const auth = await storage.getAuthorization(token);
       if (!auth) {
         sendAck(wsToken, {
           id,
@@ -129,8 +142,9 @@ class HomePage extends React.Component<any, any> {
     });
   };
 
-  loadAuthorizationList = () => {
-    const { authorizations } = Storage.getStorage();
+  loadAuthorizationList = async () => {
+    const storage = Storage.getStorage();
+    const authorizations = await storage.listAuthorization();
     this.setState({ authorizations });
   };
 
@@ -164,10 +178,10 @@ class HomePage extends React.Component<any, any> {
     });
   };
 
-  handleSelectWallet = (e: any) => {
+  handleSelectWallet = async (e: any) => {
     console.log(e);
     const walletName = e[0];
-    this.switchWallet(walletName);
+    await this.switchWallet(walletName);
     this.setState({
       walletSelectorOpen: false,
     });
@@ -204,29 +218,30 @@ class HomePage extends React.Component<any, any> {
 
   handleTestRequestSigning = () => {};
 
-  handleTestAuthorizationRequest = () => {
+  handleTestAuthorizationRequest = async () => {
     const { history } = this.props;
     const storage = Storage.getStorage();
-    storage.request = {
+    await storage.setCurrentRequest({
       token: 0,
       data: {
         type: "auth",
         origin: "http://demodapp.com",
         description: "it is a demo dApp",
       },
-    };
+    });
     history.push("/authorization_request");
   };
 
-  handleRevokeAuthorization = (authToken: string) => {
-    Storage.getStorage().removeAuthorization(authToken);
-    this.loadAuthorizationList();
+  handleRevokeAuthorization = async (authToken: string) => {
+    const storage = Storage.getStorage();
+    await storage.removeAuthorization(authToken);
+    await this.loadAuthorizationList();
   };
 
   async switchWallet(walletName: string) {
     const manager = WalletManager.getInstance();
-    manager.currentWalletName = walletName;
-    const currentWallet = manager.getCurrentWallet();
+    await manager.setCurrentWalletName(walletName);
+    const currentWallet = await manager.getCurrentWallet();
     this.setState({
       currentWallet,
     });

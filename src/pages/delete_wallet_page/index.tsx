@@ -18,11 +18,11 @@ class DeleteWalletPage extends React.Component<any, any> {
     });
   };
 
-  handleDeleteWallet = () => {
+  handleDeleteWallet = async () => {
     const { history } = this.props;
     const { password } = this.state;
     const manager = WalletManager.getInstance();
-    const ok = manager.removeCurrentWallet(password);
+    const ok = await manager.removeCurrentWallet(password);
     if (!ok) {
       Toast.fail("error occurs when delete wallet, please check your password");
       return;

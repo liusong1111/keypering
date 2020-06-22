@@ -78,7 +78,8 @@ class TransactionRequestPage extends React.Component<any, any> {
   }
 
   async componentDidMount() {
-    const { request } = Storage.getStorage();
+    const storage = Storage.getStorage();
+    const request = await storage.getCurrentRequest();
     this.setState({
       request,
     });

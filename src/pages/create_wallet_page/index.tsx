@@ -91,20 +91,21 @@ class CreateWalletPage extends React.Component<any, any> {
   };
 
   handleEnterMnemonic = (inputMnemonic: string) => {
-    const { mnemonic } = this.props;
+    const { mnemonic } = this.state;
     if (inputMnemonic !== mnemonic) {
+      console.log("input=", inputMnemonic);
+      console.log("generated=", mnemonic);
       Toast.fail("Please enter mnemonic just generated");
     }
     this.handleNext();
   };
 
-  handleConfirm = (walletName: string, password: string) => {
+  handleConfirm = async (walletName: string, password: string) => {
     const { mnemonic } = this.state;
     const { history } = this.props;
     const privateKey = wallet.mnemonicToEntropy(mnemonic);
     const manager = WalletManager.getInstance();
-    manager.createWallet(walletName, privateKey, password);
-    manager.currentWalletName = walletName;
+    await manager.createWallet(walletName, privateKey, password);
     history.push("/");
   };
 

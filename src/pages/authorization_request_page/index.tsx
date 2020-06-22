@@ -11,14 +11,15 @@ class AuthorizationRequestPage extends React.Component<any, any> {
     this.state = {};
   }
 
-  componentDidMount() {
-    const { request } = Storage.getStorage();
+  async componentDidMount() {
+    const storage = Storage.getStorage();
+    const request = await storage.getCurrentRequest();
     this.setState({
       request,
     });
   }
 
-  handleApprove = () => {
+  handleApprove = async () => {
     const { history } = this.props;
     const { request } = this.state;
     const { token: wsToken, data } = request;
@@ -27,7 +28,7 @@ class AuthorizationRequestPage extends React.Component<any, any> {
     // const timestamp = formatDate(new Date(), "yyyy-MM-dd HH:mm:ss");
     const timestamp = new Date().getTime();
     const authToken = sha256(origin).toString();
-    Storage.getStorage().addAuthorization({
+    await Storage.getStorage().addAuthorization({
       token: authToken,
       origin,
       description,
