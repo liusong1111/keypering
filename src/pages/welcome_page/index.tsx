@@ -18,7 +18,7 @@ const WelcomePage = () => {
           Create a Wallet
         </Button>
         <WhiteSpace size="xl" />
-        <Button>Import Wallet Seed</Button>
+        <Button onClick={() => history.push("/import_wallet")}>Import Wallet Seed</Button>
         <WhiteSpace size="xl" />
         <Button>Import from Keystore</Button>
       </WingBlank>

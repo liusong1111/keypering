@@ -4,6 +4,7 @@ import { Config, RawTransaction, scriptToAddress, SignatureAlgorithm, SignContex
 import { hexToBytes } from "@nervosnetwork/ckb-sdk-utils";
 import Storage from "./storage";
 import * as rpc from "./rpc";
+import { decryptKeystore, encryptKeystore } from "./messaging";
 
 // const CKB = require("@nervosnetwork/ckb-sdk-rpc");
 // import CKB from "@nervosnetwork/ckb-sdk-rpc";
@@ -11,7 +12,7 @@ import * as rpc from "./rpc";
 const { Secp256k1LockScript } = require("@keyper/container/lib/locks/secp256k1");
 const { AnyPayLockScript } = require("@keyper/container/lib/locks/anyone-can-pay");
 
-const keystore = require("@keyper/specs/lib/keystore");
+// const keystore = require("@keyper/specs/lib/keystore");
 const { Container } = require("@keyper/container/lib");
 
 export { mnemonicToEntropy, entropyToMnemonic, generateMnemonic } from "bip39";
@@ -54,7 +55,9 @@ function initializeContainer() {
           if (!ks) {
             throw new Error(`no ks for address: ${context.address}`);
           }
-          const privateKey = keystore.decrypt(ks, context.password);
+          let privateKey: any = await decryptKeystore(context.password, ks);
+          privateKey = privateKey.privateKey.replace("0x", "");
+          // const privateKey = keystore.decrypt(ks, context.password);
           const ec = new EC("secp256k1");
           const keypair = ec.keyFromPrivate(privateKey);
           const msg = typeof message === "string" ? hexToBytes(message) : message;
@@ -118,10 +121,9 @@ export class WalletManager {
     const keyPair = ec.keyFromPrivate(_privateKey);
     const privateKey = keyPair.getPrivate();
     const publicKey = Buffer.from(keyPair.getPublic().encodeCompressed()).toString("hex");
-    // publicKey = Buffer.from(publicKey).toString("hex");
-    // const ks = keystore.encrypt(privateKey.toBuffer(), password);
-    const privateKeyBuffer = privateKey.toArrayLike(Buffer);
-    const ks = keystore.encrypt(privateKeyBuffer, password);
+    // const privateKeyBuffer = privateKey.toArrayLike(Buffer);
+    // const ks = keystore.encrypt(privateKeyBuffer, password);
+    const ks: any = await encryptKeystore(password, `0x${privateKey.toString("hex")}`);
     ks.publicKey = publicKey;
 
     const storage = Storage.getStorage();
@@ -144,7 +146,9 @@ export class WalletManager {
     }
     let privateKey: string;
     try {
-      privateKey = keystore.decrypt(currentWallet.ks, password);
+      // privateKey = keystore.decrypt(currentWallet.ks, password);
+      const pk: any = await decryptKeystore(password, currentWallet.ks);
+      privateKey = pk.privateKey;
     } catch (e) {
       console.log(e);
       return null;
