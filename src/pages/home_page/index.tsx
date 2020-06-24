@@ -4,6 +4,7 @@ import { withRouter } from "react-router";
 import { Settings as SettingsIcon, Menu as MenuIcon } from "react-feather";
 import { addressToScript } from "@keyper/specs";
 import BN from "bn.js";
+import { ec as EC } from "elliptic";
 import Balance from "../../widgets/balance";
 import AddressList from "../../widgets/address_list";
 import styles from "./home.module.scss";
@@ -14,7 +15,7 @@ import WalletSelector from "../../widgets/wallet_selector";
 import { WalletManager } from "../../services/wallet";
 import * as indexer from "../../services/indexer";
 import Storage from "../../services/storage";
-import { sendAck } from "../../services/messaging";
+import { decryptKeystore, encryptKeystore, sendAck } from "../../services/messaging";
 
 const tabNames = [
   { title: "Addresses", key: "Addresses" },
@@ -232,6 +233,28 @@ class HomePage extends React.Component<any, any> {
     history.push("/authorization_request");
   };
 
+  handleTestEncryptKeystore = async () => {
+    const password = "hello";
+    const ec = new EC("secp256k1");
+    const keypair = ec.genKeyPair();
+    const privateKey = `0x${keypair.getPrivate().toString("hex")}`;
+    console.log("before encrypt, privateKey=", privateKey);
+    let ks;
+    try {
+      ks = await encryptKeystore(password, privateKey);
+      console.log("response=", JSON.stringify(ks, null, 2));
+    } catch (e) {
+      console.log("encryptKeystore error=", e);
+      return;
+    }
+    try {
+      const dPrivateKey = await decryptKeystore(password, ks);
+      console.log("after decrypt, privateKey=", dPrivateKey);
+    } catch (e) {
+      console.log("decryptKeystore error=", e);
+    }
+  };
+
   handleRevokeAuthorization = async (authToken: string) => {
     const storage = Storage.getStorage();
     await storage.removeAuthorization(authToken);
@@ -320,6 +343,9 @@ class HomePage extends React.Component<any, any> {
           </Button>
           <Button inline size="small" onClick={this.handleTestRequestSigning}>
             Request Signing(test)
+          </Button>
+          <Button inline size="small" onClick={this.handleTestEncryptKeystore}>
+            Test EncryptKeystore
           </Button>
         </div>
       </Flex>
