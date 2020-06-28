@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="256px" height="256px" viewBox="0 0 256 256" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 63.1 (92452) - https://sketch.com -->
+    <title>logo/Keypering/forEdit  256*256</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#E2E2E2" offset="0%"></stop>
+            <stop stop-color="#CCCCCC" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="76.5063301%" id="linearGradient-2">
+            <stop stop-color="#41D693" offset="0%"></stop>
+            <stop stop-color="#09A772" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="39.5406405%" y1="12.8856697%" x2="62.4459297%" y2="100%" id="linearGradient-3">
+            <stop stop-color="#6EDEAB" offset="0%"></stop>
+            <stop stop-color="#27BC84" offset="57.5675774%"></stop>
+            <stop stop-color="#00A971" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="34.3974317%" y1="39.458818%" x2="78.7123183%" y2="67.3118772%" id="linearGradient-4">
+            <stop stop-color="#B0B0B0" offset="0%"></stop>
+            <stop stop-color="#E7E7E7" offset="100%"></stop>
+        </linearGradient>
+        <polygon id="path-5" points="0 190.352381 63.2303087 253 106.467607 253 43.4716981 190.352381"></polygon>
+    </defs>
+    <g id="logo/Keypering/forEdit--256*256" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="keypering" transform="translate(0.000000, 2.000000)">
+            <polygon id="Clip-5" fill="url(#linearGradient-1)" points="106.264151 40.9619048 256 40.9619048 256 253 106.264151 253"></polygon>
+            <polygon id="Clip-2" fill="url(#linearGradient-2)" points="43.4716981 0 43.4716981 190.352381 106.467607 253 106.467607 0.105328893"></polygon>
+            <polygon id="Clip-8" fill="url(#linearGradient-3)" points="173.154346 40.9619048 256 40.9619048 189.109805 147.266718 256 253 173.154346 253 106.467607 147.266718"></polygon>
+            <path d="M256,125.295238 L256,168.666667 L188.432733,168.666667 C176.397856,168.666667 166.641509,158.957224 166.641509,146.980952 C166.641509,135.004075 176.397856,125.295238 188.432733,125.295238 L256,125.295238 Z" id="Fill-10" fill="#FFFFFF"></path>
+            <path d="M196.912078,152.387699 C194.586401,156.425186 189.419644,157.816736 185.372725,155.495875 C181.326411,153.175015 179.931611,148.020299 182.257893,143.983416 C184.584175,139.946532 189.750326,138.554378 193.79664,140.875843 C197.844165,143.196704 199.237754,148.350815 196.912078,152.387699" id="Fill-12" fill="#3DC488"></path>
+            <path d="M12.4994311,0 L43.4716981,0 L43.4716981,190.352381 L0,190.352381 L0,12.5116348 C0,5.60136453 5.59590104,0 12.4994311,0" id="Fill-14" fill="#EEEEEE"></path>
+            <mask id="mask-6" fill="white">
+                <use xlink:href="#path-5"></use>
+            </mask>
+            <use id="Clip-18" fill="url(#linearGradient-4)" xlink:href="#path-5"></use>
+        </g>
+    </g>
+</svg>
