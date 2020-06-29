@@ -87,8 +87,8 @@ fn main() {
     let broadcaster = ws_server.broadcaster().clone();
     std::thread::spawn(move || {
         //todo: what if port is occupied?
-        println!("starting ws server on 127.0.0.1:13012...");
-        ws_server.listen("127.0.0.1:13012").unwrap();
+        println!("starting ws server on 127.0.0.1:3012...");
+        ws_server.listen("127.0.0.1:3012").unwrap();
     });
     std::thread::spawn(move || {
         for msg in rx_ws {
