@@ -56,24 +56,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "85bb70cc08ec97ca5450e6eba421deeea5f172c0fc61f78b5357b2a8e8be195f"
 
 [[package]]
-name = "app"
-version = "0.1.0"
-dependencies = [
- "aes-ctr",
- "blake2",
- "rand",
- "scrypt",
- "serde",
- "serde-hex",
- "serde_json",
- "stream-cipher",
- "tauri",
- "uuid",
- "winres",
- "ws",
-]
-
-[[package]]
 name = "array-init"
 version = "0.0.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -814,6 +796,24 @@ checksum = "7507624b29483431c0ba2d82aece8ca6cdba9382bff4ddd0f7490560c056098d"
 dependencies = [
  "winapi 0.2.8",
  "winapi-build",
+]
+
+[[package]]
+name = "keypering"
+version = "0.1.0"
+dependencies = [
+ "aes-ctr",
+ "blake2",
+ "rand",
+ "scrypt",
+ "serde",
+ "serde-hex",
+ "serde_json",
+ "stream-cipher",
+ "tauri",
+ "uuid",
+ "winres",
+ "ws",
 ]
 
 [[package]]
@@ -1589,8 +1589,7 @@ dependencies = [
 [[package]]
 name = "tauri"
 version = "0.6.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "97eec4e25610d7e85c66d8e1f1acf878bc81e0c33f8ac18f7b422a67592b7259"
+source = "git+https://github.com/liusong1111/tauri?rev=180d684#180d684ee5f9e424941462a7a2c4b23bc8da3d8b"
 dependencies = [
  "anyhow",
  "base64 0.12.3",
@@ -1615,8 +1614,7 @@ dependencies = [
 [[package]]
 name = "tauri-api"
 version = "0.6.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "54f5ff27ce03b97f655dad0f686184e2521c9c0c1ad86f4e2317a401c6d27f42"
+source = "git+https://github.com/liusong1111/tauri?rev=180d684#180d684ee5f9e424941462a7a2c4b23bc8da3d8b"
 dependencies = [
  "anyhow",
  "attohttpc",
@@ -1662,8 +1660,7 @@ dependencies = [
 [[package]]
 name = "tauri-utils"
 version = "0.5.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3d8a4b0daeec9b0493cf894a918ba30e6768d6cca1cab757f802a9e78bc0bbfd"
+source = "git+https://github.com/liusong1111/tauri?rev=180d684#180d684ee5f9e424941462a7a2c4b23bc8da3d8b"
 dependencies = [
  "anyhow",
  "sysinfo",

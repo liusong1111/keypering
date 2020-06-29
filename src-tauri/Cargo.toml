@@ -1,18 +1,18 @@
 [package]
-name = "app"
+name = "keypering"
 version = "0.1.0"
-description = "A Tauri App"
-authors = [ "you" ]
-license = ""
+description = "a nervos CKB desktop wallet for dApp interaction"
+authors = [ "liusong1111@gmail.com" ]
+license = "MIT"
 repository = ""
-default-run = "app"
+default-run = "keypering"
 edition = "2018"
 build = "src/build.rs"
 
 [dependencies]
 serde_json = "1.0"
 serde = { version = "1.0", features = [ "derive" ] }
-tauri = { version = "0.6", features = [ "edge" ] }
+tauri = { git = "https://github.com/liusong1111/tauri", rev = "180d684", features = [ "edge" ] }
 ws = "0.9.1"
 scrypt = "0.3.0"
 rand = "0.7.3"
@@ -30,5 +30,5 @@ embedded-server = [ "tauri/embedded-server" ]
 no-server = [ "tauri/no-server" ]
 
 [[bin]]
-name = "app"
+name = "keypering"
 path = "src/main.rs"
