@@ -1,9 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
+// import { deleteDB } from "idb";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 
+// (async function () {
+//   await deleteDB("keypering");
+// })();
 ReactDOM.render(
   <React.StrictMode>
     <App />

@@ -2,7 +2,7 @@ import React from "react";
 import { format } from "date-fns";
 import styles from "./timestamp.module.scss";
 
-function formatDate(d: string | number | object) {
+export function formatDate(d: string | number | object) {
   if (typeof d === "string") {
     return d;
   }

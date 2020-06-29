@@ -1,4 +1,4 @@
-import { IDBPDatabase, openDB } from "idb";
+import { IDBPDatabase, openDB, deleteDB } from "idb";
 // import "indexeddb-getall-shim";
 // require("indexeddb-getall-shim");
 
@@ -34,6 +34,9 @@ const initDB = async (storage: any) => {
         keyPath: "token",
       });
       db.createObjectStore("current", {
+        keyPath: "id",
+      });
+      db.createObjectStore("transactions", {
         keyPath: "id",
       });
     },
@@ -173,6 +176,27 @@ export default class Storage {
 
   addAuthorization = async (auth: any): Promise<void> => {
     await this.db!.add("authorizations", auth);
+  };
+
+  addTransaction = async (transactionId: string, meta: any, rawTransaction: any): Promise<void> => {
+    const transaction = {
+      id: transactionId,
+      meta,
+      rawTransaction,
+    };
+    const tx = this.db!.transaction("transactions", "readwrite");
+    const { store } = tx;
+    await store.add(transaction);
+    await tx.done;
+  };
+
+  removeTransaction = async (transactionId: any): Promise<void> => {
+    await this.db!.delete("transactions", transactionId);
+  };
+
+  deleteDatabase = async () => {
+    await this.db!.close();
+    await deleteDB("keypering");
   };
 
   static defaultStorage = new Storage();

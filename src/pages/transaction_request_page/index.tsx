@@ -10,6 +10,8 @@ import Storage from "../../services/storage";
 import { WalletManager } from "../../services/wallet";
 import { getLiveCell } from "../../services/rpc";
 import { camelCaseKey } from "../../services/misc";
+import storage from "../../services/storage";
+import { formatDate } from "../../widgets/timestamp";
 
 interface Cell {
   capacity: string;
@@ -132,13 +134,28 @@ class TransactionRequestPage extends React.Component<any, any> {
     const { history } = this.props;
     const { token: wsToken, data } = request;
     const { id, params } = data;
-    const { target, tx, config, meta } = params;
+    const { target, tx, config, token, meta } = params;
+    const { lockHash } = target;
     const manager = WalletManager.getInstance();
     const context = {
-      lockHash: target.lockHash,
+      lockHash,
     };
+    const store = storage.getStorage();
+    const auth = await store.getAuthorization(token);
+    if (!auth) {
+      console.log("no_auth");
+      return;
+    }
+
     const txSigned = await manager.signAndSend(password, context, tx, config);
+    const txMeta = {
+      requestUrl: auth.origin,
+      state: "approved",
+      metaInfo: meta,
+      timestamp: formatDate(new Date().getTime()),
+    };
     console.log("signAndSendOK:", txSigned);
+    await store.addTransaction(id, txMeta, txSigned);
     sendAck(wsToken, {
       id,
       jsonrpc: "2.0",

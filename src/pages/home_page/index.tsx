@@ -255,6 +255,11 @@ class HomePage extends React.Component<any, any> {
     }
   };
 
+  handleTestDeleteDatabase = async () => {
+    const storage = Storage.getStorage();
+    await storage.deleteDatabase();
+  };
+
   handleRevokeAuthorization = async (authToken: string) => {
     const storage = Storage.getStorage();
     await storage.removeAuthorization(authToken);
@@ -346,6 +351,9 @@ class HomePage extends React.Component<any, any> {
           </Button>
           <Button inline size="small" onClick={this.handleTestEncryptKeystore}>
             Test EncryptKeystore
+          </Button>
+          <Button inline size="small" onClick={this.handleTestDeleteDatabase}>
+            Test DeleteDatabase
           </Button>
         </div>
       </Flex>
