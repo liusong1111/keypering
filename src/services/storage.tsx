@@ -194,6 +194,11 @@ export default class Storage {
     await this.db!.delete("transactions", transactionId);
   };
 
+  listTransaction = async (): Promise<any[]> => {
+    const transactions = await getAll(this.db!, "transactions");
+    return transactions;
+  };
+
   deleteDatabase = async () => {
     await this.db!.close();
     await deleteDB("keypering");

@@ -46,10 +46,12 @@ class HomePage extends React.Component<any, any> {
     await manager.loadWallets();
 
     const authorizations = await storage.listAuthorization();
+    const transactions = await storage.listTransaction();
     const wallets = await manager.getWallets();
     this.setState({
       currentWallet,
       authorizations,
+      transactions,
       wallets,
     });
     const { history } = this.props;
@@ -286,6 +288,7 @@ class HomePage extends React.Component<any, any> {
       transactionRequest,
       addresses,
       balance,
+      transactions,
       authorizations,
     } = this.state;
     if (wallets.length <= 0 || !currentWallet) {
@@ -335,7 +338,7 @@ class HomePage extends React.Component<any, any> {
               <AddressList addresses={addresses} />
             </WingBlank>
             <WingBlank key="Transactions" className={styles.transactions}>
-              <TransactionList />
+              <TransactionList transactions={transactions} />
             </WingBlank>
             <WingBlank key="Authorization" className={styles.authorizations}>
               <AuthorizationList authorizations={authorizations} onRevoke={this.handleRevokeAuthorization} />
