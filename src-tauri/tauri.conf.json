@@ -9,7 +9,8 @@
   "tauri": {
     "cli": null,
     "embeddedServer": {
-      "active": true
+      "active": true,
+      "port": "18822"
     },
     "bundle": {
       "active": true,

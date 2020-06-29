@@ -25,20 +25,41 @@ async function getAll(db: any, storeName: string) {
 }
 
 const initDB = async (storage: any) => {
+  // await deleteDB("keypering");
+  // return;
   storage.db = await openDB("keypering", 1, {
     async upgrade(db, oldVersion, newVersion, tx) {
-      db.createObjectStore("wallets", {
-        keyPath: "name",
-      });
-      db.createObjectStore("authorizations", {
-        keyPath: "token",
-      });
-      db.createObjectStore("current", {
-        keyPath: "id",
-      });
-      db.createObjectStore("transactions", {
-        keyPath: "id",
-      });
+      try {
+        db.createObjectStore("wallets", {
+          keyPath: "name",
+        });
+      } catch (e) {
+        console.log("wallets already exists");
+      }
+
+      try {
+        db.createObjectStore("authorizations", {
+          keyPath: "token",
+        });
+      } catch (e) {
+        console.log("authorizations already exists");
+      }
+
+      try {
+        db.createObjectStore("current", {
+          keyPath: "id",
+        });
+      } catch (e) {
+        console.log("current already exists");
+      }
+
+      try {
+        db.createObjectStore("transactions", {
+          keyPath: "id",
+        });
+      } catch (e) {
+        console.log("transactions already exists");
+      }
     },
   });
   storage.readyFn(true);
