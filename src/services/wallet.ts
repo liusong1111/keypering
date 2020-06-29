@@ -1,7 +1,7 @@
 import { ec as EC } from "elliptic";
 import { Buffer } from "buffer";
 import { Config, RawTransaction, scriptToAddress, SignatureAlgorithm, SignContext } from "@keyper/specs";
-import { hexToBytes } from "@nervosnetwork/ckb-sdk-utils";
+import { hexToBytes, scriptToHash } from "@nervosnetwork/ckb-sdk-utils";
 import Storage from "./storage";
 import * as rpc from "./rpc";
 import { decryptKeystore, encryptKeystore } from "./messaging";
@@ -120,21 +120,24 @@ export class WalletManager {
     const ec = new EC("secp256k1");
     const keyPair = ec.keyFromPrivate(_privateKey);
     const privateKey = keyPair.getPrivate();
-    const publicKey = Buffer.from(keyPair.getPublic().encodeCompressed()).toString("hex");
+    const publicKeyPayload = Buffer.from(keyPair.getPublic().encodeCompressed()).toString("hex");
     // const privateKeyBuffer = privateKey.toArrayLike(Buffer);
     // const ks = keystore.encrypt(privateKeyBuffer, password);
     const ks: any = await encryptKeystore(password, `0x${privateKey.toString("hex")}`);
-    ks.publicKey = publicKey;
+    const publicKeys = [{ payload: `0x${publicKeyPayload}`, algorithm: "secp256k1" }];
 
     const storage = Storage.getStorage();
     await storage.addWallet(walletName, {
       ks,
+      publicKeys,
     });
     await storage.setCurrentWalletName(walletName);
 
-    this.container.addPublicKey({
-      payload: `0x${ks.publicKey}`,
-      algorithm: SignatureAlgorithm.secp256k1,
+    publicKeys.forEach((pubKey: any) => {
+      this.container.addPublicKey({
+        payload: pubKey.payload,
+        algorithm: pubKey.algorithm,
+      });
     });
   };
 
@@ -166,16 +169,13 @@ export class WalletManager {
     if (!thePrivateKey) {
       return false;
     }
-    const { publicKey } = currentWallet.ks;
-    // const ec = new EC("secp256k1");
-    // const keyPair = ec.keyFromPrivate(_privateKey);
-    // const privateKey = keyPair.getPrivate();
-    // const publicKey = Buffer.from(keyPair.getPublic().encodeCompressed()).toString("hex");
-
     await storage.removeWallet(currentWallet.name);
-    this.container.removePublicKey({
-      payload: `0x${publicKey}`,
-      algorithm: SignatureAlgorithm.secp256k1,
+
+    currentWallet.publicKeys.forEach((pubKey: any) => {
+      this.container.removePublicKey({
+        payload: pubKey.payload,
+        algorithm: pubKey.algorithm,
+      });
     });
     return true;
   };
@@ -184,9 +184,11 @@ export class WalletManager {
     const storage = Storage.getStorage();
     const wallets = await storage.getWallets();
     wallets.forEach((wallet: any) => {
-      this.container.addPublicKey({
-        payload: `0x${wallet.ks.publicKey}`,
-        algorithm: SignatureAlgorithm.secp256k1,
+      wallet.publicKeys.forEach((pubKey: any) => {
+        this.container.addPublicKey({
+          payload: pubKey.payload,
+          algorithm: pubKey.algorithm,
+        });
       });
     });
   };
@@ -203,22 +205,26 @@ export class WalletManager {
     if (!wallet) {
       return [];
     }
-    const publicKeyPayload = wallet.ks.publicKey;
 
-    const all = await this.container.getAllLockHashesAndMeta();
-    console.log(all);
-    const lockScripts = all.filter((item: any) => item.meta.publicKey.payload === `0x${publicKeyPayload}`);
-    const addresses = lockScripts.map((script: any) => {
-      const address = Object.assign({}, script, {
-        address: scriptToAddress(script.meta.script, { networkPrefix: "ckt", short: true }),
-        type: script.meta.name,
-        lock: script.hash,
+    let scripts: any[] = [];
+    wallet.publicKeys.forEach((pubKey: any) => {
+      // todo: keyper getScripsByPublicKey is a typo
+      scripts = scripts.concat(
+        this.container.getScripsByPublicKey({ payload: pubKey.payload, algorithm: pubKey.algorithm })
+      );
+    });
+    const addresses = scripts.map((script: any) => {
+      const address = {
+        address: scriptToAddress(script, { networkPrefix: "ckt", short: true }),
+        script,
+        // type: script.meta.name,
+        type: "secp256k1",
+        lock: scriptToHash(script),
         freeAmount: "0x0",
         inUseAmount: "0x0",
-      });
+      };
       return address;
     });
-
     return addresses;
   };
 

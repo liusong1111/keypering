@@ -125,7 +125,7 @@ class HomePage extends React.Component<any, any> {
 
     const manager = WalletManager.getInstance();
     const addresses = await manager.loadCurrentWalletAddressList();
-    const cellsPromises = addresses.map((address: any) => indexer.getCells(address.meta.script));
+    const cellsPromises = addresses.map((address: any) => indexer.getCells(address.script));
     // const cellsPromises = addresses.map((address: any) =>
     //   indexer.getCells(addressToScript("ckt1qjr2r35c0f9vhcdgslx2fjwa9tylevr5qka7mfgmscd33wlhfykyhy3gzjh8k5zkkmyd4k58khyvggc2ks2uzrap8gu"))
     // );

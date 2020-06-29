@@ -11,6 +11,7 @@ interface Current {
 interface Wallet {
   name: string;
   ks: any;
+  publicKeys: any[];
 }
 
 async function getAll(db: any, storeName: string) {
