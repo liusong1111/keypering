@@ -7,7 +7,7 @@ import Tag from "../tag";
 
 interface AddressWithAmount {
   address: string;
-  type: string;
+  meta: any;
   freeAmount: string;
   inUseAmount: string;
 }
@@ -32,9 +32,9 @@ interface AddressListProps {
 // };
 
 const AddressList = ({ addresses }: AddressListProps) => {
-  const view = addresses.map(({ address, type, freeAmount, inUseAmount }) => (
+  const view = addresses.map(({ address, meta, freeAmount, inUseAmount }) => (
     <div className={styles.item} key={address}>
-      <Tag>{type}</Tag>
+      <Tag>{meta.name}</Tag>
       <Address className={styles.address} value={address} />
       <Flex>
         <Flex.Item className={styles.freeContainer}>

@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@keyper/container": "^0.0.12",
-    "@keyper/specs": "^0.0.7",
+    "@keyper/container": "^0.1.0",
+    "@keyper/specs": "^0.1.0",
     "@nervosnetwork/ckb-sdk-utils": "^0.32.0",
     "@types/crypto-js": "^3.1.47",
     "@types/node": "^12.0.0",

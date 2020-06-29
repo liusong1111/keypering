@@ -1518,19 +1518,19 @@
     "@types/yargs" "^15.0.0"
     chalk "^3.0.0"
 
-"@keyper/container@^0.0.12":
-  version "0.0.12"
-  resolved "https://registry.npm.taobao.org/@keyper/container/download/@keyper/container-0.0.12.tgz#6a14f6b8389865d9f285756ad93a12e2890b874c"
-  integrity sha1-ahT2uDiYZdnyhXVq2ToS4okLh0w=
+"@keyper/container@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.npm.taobao.org/@keyper/container/download/@keyper/container-0.1.0.tgz#8a071e3bee7b3afe58b5246516d60ee3299233f6"
+  integrity sha1-igceO+57Ov5YtSRlFtYO4ymSM/Y=
   dependencies:
-    "@keyper/specs" "^0.0.7"
+    "@keyper/specs" "^0.1.0"
     "@nervosnetwork/ckb-sdk-core" "0.29.1"
     number-to-bn "1.7.0"
 
-"@keyper/specs@^0.0.7":
-  version "0.0.7"
-  resolved "https://registry.npm.taobao.org/@keyper/specs/download/@keyper/specs-0.0.7.tgz#785d5dda0828637e7590a2afd943327ad26804eb"
-  integrity sha1-eF1d2ggoY351kKKv2UMyetJoBOs=
+"@keyper/specs@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.npm.taobao.org/@keyper/specs/download/@keyper/specs-0.1.0.tgz#13d47a9604c17682e9f93caa22c12da615926f55"
+  integrity sha1-E9R6lgTBdoLp+TyqIsEtphWSb1U=
   dependencies:
     "@types/bech32" "^1.1.2"
     bech32 "^1.1.3"

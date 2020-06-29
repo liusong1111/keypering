@@ -206,24 +206,23 @@ export class WalletManager {
       return [];
     }
 
-    let scripts: any[] = [];
-    wallet.publicKeys.forEach((pubKey: any) => {
-      // todo: keyper getScripsByPublicKey is a typo
-      scripts = scripts.concat(
-        this.container.getScripsByPublicKey({ payload: pubKey.payload, algorithm: pubKey.algorithm })
-      );
-    });
-    const addresses = scripts.map((script: any) => {
-      const address = {
-        address: scriptToAddress(script, { networkPrefix: "ckt", short: true }),
-        script,
-        // type: script.meta.name,
-        type: "secp256k1",
-        lock: scriptToHash(script),
-        freeAmount: "0x0",
-        inUseAmount: "0x0",
-      };
-      return address;
+    const scriptMetaPromises = wallet.publicKeys.map(async (pubKey: any) =>
+      this.container.getLockHashesAndMetaByPublicKey({
+        payload: pubKey.payload,
+        algorithm: pubKey.algorithm,
+      })
+    );
+    const scriptMetaList = await Promise.all(scriptMetaPromises);
+    const addresses: any[] = [];
+    scriptMetaList.forEach((scriptMetas: any) => {
+      scriptMetas.forEach((script: any) => {
+        const addr = Object.assign({}, script, {
+          address: scriptToAddress(script.meta.script, { networkPrefix: "ckt", short: true }),
+          freeAmount: "0x0",
+          inUseAmount: "0x0",
+        });
+        addresses.push(addr);
+      });
     });
     return addresses;
   };
