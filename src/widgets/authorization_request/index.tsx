@@ -20,6 +20,13 @@ class AuthorizationRequest extends React.Component<any, any> {
 
   render() {
     const { origin, description, history, handleApprove, handleDecline } = this.props;
+    let domain = "unknown";
+    try {
+      domain = new URL(origin).hostname;
+    } catch (e) {
+      console.log("illegal origin:", origin);
+    }
+
     return (
       <div>
         <NavBar icon={<Icon type="left" />} onLeftClick={() => history.goBack()}>
@@ -36,7 +43,7 @@ class AuthorizationRequest extends React.Component<any, any> {
             Description: {description}
           </List.Item>
           <List.Item>
-            You are going to share the following information to <span className={styles.domain}>demo-app.com</span>
+            You are going to share the following information to <span className={styles.domain}>{domain}</span>
           </List.Item>
           <List.Item>
             <Checkbox defaultChecked>Address, balance and related cells on CKB *</Checkbox>
