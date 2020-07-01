@@ -13,9 +13,10 @@ import AuthorizationList from "../../widgets/authorization_list";
 import Sidebar from "../../widgets/sidebar";
 import WalletSelector from "../../widgets/wallet_selector";
 import { WalletManager } from "../../services/wallet";
-import * as indexer from "../../services/indexer";
 import Storage from "../../services/storage";
 import { decryptKeystore, encryptKeystore, sendAck } from "../../services/messaging";
+import { getCellsSummary, getLiveCellsByLockHash } from "../../services/rpc";
+import { scriptToHash } from "@nervosnetwork/ckb-sdk-utils";
 
 const tabNames = [
   { title: "Addresses", key: "Addresses" },
@@ -126,12 +127,9 @@ class HomePage extends React.Component<any, any> {
 
     const manager = WalletManager.getInstance();
     const addresses = await manager.loadCurrentWalletAddressList();
-    const cellsPromises = addresses.map((address: any) => indexer.getCells(address.meta.script));
-    // const cellsPromises = addresses.map((address: any) =>
-    //   indexer.getCells(addressToScript("ckt1qjr2r35c0f9vhcdgslx2fjwa9tylevr5qka7mfgmscd33wlhfykyhy3gzjh8k5zkkmyd4k58khyvggc2ks2uzrap8gu"))
-    // );
+    const cellsPromises = addresses.map((address: any) => getLiveCellsByLockHash(scriptToHash(address.meta.script), "0x0", "0x32"));
     const addressCells = await Promise.all(cellsPromises);
-    const addressSummary = addressCells.map((cells: any) => indexer.getSummary(cells));
+    const addressSummary = addressCells.map((response: any) => getCellsSummary(response.result));
     const balance = new BN(0);
     addressCells.forEach((address: any, i) => {
       addresses[i].freeAmount = `0x${addressSummary[i].free.toString(16)}`;

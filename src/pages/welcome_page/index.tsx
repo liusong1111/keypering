@@ -25,7 +25,7 @@ const WelcomePage = () => {
       <div className={styles.statusContainer}>
         <Icon type="check-circle" size="xxs" color="#3cc68a" />
         &nbsp;
-        <span className={styles.status}>Connected (mainnet)</span>
+        <span className={styles.status}>Connected (testnet)</span>
       </div>
     </Page>
   );
