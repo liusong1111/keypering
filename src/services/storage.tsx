@@ -27,42 +27,26 @@ async function getAll(db: any, storeName: string) {
   return result;
 }
 
+function createObjectStore(db:any, storeName:string, keyPath:string) {
+  try {
+    db.createObjectStore(storeName, {
+      keyPath,
+    });
+  } catch(e) {
+    console.log(`objectStore:${storeName} already exists`);
+  }
+}
+
 const initDB = async (storage: any) => {
   // await deleteDB("keypering");
   // return;
-  storage.db = await openDB("keypering", 1, {
+  storage.db = await openDB("keypering", 2, {
     async upgrade(db, oldVersion, newVersion, tx) {
-      try {
-        db.createObjectStore("wallets", {
-          keyPath: "name",
-        });
-      } catch (e) {
-        console.log("wallets already exists");
-      }
-
-      try {
-        db.createObjectStore("authorizations", {
-          keyPath: "token",
-        });
-      } catch (e) {
-        console.log("authorizations already exists");
-      }
-
-      try {
-        db.createObjectStore("current", {
-          keyPath: "id",
-        });
-      } catch (e) {
-        console.log("current already exists");
-      }
-
-      try {
-        db.createObjectStore("transactions", {
-          keyPath: "id",
-        });
-      } catch (e) {
-        console.log("transactions already exists");
-      }
+      createObjectStore(db, "wallets", "name");
+      createObjectStore(db, "authorizations", "token");
+      createObjectStore(db, "transactions", "id");
+      createObjectStore(db, "settings", "id");
+      createObjectStore(db, "current", "id");
     },
   });
   storage.readyFn(true);
@@ -103,6 +87,33 @@ export default class Storage {
       await store.add(current);
     } else {
       await store.put(current);
+    }
+    await tx.done;
+  };
+
+  getSetting = async () => {
+    const setting = await this.db!.transaction("settings").store.get(1);
+    if (!setting) {
+      return {
+        plugins: {
+          "secp256k1":true,
+          "anypay": true,
+        },
+        net: "testnet"
+      };
+    }
+
+    return setting;
+  };
+
+  setSetting = async (setting: any) => {
+    const tx = this.db!.transaction("settings", "readwrite");
+    const { store } = tx;
+    if(!setting.id) {
+      setting.id = 1;
+      await store.add(setting);
+    } else {
+      await store.put(setting);
     }
     await tx.done;
   };
