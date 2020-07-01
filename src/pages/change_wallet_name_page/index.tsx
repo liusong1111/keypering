@@ -1,6 +1,8 @@
 import React from "react";
-import { Button, Icon, InputItem, List, NavBar } from "antd-mobile";
+import {Button, Icon, InputItem, List, NavBar, Toast} from "antd-mobile";
 import styles from "./change_wallet_name.module.scss";
+import Storage from "../../services/storage";
+import {withRouter} from "react-router";
 
 interface ChangeWalletNameProps {
   // initialWalletName: string;
@@ -17,13 +19,23 @@ class ChangeWalletNamePage extends React.Component<any, any> {
     };
   }
 
-  handleConfirm = () => {
-    // const { onChangeWallet } = this.props;
+  handleConfirm = async () => {
+    const { history } = this.props;
     const { newName } = this.state;
     if (!newName) {
-      alert("Wallet name should not be empty");
+      Toast.fail("Wallet name should not be empty");
+      return;
     }
-    // onChangeWallet(newName);
+
+    const store = Storage.getStorage();
+    const wallet = await store.getWalletByName(newName);
+    if (wallet) {
+      Toast.fail(`name: ${newName} is in use`);
+      return;
+    }
+    const currentWalletName = await store.getCurrentWalletName();
+    await store.changeWalletName(currentWalletName, newName);
+    history.push("/");
   };
 
   handleInputChange = (value: string) => {
@@ -55,4 +67,4 @@ class ChangeWalletNamePage extends React.Component<any, any> {
   }
 }
 
-export default ChangeWalletNamePage;
+export default withRouter(ChangeWalletNamePage);

@@ -169,6 +169,16 @@ export default class Storage {
     }
   };
 
+  changeWalletName = async (oldWalletName: string, newWalletName: string) => {
+    const wallet = await this.getWalletByName(oldWalletName);
+    if (!wallet) {
+      return;
+    }
+    await this.addWallet(newWalletName, wallet);
+    await this.removeWallet(oldWalletName);
+    await this.setCurrentWalletName(newWalletName);
+  };
+
   setCurrentRequest = async (request: any) => {
     const current = await this.getCurrent();
     current.currentRequest = request;
