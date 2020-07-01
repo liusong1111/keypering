@@ -1,4 +1,7 @@
 import { IDBPDatabase, openDB, deleteDB } from "idb";
+import {decryptKeystore, encryptKeystore} from "./messaging";
+import {ec as EC} from "elliptic";
+import {Buffer} from "buffer";
 // import "indexeddb-getall-shim";
 // require("indexeddb-getall-shim");
 
@@ -177,6 +180,30 @@ export default class Storage {
     await this.addWallet(newWalletName, wallet);
     await this.removeWallet(oldWalletName);
     await this.setCurrentWalletName(newWalletName);
+  };
+
+  changeWalletPassword = async (walletName: string, oldPassword: string, newPassword: string) => {
+    const wallet = await this.getWalletByName(walletName);
+    if (!wallet) {
+      return;
+    }
+    const { ks, publicKeys } = wallet;
+
+    let privateKey;
+    try {
+      privateKey = await decryptKeystore(oldPassword, wallet.ks);
+    } catch(e) {
+      throw e;
+    }
+
+    const newKs = await encryptKeystore(newPassword, privateKey);
+    const tx = this.db!.transaction("wallets", "readwrite");
+    const { store } = tx;
+    store.put({
+      name: walletName,
+      ks: newKs,
+      publicKeys,
+    });
   };
 
   setCurrentRequest = async (request: any) => {

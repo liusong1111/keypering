@@ -56,7 +56,7 @@ function initializeContainer() {
             throw new Error(`no ks for address: ${context.address}`);
           }
           let privateKey: any = await decryptKeystore(context.password, ks);
-          privateKey = privateKey.privateKey.replace("0x", "");
+          privateKey = privateKey.replace("0x", "");
           // const privateKey = keystore.decrypt(ks, context.password);
           const ec = new EC("secp256k1");
           const keypair = ec.keyFromPrivate(privateKey);
@@ -150,8 +150,7 @@ export class WalletManager {
     let privateKey: string;
     try {
       // privateKey = keystore.decrypt(currentWallet.ks, password);
-      const pk: any = await decryptKeystore(password, currentWallet.ks);
-      privateKey = pk.privateKey;
+      privateKey = await decryptKeystore(password, currentWallet.ks);
     } catch (e) {
       console.log(e);
       return null;

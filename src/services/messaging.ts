@@ -38,9 +38,10 @@ export function encryptKeystore(password: string, privateKey: string) {
   });
 }
 
-export function decryptKeystore(password: string, ks: any) {
-  return promisified("decryptKeystore", {
+export async function decryptKeystore(password: string, ks: any): Promise<string> {
+  const result = await promisified("decryptKeystore", {
     password,
     ks,
-  });
+  }) as any;
+  return result.privateKey as string;
 }

@@ -1,9 +1,64 @@
 import React from "react";
-import { Button, Icon, InputItem, List, NavBar } from "antd-mobile";
+import { Button, Icon, InputItem, List, NavBar, Toast } from "antd-mobile";
 import { useHistory, withRouter } from "react-router";
 import styles from "./change_password.module.scss";
+import Storage from "../../services/storage";
 
 class ChangePasswordPage extends React.Component<any, any> {
+  constructor(props: any) {
+    super(props);
+    this.state = {
+      oldPassword: "",
+      newPassword: "",
+      newPassword1: "",
+    }
+  }
+  handleConfirm = async () => {
+    const { history } = this.props;
+    const { oldPassword, newPassword, newPassword1 } = this.state;
+    if (!oldPassword) {
+      Toast.fail("Enter current password please");
+      return;
+    }
+
+    if(!newPassword || !newPassword1) {
+      Toast.fail("Enter new password please");
+      return;
+    }
+
+    if(newPassword !== newPassword1) {
+      Toast.fail("New password does not match each other");
+      return;
+    }
+
+    const store = Storage.getStorage();
+    const currentWalletName = await store.getCurrentWalletName();
+    try {
+      await store.changeWalletPassword(currentWalletName, oldPassword, newPassword);
+      history.push("/");
+    } catch(e) {
+      Toast.fail("Wrong password");
+    }
+  };
+
+  handleInputOldPassword = (oldPassword: string) => {
+    this.setState({
+      oldPassword,
+    });
+  };
+
+  handleInputNewPassword = (newPassword: string) => {
+    this.setState({
+      newPassword,
+    })
+  };
+
+  handleInputNewPassword1 = (newPassword1: string) => {
+    this.setState({
+      newPassword1,
+    })
+  };
+
   render() {
     const { history } = this.props;
     return (
@@ -13,12 +68,12 @@ class ChangePasswordPage extends React.Component<any, any> {
         </NavBar>
         <List>
           <List.Item>
-            <InputItem labelNumber={20}>Current Password</InputItem>
-            <InputItem labelNumber={20}>New Password</InputItem>
-            <InputItem labelNumber={20}>Confirm Password</InputItem>
+            <InputItem labelNumber={20} type="password" onChange={this.handleInputOldPassword}>Current Password</InputItem>
+            <InputItem labelNumber={20} type="password" onChange={this.handleInputNewPassword}>New Password</InputItem>
+            <InputItem labelNumber={20} type="password" onChange={this.handleInputNewPassword1}>Confirm Password</InputItem>
           </List.Item>
           <List.Item>
-            <Button type="primary">Confirm</Button>
+            <Button type="primary" onClick={this.handleConfirm}>Confirm</Button>
           </List.Item>
         </List>
       </div>
