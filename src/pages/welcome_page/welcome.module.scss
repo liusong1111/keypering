@@ -15,7 +15,12 @@
 .logo {
   width: 119px;
   align-self: center;
-  margin-top: 30%;
+  margin-top: 15%;
+}
+
+.importButton {
+  background-color: #4544bf;
+  color: #fff;
 }
 
 .words {
@@ -33,6 +38,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  padding: 0px 10%;
 }
 
 .statusContainer {

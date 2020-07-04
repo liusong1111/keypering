@@ -1,16 +1,28 @@
 import React from "react";
 import { Button, Flex, Icon, WhiteSpace, WingBlank } from "antd-mobile";
 import { useHistory } from "react-router";
+import { open } from "tauri/api/dialog";
+import { readTextFile } from "../../services/messaging";
 import styles from "./welcome.module.scss";
 import Page from "../../widgets/page";
+import Storage from "../../services/storage";
+
 
 const WelcomePage = () => {
   const history = useHistory();
+  const handleImportFromKeystore = async () => {
+    const path = await open({});
+    const content = await readTextFile(path as string);
+    console.log(content);
+    const store = Storage.getStorage();
+    await store.setCurrentRequest(content);
+    history.push("/import_keystore");
+  };
   return (
     <Page>
       <div className={styles.info}>
         <img src="logo.png" alt="logo" className={styles.logo} />
-        <div className={styles.words}>Welcome to Keypering</div>
+        <div className={styles.words}>Welcome to<br /> Keypering</div>
       </div>
 
       <WingBlank size="lg" className={styles.ops}>
@@ -18,9 +30,9 @@ const WelcomePage = () => {
           Create a Wallet
         </Button>
         <WhiteSpace size="xl" />
-        <Button onClick={() => history.push("/import_wallet")}>Import Wallet Seed</Button>
+        <Button className={styles.importButton} onClick={() => history.push("/import_wallet")}>Import Wallet Seed</Button>
         <WhiteSpace size="xl" />
-        <Button>Import from Keystore</Button>
+        <Button className={styles.importButton} onClick={handleImportFromKeystore}>Import from Keystore</Button>
       </WingBlank>
       <div className={styles.statusContainer}>
         <Icon type="check-circle" size="xxs" color="#3cc68a" />
