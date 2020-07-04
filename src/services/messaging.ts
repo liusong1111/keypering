@@ -1,6 +1,6 @@
 export function sendAck(token: any, msg: any) {
-  const { tauri } = window as any;
-  tauri.invoke({
+  const { __TAURI__ } = window as any;
+  __TAURI__.invoke({
     cmd: "webSocketResponse",
     token,
     data: JSON.stringify(msg),
@@ -9,7 +9,7 @@ export function sendAck(token: any, msg: any) {
 
 function promisified(method: string, params: any) {
   const win = window as any;
-  const { tauri } = win;
+  const { __TAURI__ } = win;
   const id = new Date().getTime().toString();
   return new Promise((resolve, reject) => {
     win[id] = (response: any) => {
@@ -21,7 +21,7 @@ function promisified(method: string, params: any) {
       }
     };
 
-    tauri.invoke({
+    __TAURI__.invoke({
       cmd: "jsonRpcCommand",
       id,
       jsonrpc: "2.0",
@@ -44,4 +44,12 @@ export async function decryptKeystore(password: string, ks: any): Promise<string
     ks,
   }) as any;
   return result.privateKey as string;
+}
+
+export async function writeTextFile(path: string, content: string) {
+  const result = await promisified("writeTextFile", {
+    path,
+    content,
+  }) as any;
+  return result;
 }

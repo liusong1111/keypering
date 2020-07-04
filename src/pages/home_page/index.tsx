@@ -14,11 +14,11 @@ import Sidebar from "../../widgets/sidebar";
 import WalletSelector from "../../widgets/wallet_selector";
 import { WalletManager } from "../../services/wallet";
 import Storage from "../../services/storage";
-import { decryptKeystore, encryptKeystore, sendAck } from "../../services/messaging";
+import { decryptKeystore, encryptKeystore, sendAck, writeTextFile } from "../../services/messaging";
 import { getCellsSummary, getLiveCellsByLockHash } from "../../services/rpc";
 import { scriptToHash } from "@nervosnetwork/ckb-sdk-utils";
 const tauriApi = require("tauri/api/dialog");
-const { open, save, writeFile } = tauriApi;
+const { open, save } = tauriApi;
 
 const tabNames = [
   { title: "Addresses", key: "Addresses" },
@@ -216,10 +216,7 @@ class HomePage extends React.Component<any, any> {
           const wallet: any = await store.getCurrentWallet();
           console.log("wallet:", wallet);
           const ks= JSON.stringify(wallet.ks, null, 2);
-          writeFile({
-              path: path,
-              contents: ks,
-          }, {});
+          await writeTextFile(path, ks);
           Toast.success("path = " + path);
         } else if (buttonIndex === 3) {
           // console.log("delete wallet");

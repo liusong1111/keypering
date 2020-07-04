@@ -10,7 +10,7 @@ use serde::{Serialize, Deserialize};
 mod cmd;
 mod keystore;
 
-use crate::cmd::{JsonRpcBody, JsonRpcResponse, DecryptKeystoreResponse};
+use crate::cmd::{JsonRpcBody, JsonRpcResponse, DecryptKeystoreResponse, JsonRpcResponseError};
 
 #[derive(Clone)]
 struct WebviewHandle {
@@ -151,6 +151,18 @@ fn main() {
                                     let private_key = keystore::decrypt(&password, &ks);
                                     let private_key = private_key.map(|private_key| DecryptKeystoreResponse { private_key });
                                     let response = JsonRpcResponse::from((id.to_string(), private_key));
+                                    let json = serde_json::to_string_pretty(&response).unwrap();
+                                    webview_handle.resolve_promise(id, &json);
+                                }
+                                JsonRpcBody::WriteTextFile { path, content } => {
+                                    let result = std::fs::write(path, content);
+                                    let r:Result<(), JsonRpcResponseError>;
+                                    if result.is_err() {
+                                        r = Err(JsonRpcResponseError::io_err());
+                                    } else {
+                                        r = Ok(());
+                                    }
+                                    let response = JsonRpcResponse::from((id.to_string(), r));
                                     let json = serde_json::to_string_pretty(&response).unwrap();
                                     webview_handle.resolve_promise(id, &json);
                                 }

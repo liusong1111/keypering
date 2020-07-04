@@ -22,6 +22,10 @@ pub enum JsonRpcBody {
         password: String,
         ks: V1Keystore,
     },
+    WriteTextFile {
+        path: String,
+        content: String,
+    },
 }
 
 #[derive(Serialize, Deserialize)]
@@ -50,6 +54,10 @@ impl JsonRpcResponseError {
             code,
             message,
         }
+    }
+
+    pub fn io_err() -> Self {
+        return Self::new(5001, "IoError".to_owned());
     }
 }
 
