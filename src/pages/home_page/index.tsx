@@ -217,7 +217,7 @@ class HomePage extends React.Component<any, any> {
           console.log("wallet:", wallet);
           const ks= JSON.stringify(wallet.ks, null, 2);
           await writeTextFile(path, ks);
-          Toast.success("path = " + path);
+          Toast.success("Your wallet is exported to " + path);
         } else if (buttonIndex === 3) {
           // console.log("delete wallet");
           history.push("/delete_wallet");
