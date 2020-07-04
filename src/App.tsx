@@ -2,7 +2,8 @@ import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 import "./App.css";
-import "antd-mobile/dist/antd-mobile.css";
+// import "antd-mobile/dist/antd-mobile.css";
+import "./ant.less";
 import WelcomePage from "./pages/welcome_page";
 import SettingPage from "./pages/setting_page";
 import HomePage from "./pages/home_page";
