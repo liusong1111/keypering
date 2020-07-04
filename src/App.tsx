@@ -14,6 +14,7 @@ import AuthorizationRequestPage from "./pages/authorization_request_page";
 import TransactionRequestPage from "./pages/transaction_request_page";
 import ImportWalletPage from "./pages/import_wallet_page";
 import "react-app-polyfill/stable";
+import ImportKeystorePage from "./pages/import_keystore_page";
 // import "indexeddb-getall-shim";
 
 require("typeface-source-code-pro");
@@ -35,6 +36,9 @@ function App() {
           </Route>
           <Route path="/import_wallet">
             <ImportWalletPage />
+          </Route>
+          <Route path="/import_keystore">
+            <ImportKeystorePage />
           </Route>
           <Route path="/change_wallet_name">
             <ChangeWalletNamePage />

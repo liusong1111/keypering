@@ -26,6 +26,9 @@ pub enum JsonRpcBody {
         path: String,
         content: String,
     },
+    ReadTextFile {
+        path: String,
+    },
 }
 
 #[derive(Serialize, Deserialize)]

@@ -53,3 +53,10 @@ export async function writeTextFile(path: string, content: string) {
   }) as any;
   return result;
 }
+
+export async function readTextFile(path: string) {
+  const result = await promisified("readTextFile", {
+    path,
+  }) as any;
+  return result;
+}

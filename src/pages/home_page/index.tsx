@@ -14,7 +14,7 @@ import Sidebar from "../../widgets/sidebar";
 import WalletSelector from "../../widgets/wallet_selector";
 import { WalletManager } from "../../services/wallet";
 import Storage from "../../services/storage";
-import { decryptKeystore, encryptKeystore, sendAck, writeTextFile } from "../../services/messaging";
+import { decryptKeystore, encryptKeystore, sendAck, writeTextFile, readTextFile } from "../../services/messaging";
 import { getCellsSummary, getLiveCellsByLockHash } from "../../services/rpc";
 import { scriptToHash } from "@nervosnetwork/ckb-sdk-utils";
 const tauriApi = require("tauri/api/dialog");
@@ -163,6 +163,16 @@ class HomePage extends React.Component<any, any> {
       walletSelectorOpen: false,
       transactionRequest: undefined,
     });
+  };
+
+  handleImportFromKeystore = async () => {
+    const { history } = this.props;
+    const path = await open({});
+    const content = await readTextFile(path);
+    console.log(content);
+    const store = Storage.getStorage();
+    await store.setCurrentRequest(content);
+    history.push("/import_keystore");
   };
 
   handleDrawerOpenChange = () => {
@@ -335,7 +345,7 @@ class HomePage extends React.Component<any, any> {
         )}
         <Drawer
           className={styles.drawer}
-          sidebar={<Sidebar onClose={this.handleCloseDrawer} />}
+          sidebar={<Sidebar onClose={this.handleCloseDrawer} onImportFromKeystore={this.handleImportFromKeystore} />}
           open={drawerOpen}
           onOpenChange={this.handleDrawerOpenChange}
         />

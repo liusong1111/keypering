@@ -5,9 +5,10 @@ import styles from "./sidebar.module.scss";
 
 interface SidebarProps {
   onClose: any;
+  onImportFromKeystore: any;
 }
 
-const Sidebar = ({ onClose }: SidebarProps) => {
+const Sidebar = ({ onClose, onImportFromKeystore }: SidebarProps) => {
   return (
     <div className={styles.sidebar}>
       <NavBar leftContent={<span>Keypering</span>} rightContent={<Icon type="cross" onClick={onClose} />} />
@@ -22,7 +23,7 @@ const Sidebar = ({ onClose }: SidebarProps) => {
             Import from mnemonic
           </Link>
         </List.Item>
-        <List.Item arrow="horizontal">Import from keystore</List.Item>
+        <List.Item arrow="horizontal" onClick={onImportFromKeystore}>Import from keystore</List.Item>
       </List>
       <List renderHeader={<span>Setting</span>} className={styles.list}>
         <List.Item arrow="horizontal">
