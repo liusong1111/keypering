@@ -5,6 +5,7 @@ import EnterMnemonic from "../../widgets/enter_mnemonic";
 import SetWalletNameAndPassword from "../../widgets/set_wallet_name_and_password";
 import * as wallet from "../../services/wallet";
 import { WalletManager } from "../../services/wallet";
+import {Toast} from "antd-mobile";
 
 class ImportWalletPage extends React.Component<any, any> {
   constructor(props: any) {
@@ -50,10 +51,14 @@ class ImportWalletPage extends React.Component<any, any> {
     const { history } = this.props;
     let privateKey = null;
     try {
-      utils.hexToBytes(`0x${mnemonic}`);
-      privateKey = mnemonic;
-    } catch (e) {
       privateKey = wallet.mnemonicToEntropy(mnemonic);
+    } catch (e) {
+      if(/^[0-9a-f]+$/ig.test(mnemonic)) {
+        privateKey = mnemonic;
+      } else {
+        Toast.fail("Wrong mnemonic, please check it");
+        return;
+      }
     }
     const manager = WalletManager.getInstance();
     await manager.createWallet(walletName, privateKey, password);
