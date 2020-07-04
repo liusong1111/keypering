@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { Button, NavBar, Tabs, Drawer, Icon, Flex, WhiteSpace, ActionSheet, WingBlank } from "antd-mobile";
+import {Button, NavBar, Tabs, Drawer, Icon, Flex, WhiteSpace, ActionSheet, WingBlank, Toast} from "antd-mobile";
 import { withRouter } from "react-router";
 import { Settings as SettingsIcon, Menu as MenuIcon } from "react-feather";
 import { addressToScript } from "@keyper/specs";
@@ -17,6 +17,8 @@ import Storage from "../../services/storage";
 import { decryptKeystore, encryptKeystore, sendAck } from "../../services/messaging";
 import { getCellsSummary, getLiveCellsByLockHash } from "../../services/rpc";
 import { scriptToHash } from "@nervosnetwork/ckb-sdk-utils";
+const tauriApi = require("tauri/api/dialog");
+const { open, save, writeFile } = tauriApi;
 
 const tabNames = [
   { title: "Addresses", key: "Addresses" },
@@ -197,7 +199,7 @@ class HomePage extends React.Component<any, any> {
         destructiveButtonIndex: BUTTONS.length - 1,
         message: `${currentWallet.name} Setting`,
       },
-      (buttonIndex) => {
+      async (buttonIndex) => {
         if (buttonIndex === 0) {
           // console.log("change wallet name");
           history.push("/change_wallet_name");
@@ -206,6 +208,19 @@ class HomePage extends React.Component<any, any> {
           history.push("/change_password");
         } else if (buttonIndex === 2) {
           // console.log("backup wallet");
+          const path = await save({});
+          if(!path) {
+            return;
+          }
+          const store = Storage.getStorage();
+          const wallet: any = await store.getCurrentWallet();
+          console.log("wallet:", wallet);
+          const ks= JSON.stringify(wallet.ks, null, 2);
+          writeFile({
+              path: path,
+              contents: ks,
+          }, {});
+          Toast.success("path = " + path);
         } else if (buttonIndex === 3) {
           // console.log("delete wallet");
           history.push("/delete_wallet");
@@ -255,8 +270,11 @@ class HomePage extends React.Component<any, any> {
   };
 
   handleTestDeleteDatabase = async () => {
-    const storage = Storage.getStorage();
-    await storage.deleteDatabase();
+    // const path = await open({});
+    const path = await save({filter:"ks"});
+    Toast.success("path=" + path);
+    // const storage = Storage.getStorage();
+    // await storage.deleteDatabase();
   };
 
   handleRevokeAuthorization = async (authToken: string) => {

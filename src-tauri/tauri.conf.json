@@ -41,7 +41,7 @@
       "exceptionDomain": ""
     },
     "whitelist": {
-      "all": false
+      "all": true
     },
     "window": {
       "title": "Keypering",
