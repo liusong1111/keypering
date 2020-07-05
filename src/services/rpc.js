@@ -3,8 +3,22 @@
 // import snakecaseKeys from "snakecase-keys";
 import { snakeCaseKeyValue } from "./misc";
 import BN from "bn.js";
+import Storage from "./storage";
 
 async function callRpc(method, params) {
+  const store = Storage.getStorage();
+  const setting = await store.getSetting();
+  const net = setting.net;
+  let endpoint;
+  if (net === "testnet") {
+    endpoint = "https://prototype.ckbapp.dev/testnet/rpc";
+  } else if(net === "mainnet") {
+    // todo
+    endpoint = "https://prototype.ckbapp.dev/testnet/rpc";
+  } else {
+    // todo
+    endpoint = "https://prototype.ckbapp.dev/testnet/rpc";
+  }
   const id = new Date().getTime();
   const requestBody = JSON.stringify(
     {
@@ -13,11 +27,11 @@ async function callRpc(method, params) {
       method,
       params,
     },
-    "  ",
+    null,
     2
   );
   console.log("requestBody:", requestBody);
-  const response = await fetch("https://prototype.ckbapp.dev/testnet/rpc", {
+  const response = await fetch(endpoint, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

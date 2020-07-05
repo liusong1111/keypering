@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { Button, Flex, Icon, WhiteSpace, WingBlank } from "antd-mobile";
 import { useHistory } from "react-router";
 import { open } from "tauri/api/dialog";
@@ -10,6 +10,14 @@ import Storage from "../../services/storage";
 
 const WelcomePage = () => {
   const history = useHistory();
+  let [net, setNet] = useState("testnet");
+  useEffect(() => {
+    const store = Storage.getStorage();
+    (async () => {
+      const setting = await store.getSetting();
+      setNet(setting.net);
+    })();
+  }, []);
   const handleImportFromKeystore = async () => {
     const path = await open({});
     const content = await readTextFile(path as string);
@@ -37,7 +45,7 @@ const WelcomePage = () => {
       <div className={styles.statusContainer}>
         <Icon type="check-circle" size="xxs" color="#3cc68a" />
         &nbsp;
-        <span className={styles.status}>Connected (testnet)</span>
+        <span className={styles.status}>Connected ({net})</span>
       </div>
     </Page>
   );
