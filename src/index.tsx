@@ -4,16 +4,22 @@ import "./index.css";
 // import { deleteDB } from "idb";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
+import Storage from "./services/storage";
 
 // (async function () {
 //   await deleteDB("keypering");
 // })();
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById("root")
-);
+
+const store = Storage.getStorage();
+Storage.initDB(store).then(() => {
+  ReactDOM.render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>,
+    document.getElementById("root")
+  );
+});
+
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

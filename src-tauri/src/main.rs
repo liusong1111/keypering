@@ -170,7 +170,7 @@ fn main() {
                                     let result = std::fs::read_to_string(path);
                                     let r = match result {
                                         Ok(data) => Ok(data),
-                                        Err(e) => Err(JsonRpcResponseError::io_err()),
+                                        Err(_) => Err(JsonRpcResponseError::io_err()),
                                     };
                                     let response = JsonRpcResponse::from((id.to_string(), r));
                                     let json = serde_json::to_string_pretty(&response).unwrap();

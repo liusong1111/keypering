@@ -37,35 +37,27 @@ function createObjectStore(db:any, storeName:string, keyPath:string) {
   }
 }
 
-const initDB = async (storage: any) => {
-  // await deleteDB("keypering");
-  // return;
-  storage.db = await openDB("keypering", 2, {
-    async upgrade(db, oldVersion, newVersion, tx) {
-      createObjectStore(db, "wallets", "name");
-      createObjectStore(db, "authorizations", "token");
-      createObjectStore(db, "transactions", "id");
-      createObjectStore(db, "settings", "id");
-      createObjectStore(db, "current", "id");
-    },
-  });
-  storage.readyFn(true);
-};
 
 export default class Storage {
   constructor() {
     this.db = null;
-    this.ready = new Promise((resolve) => {
-      this.readyFn = resolve;
-    });
-    initDB(this);
   }
 
   db: IDBPDatabase | null = null;
 
-  ready: any = null;
-
-  readyFn: any = null;
+  static initDB = async (storage: any) => {
+    // await deleteDB("keypering");
+    // return;
+    storage.db = await openDB("keypering", 2, {
+      async upgrade(db, oldVersion, newVersion, tx) {
+        createObjectStore(db, "wallets", "name");
+        createObjectStore(db, "authorizations", "token");
+        createObjectStore(db, "transactions", "id");
+        createObjectStore(db, "settings", "id");
+        createObjectStore(db, "current", "id");
+      },
+    });
+  };
 
   getCurrent = async (): Promise<Current> => {
     const current = await this.db?.transaction("current").store.get(1);

@@ -42,7 +42,6 @@ class HomePage extends React.Component<any, any> {
 
   init = async () => {
     const storage = Storage.getStorage();
-    await storage.ready;
     const manager = WalletManager.getInstance();
     const currentWallet = await manager.getCurrentWallet();
     // sth weird...
@@ -67,7 +66,6 @@ class HomePage extends React.Component<any, any> {
     // this.loadCurrentWalletAddressList();
     // this.loadAuthorizationList();
     const storage = Storage.getStorage();
-    await storage.ready;
     const manager = WalletManager.getInstance();
     const currentWalletName = await manager.getCurrentWalletName();
     await this.switchWallet(currentWalletName);
