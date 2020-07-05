@@ -236,52 +236,6 @@ class HomePage extends React.Component<any, any> {
     );
   };
 
-  handleTestRequestSigning = () => {};
-
-  handleTestAuthorizationRequest = async () => {
-    const { history } = this.props;
-    const storage = Storage.getStorage();
-    await storage.setCurrentRequest({
-      token: 0,
-      data: {
-        type: "auth",
-        origin: "http://demodapp.com",
-        description: "it is a demo dApp",
-      },
-    });
-    history.push("/authorization_request");
-  };
-
-  handleTestEncryptKeystore = async () => {
-    const password = "hello";
-    const ec = new EC("secp256k1");
-    const keypair = ec.genKeyPair();
-    const privateKey = `0x${keypair.getPrivate().toString("hex")}`;
-    console.log("before encrypt, privateKey=", privateKey);
-    let ks;
-    try {
-      ks = await encryptKeystore(password, privateKey);
-      console.log("response=", JSON.stringify(ks, null, 2));
-    } catch (e) {
-      console.log("encryptKeystore error=", e);
-      return;
-    }
-    try {
-      const dPrivateKey = await decryptKeystore(password, ks);
-      console.log("after decrypt, privateKey=", dPrivateKey);
-    } catch (e) {
-      console.log("decryptKeystore error=", e);
-    }
-  };
-
-  handleTestDeleteDatabase = async () => {
-    // const path = await open({});
-    const path = await save({filter:"ks"});
-    Toast.success("path=" + path);
-    // const storage = Storage.getStorage();
-    // await storage.deleteDatabase();
-  };
-
   handleRevokeAuthorization = async (authToken: string) => {
     const storage = Storage.getStorage();
     await storage.removeAuthorization(authToken);
@@ -366,18 +320,6 @@ class HomePage extends React.Component<any, any> {
           </Tabs>
         </Flex.Item>
         <div className={styles.testRegion}>
-          <Button inline size="small" onClick={this.handleTestAuthorizationRequest}>
-            Request Auth(test)
-          </Button>
-          <Button inline size="small" onClick={this.handleTestRequestSigning}>
-            Request Signing(test)
-          </Button>
-          <Button inline size="small" onClick={this.handleTestEncryptKeystore}>
-            Test EncryptKeystore
-          </Button>
-          <Button inline size="small" onClick={this.handleTestDeleteDatabase}>
-            Test DeleteDatabase
-          </Button>
         </div>
       </Flex>
     );
