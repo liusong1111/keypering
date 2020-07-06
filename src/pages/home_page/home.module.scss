@@ -1,3 +1,8 @@
+.wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
 .header {
   width: 100%;
   position: relative;
@@ -5,7 +10,7 @@
 }
 .summary {
   padding-top: 50px;
-  padding-bottom: 30px;
+  padding-bottom: 230px;
   text-align: center;
   background-color: #141414;
   color: #fff;
@@ -38,7 +43,17 @@
 
 
 .tabs {
-  width: 100%;
+  width: 97%;
+  flex: 1;
+  border: 1px solid #f0f0f0;
+  border-bottom: none;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  position: relative;
+  top: -200px;
+  background-color: #fff;
+  box-shadow: 0 0 3px #ccc;
+  z-index: 2;
 }
 
 .testRegion {

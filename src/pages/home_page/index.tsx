@@ -293,7 +293,7 @@ class HomePage extends React.Component<any, any> {
       return null;
     }
     return (
-      <Flex direction="column">
+      <Flex direction="column" className={styles.wrap}>
         <div className={styles.header}>
           <NavBar
             className={styles.navbar}
@@ -343,8 +343,6 @@ class HomePage extends React.Component<any, any> {
             </WingBlank>
           </Tabs>
         </Flex.Item>
-        <div className={styles.testRegion}>
-        </div>
       </Flex>
     );
   }
