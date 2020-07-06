@@ -53,7 +53,7 @@ const GenerateMnemonic = ({ mnemonic, onRegenerate, onCancel, onNext }: Generate
 class CreateWalletPage extends React.Component<any, any> {
   constructor(props: any) {
     super(props);
-    const mnemonic = wallet.generateMnemonic(256);
+    const mnemonic = wallet.generateMnemonic(128);
     this.state = {
       step: 0,
       mnemonic,
@@ -62,7 +62,7 @@ class CreateWalletPage extends React.Component<any, any> {
 
   handleRegenerate = () => {
     // console.log("onRegenerate");
-    const mnemonic = wallet.generateMnemonic(256);
+    const mnemonic = wallet.generateMnemonic(128);
     this.setState({
       mnemonic,
     });

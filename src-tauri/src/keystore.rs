@@ -2,7 +2,7 @@ use scrypt::ScryptParams;
 use rand::Rng;
 use uuid::Uuid;
 use serde::{Serialize, Deserialize};
-use serde_hex::{SerHex, StrictPfx};
+use serde_hex::{SerHex, SerHexSeq, StrictPfx};
 use blake2::VarBlake2b;
 use blake2::digest::{Update, VariableOutput};
 
@@ -29,8 +29,8 @@ pub struct KdfPrams {
 pub struct Crypto {
     pub cipher: String,
     pub cipherparams: CipherParams,
-    #[serde(with = "SerHex::<StrictPfx>")]
-    pub ciphertext: [u8; 32],
+    #[serde(with = "SerHexSeq::<StrictPfx>")]
+    pub ciphertext: Vec<u8>,
     pub kdf: String,
     pub kdfparams: KdfPrams,
     #[serde(with = "SerHex::<StrictPfx>")]
@@ -67,7 +67,7 @@ impl Default for V1Keystore {
             crypto: Crypto {
                 cipher: "aes-128-ctr".to_string(),
                 cipherparams: CipherParams { iv },
-                ciphertext: [0u8; 32],
+                ciphertext: Vec::<u8>::with_capacity(32),
                 kdf: "scrypt".to_string(),
                 kdfparams: KdfPrams {
                     salt,
@@ -85,8 +85,8 @@ impl Default for V1Keystore {
 }
 
 
-fn encrypt_or_decrypt(password: &str, private_key: &[u8; 32], is_encrypt: bool, store: &V1Keystore) -> Result<([u8; 32], [u8; 32]), V1KeystoreError> {
-    let mut data = [0u8; 32];
+fn encrypt_or_decrypt(password: &str, private_key: &[u8], is_encrypt: bool, store: &V1Keystore) -> Result<(Vec<u8>, [u8; 32]), V1KeystoreError> {
+    let mut data = Vec::<u8>::with_capacity(32);
     let mut mac = [0u8; 32];
 
     // validate
@@ -120,6 +120,7 @@ fn encrypt_or_decrypt(password: &str, private_key: &[u8; 32], is_encrypt: bool, 
     let key = &derived_key[..16];
     let mut cipher = Aes128Ctr::new(GenericArray::from_slice(key), GenericArray::from_slice(iv));
 
+    data.resize(private_key.len(), 0u8);
     data.copy_from_slice(private_key);
     cipher.apply_keystream(&mut data);
     // println!("data={:?},len={}", data, data.len());
@@ -137,15 +138,16 @@ fn encrypt_or_decrypt(password: &str, private_key: &[u8; 32], is_encrypt: bool, 
     return Ok((data, mac));
 }
 
-pub fn encrypt(password: &str, private_key: &[u8; 32]) -> Result<V1Keystore, V1KeystoreError> {
+pub fn encrypt(password: &str, private_key: &[u8]) -> Result<V1Keystore, V1KeystoreError> {
     let mut store = V1Keystore::default();
     let (data, mac) = encrypt_or_decrypt(password, private_key, true, &store)?;
+    store.crypto.ciphertext.resize(data.len(), 0u8);
     store.crypto.ciphertext.copy_from_slice(&data);
     store.crypto.mac.copy_from_slice(&mac);
     return Ok(store);
 }
 
-pub fn decrypt(password: &str, store: &V1Keystore) -> Result<[u8; 32], V1KeystoreError> {
+pub fn decrypt(password: &str, store: &V1Keystore) -> Result<Vec<u8>, V1KeystoreError> {
     let (data, mac) = encrypt_or_decrypt(password, &store.crypto.ciphertext, false, &store)?;
     if mac != store.crypto.mac {
         return Err(V1KeystoreError::InvalidMac);

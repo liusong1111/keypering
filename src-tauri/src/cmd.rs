@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use serde_hex::{SerHex, StrictPfx};
+use serde_hex::{SerHexSeq, StrictPfx};
 use crate::keystore::{V1Keystore, V1KeystoreError};
 
 #[derive(Deserialize)]
@@ -15,8 +15,9 @@ pub struct JsonRpcRequest {
 pub enum JsonRpcBody {
     EncryptKeystore {
         password: String,
-        #[serde(with = "SerHex::<StrictPfx>", rename = "privateKey")]
-        private_key: [u8; 32],
+        #[serde(with = "SerHexSeq::<StrictPfx>", rename = "privateKey")]
+        private_key: Vec<u8>,
+        // private_key: [u8; 32],
     },
     DecryptKeystore {
         password: String,
@@ -47,8 +48,9 @@ pub struct JsonRpcResponse<T> where T: Serialize {
 
 #[derive(Serialize, Deserialize)]
 pub struct DecryptKeystoreResponse {
-    #[serde(with = "SerHex::<StrictPfx>", rename = "privateKey")]
-    pub private_key: [u8; 32],
+    #[serde(with = "SerHexSeq::<StrictPfx>", rename = "privateKey")]
+    pub private_key: Vec<u8>,
+    // pub private_key: [u8; 32],
 }
 
 impl JsonRpcResponseError {
