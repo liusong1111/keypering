@@ -12,26 +12,32 @@ const Sidebar = ({ onClose, onImportFromKeystore }: SidebarProps) => {
   return (
     <div className={styles.sidebar}>
       <NavBar leftContent={<span>Keypering</span>} rightContent={<Icon type="cross" onClick={onClose} />} />
-      <List renderHeader={<span>Wallet</span>} className={styles.list}>
-        <List.Item arrow="horizontal">
-          <Link to="/create_wallet" className={styles.link}>
-            Create new wallet
-          </Link>
-        </List.Item>
-        <List.Item arrow="horizontal">
-          <Link to="/import_wallet" className={styles.link}>
-            Import from mnemonic
-          </Link>
-        </List.Item>
-        <List.Item arrow="horizontal" onClick={onImportFromKeystore}>Import from keystore</List.Item>
-      </List>
-      <List renderHeader={<span>Setting</span>} className={styles.list}>
-        <List.Item arrow="horizontal">
-          <Link to="/setting" className={styles.link}>
-            Setting
-          </Link>
-        </List.Item>
-      </List>
+      <div className={styles.group}>
+        Wallet
+      </div>
+      <div className={styles.listItem}>
+        <Link to="/create_wallet" className={styles.link}>
+          Create new wallet
+        </Link>
+      </div>
+      <div className={styles.listItem}>
+        <Link to="/import_wallet" className={styles.link}>
+          Import from mnemonic
+        </Link>
+      </div>
+      <div className={styles.listItem}>
+        <Link to="/import_keystore" className={styles.link} onClick={onImportFromKeystore}>
+          Import from keystore
+        </Link>
+      </div>
+      <div className={styles.group}>
+        Setting
+      </div>
+      <div className={styles.listItem}>
+        <Link to="/setting" className={styles.link}>
+          Setting
+        </Link>
+      </div>
     </div>
   );
 };

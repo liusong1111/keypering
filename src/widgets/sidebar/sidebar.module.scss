@@ -1,17 +1,29 @@
 .sidebar {
-  background-color: #fff;
+  background-color: #1b1b1b;
+  color: #fff;
   height: 100%;
-  width: 100%;
+  width: 500px;
   flex: 1;
   display: flex;
   flex-direction: column;
 }
 
-.list {
-  flex-basis: initial;
+.link, .link:visited {
+  background-color: #1b1b1b;
+  color: #fff;
+  display: block;
+  padding: 16px 32px;
+  font-size: 16px;
 }
 
-.link, .link:visited {
-  color: #000;
-  display: block;
+.group {
+  color: #888;
+  padding: 16px;
+  margin: 0 16px;
+  border-bottom: 1px solid #666;
 }
+
+.listItem {
+
+}
+

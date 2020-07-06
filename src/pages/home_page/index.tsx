@@ -187,7 +187,8 @@ class HomePage extends React.Component<any, any> {
     });
   };
 
-  handleImportFromKeystore = async () => {
+  handleImportFromKeystore = async (e: any) => {
+    e.preventDefault();
     const { history } = this.props;
     const path = await open({});
     const content = await readTextFile(path);
