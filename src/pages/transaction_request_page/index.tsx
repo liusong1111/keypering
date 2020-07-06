@@ -93,11 +93,10 @@ class TransactionRequestPage extends React.Component<any, any> {
     const inputs = await Promise.all(
       rawInputs.map(async (input: any) => {
         console.log("input:", input);
-        const response = await getLiveCell([
+        const { cell: rawCell } = await getLiveCell([
           { tx_hash: input.previousOutput.txHash, index: input.previousOutput.index },
           true,
         ]);
-        const { cell: rawCell } = response.result;
         const cell = camelCaseKey(rawCell);
         return cell;
       })

@@ -40,7 +40,10 @@ async function callRpc(method, params) {
     body: requestBody,
   });
   const json = await response.json();
-  return json;
+  if (json.error) {
+    throw json.error;
+  }
+  return json.result;
 }
 
 export async function sendTransaction(theSignedTx) {
@@ -54,7 +57,8 @@ export async function sendTransaction(theSignedTx) {
   // }
 }
 
-export async function getLiveCell(params) {
+export async function getLiveCell(out_point, with_data) {
+  const params = [out_point, with_data];
   const json = await callRpc("get_live_cell", params);
   return json;
 }

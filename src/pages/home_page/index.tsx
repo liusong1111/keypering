@@ -15,7 +15,7 @@ import WalletSelector from "../../widgets/wallet_selector";
 import { WalletManager } from "../../services/wallet";
 import Storage from "../../services/storage";
 import { decryptKeystore, encryptKeystore, sendAck, writeTextFile, readTextFile } from "../../services/messaging";
-import { getCellsSummary, getLiveCellsByLockHash } from "../../services/rpc";
+import {getCellsSummary, getLiveCell, getLiveCellsByLockHash} from "../../services/rpc";
 import { scriptToHash } from "@nervosnetwork/ckb-sdk-utils";
 const tauriApi = require("tauri/api/dialog");
 const { open, save } = tauriApi;
@@ -77,6 +77,7 @@ class HomePage extends React.Component<any, any> {
   }
 
   handleWsEvent = async (msg: any) => {
+    const { addresses } = this.state;
     const storage = Storage.getStorage();
     const { detail } = msg;
     console.log(detail);
@@ -102,7 +103,30 @@ class HomePage extends React.Component<any, any> {
         return;
       }
 
-      if (method === "query_locks") {
+      if (method === "query_addresses") {
+        sendAck(wsToken, {
+          id,
+          jsonrpc: "2.0",
+          result: {
+            addresses,
+          }
+        })
+      } else if(method === "query_live_cells") {
+        const { lockHash } = params;
+        const liveCells = await getLiveCellsByLockHash(lockHash, "0x0", "0x32");
+        await Promise.all(liveCells.map(async (cell: any) => {
+          const cellWithData = await getLiveCell({tx_hash: cell.created_by.tx_hash, index: cell.created_by.index}, true);
+          cell.data = cellWithData.cell.data;
+        }));
+        sendAck(wsToken, {
+          id,
+          jsonrpc: "2.0",
+          result: {
+            liveCells,
+          }
+        });
+      }
+      else if (method === "query_locks") {
         const manager = WalletManager.getInstance();
         const addresses = await manager.loadCurrentWalletAddressList();
         const locks = addresses.map((addr: any) => addr.hash);
@@ -129,7 +153,7 @@ class HomePage extends React.Component<any, any> {
     const addresses = await manager.loadCurrentWalletAddressList();
     const cellsPromises = addresses.map((address: any) => getLiveCellsByLockHash(scriptToHash(address.meta.script), "0x0", "0x32"));
     const addressCells = await Promise.all(cellsPromises);
-    const addressSummary = addressCells.map((response: any) => getCellsSummary(response.result));
+    const addressSummary = addressCells.map((cells: any) => getCellsSummary(cells));
     const balance = new BN(0);
     addressCells.forEach((address: any, i) => {
       addresses[i].freeAmount = `0x${addressSummary[i].free.toString(16)}`;
