@@ -213,6 +213,12 @@ class HomePage extends React.Component<any, any> {
     });
   };
 
+  handleCloseWallet = () => {
+    this.setState({
+      walletSelectorOpen: false,
+    });
+  };
+
   handleSelectWallet = async (e: any) => {
     console.log(e);
     const walletName = e[0];
@@ -318,7 +324,7 @@ class HomePage extends React.Component<any, any> {
           </div>
         </div>
         {walletSelectorOpen && (
-          <WalletSelector wallets={wallets} currentWallet={currentWallet} onSelect={this.handleSelectWallet} />
+          <WalletSelector wallets={wallets} currentWallet={currentWallet} onSelect={this.handleSelectWallet} onClose={this.handleCloseWallet} />
         )}
         <Drawer
           className={styles.drawer}

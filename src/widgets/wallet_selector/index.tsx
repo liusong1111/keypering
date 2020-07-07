@@ -9,9 +9,10 @@ interface WalletSelectorProps {
   wallets: Wallet[];
   currentWallet: Wallet;
   onSelect: any;
+  onClose: any;
 }
 
-const WalletSelector = ({ wallets, currentWallet, onSelect }: WalletSelectorProps) => {
+const WalletSelector = ({ wallets, currentWallet, onSelect, onClose }: WalletSelectorProps) => {
   const data = wallets.map((w) => ({
     label: w.name,
     value: w.name,
@@ -19,7 +20,7 @@ const WalletSelector = ({ wallets, currentWallet, onSelect }: WalletSelectorProp
   return (
     <div className={styles.container}>
       <Menu data={data} level={1} value={[currentWallet.name]} className={styles.menu} onChange={onSelect} />
-      <div className={styles.mask} />
+      <div className={styles.mask} onClick={onClose} />
     </div>
   );
 };
