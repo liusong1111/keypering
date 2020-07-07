@@ -16,7 +16,7 @@ const Sidebar = ({ onClose, onImportFromKeystore }: SidebarProps) => {
         Wallet
       </div>
       <div className={styles.listItem}>
-        <Link to="/create_wallet" className={styles.link}>
+        <Link to="/create_wallet" className={styles.linkPrimary}>
           Create new wallet
         </Link>
       </div>
