@@ -1,6 +1,7 @@
 import React, { createRef } from "react";
 import { Button, Card, TextareaItem, Toast, WhiteSpace } from "antd-mobile";
 import styles from "./enter_mnemonic.module.scss";
+import commonStyles from "../common.module.scss";
 
 interface EnterMnemonicProps {
   onBack: any;
@@ -48,10 +49,9 @@ class EnterMnemonic extends React.Component<EnterMnemonicProps, any> {
         </Card.Body>
         <Card.Footer
           content={
-            <div>
-              <Button onClick={onBack}>Back</Button>
-              <WhiteSpace />
-              <Button onClick={this.handleNext} type="primary">
+            <div className={commonStyles.ops}>
+              <Button inline size="small" className={commonStyles.cancelButton} onClick={onBack}>Back</Button>
+              <Button inline size="small" className={commonStyles.primaryButton} onClick={this.handleNext} type="primary">
                 Next
               </Button>
             </div>

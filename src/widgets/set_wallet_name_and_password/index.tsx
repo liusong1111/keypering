@@ -1,6 +1,7 @@
 import React from "react";
 import { Button, Card, InputItem, List, Toast, WhiteSpace } from "antd-mobile";
 import styles from "./set_wallet_name_and_password.module.scss";
+import commonStyles from "../common.module.scss";
 
 interface SetWalletNameAndPasswordProps {
   onBack: any;
@@ -87,10 +88,9 @@ class SetWalletNameAndPassword extends React.Component<SetWalletNameAndPasswordP
         </Card.Body>
         <Card.Footer
           content={
-            <div>
-              <Button onClick={onBack}>Back</Button>
-              <WhiteSpace />
-              <Button onClick={this.handleConfirm} type="primary">
+            <div className={commonStyles.ops}>
+              <Button size="small" inline className={commonStyles.cancelButton} onClick={onBack}>Back</Button>
+              <Button size="small" inline className={commonStyles.primaryButton} onClick={this.handleConfirm} type="primary">
                 Confirm
               </Button>
             </div>

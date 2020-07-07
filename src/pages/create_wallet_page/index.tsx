@@ -7,6 +7,7 @@ import { WalletManager } from "../../services/wallet";
 import * as wallet from "../../services/wallet";
 import Storage from "../../services/storage";
 import styles from "./create_wallet_page.module.scss";
+import commonStyles from "../../widgets/common.module.scss";
 import EnterMnemonic from "../../widgets/enter_mnemonic";
 import SetWalletNameAndPassword from "../../widgets/set_wallet_name_and_password";
 
@@ -37,10 +38,10 @@ const GenerateMnemonic = ({ mnemonic, onRegenerate, onCancel, onNext }: Generate
       </Card.Body>
       <Card.Footer
         content={
-          <div>
-            <Button onClick={onCancel}>Cancel</Button>
+          <div className={commonStyles.ops}>
+            <Button size="small" inline onClick={onCancel} className={commonStyles.cancelButton}>Cancel</Button>
             <WhiteSpace />
-            <Button type="primary" onClick={onNext}>
+            <Button size="small" inline type="primary" className={commonStyles.primaryButton} onClick={onNext}>
               Next
             </Button>
           </div>
