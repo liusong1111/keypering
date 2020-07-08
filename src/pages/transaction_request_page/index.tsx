@@ -1,8 +1,10 @@
 import React from "react";
-import { Button, Card, Flex, Icon, InputItem, List, Modal, NavBar, WhiteSpace, WingBlank } from "antd-mobile";
+import {Button, Card, Flex, Icon, InputItem, List, Modal, NavBar, WhiteSpace, WingBlank} from "antd-mobile";
 import { Bytes, Output, RawTransaction, Script, scriptToAddress } from "@keyper/specs";
 import { withRouter } from "react-router";
 import styles from "./transaction_request.module.scss";
+import commonStyles from "../../widgets/common.module.scss";
+import Tag from "../../widgets/tag";
 import Address from "../../widgets/address";
 import Balance from "../../widgets/balance";
 import { sendAck } from "../../services/messaging";
@@ -43,28 +45,15 @@ const InputOutput = ({ capacity, lock, type, data }: Cell) => {
   }
 
   return (
-    <div>
-      <List.Item
-        multipleLine
-        extra={
-          <div>
-            <Balance value={capacity} />
-            CKB
-          </div>
-        }
-      >
-        <Address className={styles.address} value={address} />
-        <WhiteSpace />
-        <Button size="small" type={(type && "primary") || undefined} inline>
-          type
-        </Button>
-        <Button size="small" type={(data !== "0x" && "primary") || undefined} inline>
-          data
-        </Button>
-        <Button size="small" disabled inline>
-          {algorithm}
-        </Button>
-      </List.Item>
+    <div className={styles.inputOutput}>
+      <Address className={styles.address} value={address} />
+
+      <Tag type={type && "primary" || "blank"} className={styles.tag}>type</Tag>
+      <Tag type={data !== "0x" && "primary" || "blank"} className={styles.tag}>data</Tag>
+      <Tag className={styles.tag}>{algorithm}</Tag>
+
+      <Balance value={capacity} className={styles.balance}/>
+      <span className={styles.ckb}>CKB</span>
     </div>
   );
 };
@@ -75,6 +64,7 @@ class TransactionRequestPage extends React.Component<any, any> {
     this.state = {
       password: undefined,
       request: undefined,
+      auth: undefined,
       inputs: [],
     };
   }
@@ -86,17 +76,27 @@ class TransactionRequestPage extends React.Component<any, any> {
       request,
     });
     console.log("request:", request);
+    const token = (request as any).data?.params?.token;
+    if (!token) {
+      return;
+    }
+    const auth = await storage.getAuthorization(token);
+    if (!auth) {
+      return;
+    }
+    this.setState({
+      auth,
+    });
     const rawInputs = (request as any).data?.params?.tx?.inputs;
     if (!rawInputs) {
       return;
     }
     const inputs = await Promise.all(
       rawInputs.map(async (input: any) => {
-        console.log("input:", input);
-        const { cell: rawCell } = await getLiveCell([
+        const { cell: rawCell } = await getLiveCell(
           { tx_hash: input.previousOutput.txHash, index: input.previousOutput.index },
           true,
-        ]);
+        );
         const cell = camelCaseKey(rawCell);
         return cell;
       })
@@ -166,7 +166,7 @@ class TransactionRequestPage extends React.Component<any, any> {
   };
 
   render() {
-    const { request, inputs } = this.state;
+    const { request, inputs, auth } = this.state;
     if (!request) {
       return null;
     }
@@ -174,8 +174,9 @@ class TransactionRequestPage extends React.Component<any, any> {
       token: wsToken,
       data: { id, params },
     } = request;
-    const { tx, requestFrom, meta, config, target } = params as TransactionRequestParams;
+    const { tx, meta, config, target } = params as TransactionRequestParams;
     const { outputs, outputsData } = tx;
+    const requestFrom = auth?.origin;
     return (
       <div className={styles.page}>
         <NavBar icon={<Icon type="left" />} onLeftClick={this.handleDecline}>
@@ -194,26 +195,26 @@ class TransactionRequestPage extends React.Component<any, any> {
               <span>{meta}</span>
             </div>
             <div className={styles.line}>Transaction to sign:</div>
-            <List renderHeader={<div className={styles.inputLabel}>Inputs</div>}>
+            <div className={styles.inputsAndOutputs}>
+              <div className={styles.inputLabel}>Inputs</div>
               {inputs.map((input: any) => (
                 <InputOutput {...input.output} data={input.data.content} />
               ))}
-            </List>
-            <List renderHeader={<div className={styles.outputLabel}>Outputs</div>}>
+              <div className={styles.outputLabel}>Outputs</div>
               {outputs.map((output, index) => (
                 <InputOutput {...output} data={outputsData[index]} />
               ))}
-            </List>
+            </div>
           </Flex.Item>
         </Flex>
         <div>
           Password: <InputItem type="password" onChange={this.handleInputPassword} />
         </div>
-        <div className={styles.footer}>
-          <Button inline className={styles.declineButton} onClick={this.handleDecline}>
+        <div className={commonStyles.ops}>
+          <Button inline size="small" className={commonStyles.cancelButton} onClick={this.handleDecline}>
             Decline
           </Button>
-          <Button inline type="primary" className={styles.approveButton} onClick={this.handleApprove}>
+          <Button inline size="small" type="primary" className={commonStyles.primaryButton} onClick={this.handleApprove}>
             Approve(Sign And Send)
           </Button>
         </div>

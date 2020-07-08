@@ -138,6 +138,7 @@ class HomePage extends React.Component<any, any> {
           },
         });
       } else if (method === "sign" || method === "signAndSend") {
+        console.log("msg:", msg);
         history.push("/transaction_request");
       }
     }

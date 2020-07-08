@@ -6,7 +6,24 @@
   background-color: #fff;
 }
 
+.inputOutput {
+  margin: 12px 0;
+}
+
 .address {
+  font-size: 12px;
+  margin-right: 18px;
+}
+
+.tag {
+  margin-right: 4px;
+}
+
+.balance {
+  margin-left: 18px;
+}
+
+.ckb {
   font-size: 12px;
 }
 
@@ -29,11 +46,12 @@
 
 .inputLabel, .outputLabel {
   font-weight: bold;
+  font-size: 14px;
+  color: #666;
 }
 
-.footer {
-  margin-top: 24px;
-}
-
-.approveButton, .declineButton {
+.inputsAndOutputs {
+  margin: 16px;
+  padding: 12px;
+  border: 1px solid #979797;
 }
