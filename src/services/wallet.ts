@@ -260,7 +260,7 @@ export class WalletManager {
       return signedTx;
     } catch (e) {
       console.log("error", e);
-      return null;
+      throw e;
     }
   };
 }

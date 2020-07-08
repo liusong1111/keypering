@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Card, Flex, Icon, InputItem, List, Modal, NavBar, WhiteSpace, WingBlank} from "antd-mobile";
+import {Button, Card, Flex, Icon, InputItem, List, Modal, NavBar, Toast, WhiteSpace, WingBlank} from "antd-mobile";
 import { Bytes, Output, RawTransaction, Script, scriptToAddress } from "@keyper/specs";
 import { withRouter } from "react-router";
 import styles from "./transaction_request.module.scss";
@@ -146,7 +146,13 @@ class TransactionRequestPage extends React.Component<any, any> {
       return;
     }
 
-    const txSigned = await manager.signAndSend(password, context, tx, config);
+    let txSigned;
+    try {
+      txSigned = await manager.signAndSend(password, context, tx, config);
+    } catch(e) {
+      Toast.fail("Failed to sign and send transaction, the reason is " + e.toString());
+      return;
+    }
     const txMeta = {
       requestUrl: auth.origin,
       state: "approved",
