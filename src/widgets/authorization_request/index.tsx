@@ -2,6 +2,7 @@ import React from "react";
 import { Button, Checkbox, Icon, List, NavBar } from "antd-mobile";
 import { withRouter } from "react-router";
 import styles from "./authorization_request.module.scss";
+import commonStyles from "../../widgets/common.module.scss";
 
 interface AuthorizationRequestProps {
   token: number;
@@ -16,10 +17,20 @@ interface AuthorizationRequestProps {
 class AuthorizationRequest extends React.Component<any, any> {
   constructor(props: any) {
     super(props);
+    this.state = {
+      agree: true,
+    }
   }
+
+  handleSetAgree = (e: any) => {
+    this.setState({
+      agree: e.target.checked,
+    })
+  };
 
   render() {
     const { origin, description, history, handleApprove, handleDecline } = this.props;
+    const { agree } = this.state;
     let domain = "unknown";
     try {
       domain = new URL(origin).hostname;
@@ -34,28 +45,29 @@ class AuthorizationRequest extends React.Component<any, any> {
         </NavBar>
         <List>
           <List.Item>
-            Request from:
+            <span className={styles.label}>Request from:</span>
             <a className={styles.link} href={origin} target="_blank">
               {origin}
             </a>
           </List.Item>
           <List.Item>
-            Description: {description}
+            <span className={styles.label}>Description: </span>{description}
           </List.Item>
           <List.Item>
             You are going to share the following information to <span className={styles.domain}>{domain}</span>
           </List.Item>
           <List.Item>
-            <Checkbox defaultChecked>Address, balance and related cells on CKB *</Checkbox>
+            <Checkbox.AgreeItem checked={agree} onChange={this.handleSetAgree}>Address, balance and related cells on CKB *</Checkbox.AgreeItem>
           </List.Item>
-          <List.Item className={styles.footer}>
-            <Button inline onClick={handleDecline}>
+
+          <div className={commonStyles.ops}>
+            <Button inline size="small" className={commonStyles.cancelButton} onClick={handleDecline}>
               Decline
             </Button>
-            <Button inline type="primary" onClick={handleApprove}>
+            <Button inline size="small" className={commonStyles.primaryButton} type="primary" onClick={handleApprove} disabled={!agree}>
               Approve
             </Button>
-          </List.Item>
+          </div>
         </List>
       </div>
     );

@@ -1,6 +1,7 @@
 import React from "react";
 import {Button, Icon, InputItem, List, NavBar, Toast} from "antd-mobile";
 import styles from "./change_wallet_name.module.scss";
+import commonStyles from "../../widgets/common.module.scss";
 import Storage from "../../services/storage";
 import {withRouter} from "react-router";
 
@@ -45,7 +46,6 @@ class ChangeWalletNamePage extends React.Component<any, any> {
   };
 
   render() {
-    // const { initialWalletName } = this.props;
     const initialWalletName = "";
     return (
       <div>
@@ -56,11 +56,11 @@ class ChangeWalletNamePage extends React.Component<any, any> {
               New Name
             </InputItem>
           </List.Item>
-          <List.Item className={styles.footer}>
-            <Button inline size="small" type="primary" onClick={this.handleConfirm}>
+          <div className={commonStyles.ops}>
+            <Button inline size="small" className={commonStyles.primaryButton} type="primary" onClick={this.handleConfirm}>
               Confirm
             </Button>
-          </List.Item>
+          </div>
         </List>
       </div>
     );

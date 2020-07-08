@@ -1,5 +1,12 @@
-.link {
+.label {
+  display: inline-block;
+  width: 130px;
+}
 
+.link {
+  font-weight: bold;
+  font-size: 16px;
+  color: #3cc68a;
 }
 
 .domain {

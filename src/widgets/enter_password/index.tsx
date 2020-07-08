@@ -2,6 +2,7 @@ import React from "react";
 import { Button, Icon, InputItem, List, NavBar, Toast } from "antd-mobile";
 import { useHistory, withRouter } from "react-router";
 import styles from "./change_password.module.scss";
+import commonStyles from "../../widgets/common.module.scss";
 import Storage from "../../services/storage";
 
 interface EnterPasswordProps {
@@ -45,9 +46,9 @@ class EnterPassword extends React.Component<any, any> {
           <List.Item>
             <InputItem labelNumber={20} type="password" onChange={this.handleInputPassword}>Password</InputItem>
           </List.Item>
-          <List.Item>
-            <Button type="primary" onClick={this.handleConfirm}>Confirm</Button>
-          </List.Item>
+          <div className={commonStyles.ops}>
+            <Button className={commonStyles.primaryButton} inline size="small" type="primary" onClick={this.handleConfirm}>Confirm</Button>
+          </div>
         </List>
       </div>
     );

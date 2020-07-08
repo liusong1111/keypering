@@ -25,7 +25,6 @@ class AuthorizationRequestPage extends React.Component<any, any> {
     const { token: wsToken, data } = request;
     const { id, method, params } = data;
     const { origin, description } = params;
-    // const timestamp = formatDate(new Date(), "yyyy-MM-dd HH:mm:ss");
     const timestamp = new Date().getTime();
     const authToken = sha256(origin).toString();
     await Storage.getStorage().addAuthorization({

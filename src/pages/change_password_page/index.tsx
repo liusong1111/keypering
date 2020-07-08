@@ -2,6 +2,7 @@ import React from "react";
 import { Button, Icon, InputItem, List, NavBar, Toast } from "antd-mobile";
 import { useHistory, withRouter } from "react-router";
 import styles from "./change_password.module.scss";
+import commonStyles from "../../widgets/common.module.scss";
 import Storage from "../../services/storage";
 
 class ChangePasswordPage extends React.Component<any, any> {
@@ -72,9 +73,10 @@ class ChangePasswordPage extends React.Component<any, any> {
             <InputItem labelNumber={20} type="password" onChange={this.handleInputNewPassword}>New Password</InputItem>
             <InputItem labelNumber={20} type="password" onChange={this.handleInputNewPassword1}>Confirm Password</InputItem>
           </List.Item>
-          <List.Item>
-            <Button type="primary" onClick={this.handleConfirm}>Confirm</Button>
-          </List.Item>
+          <div className={commonStyles.ops}>
+            <Button type="primary" inline size="small" className={commonStyles.primaryButton} onClick={this.handleConfirm}>Confirm</Button>
+
+          </div>
         </List>
       </div>
     );

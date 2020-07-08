@@ -236,7 +236,8 @@ export default class Storage {
   };
 
   addAuthorization = async (auth: any): Promise<void> => {
-    await this.db!.add("authorizations", auth);
+    console.log("addAuthorization:", JSON.stringify(auth, null, 2));
+    await this.db!.put("authorizations", auth);
   };
 
   addTransaction = async (transactionId: string, meta: any, rawTransaction: any): Promise<void> => {
