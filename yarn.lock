@@ -16661,10 +16661,10 @@ tar@^6.0.2:
     mkdirp "^1.0.3"
     yallist "^4.0.0"
 
-tauri@^0.8.1:
-  version "0.8.1"
-  resolved "https://registry.npm.taobao.org/tauri/download/tauri-0.8.1.tgz#cf839fa643e26b86c6a5c0a5bf49cffb3b57fc8b"
-  integrity sha1-z4OfpkPia4bGpcClv0nP+ztX/Is=
+tauri@^0.8.2:
+  version "0.8.2"
+  resolved "https://registry.npm.taobao.org/tauri/download/tauri-0.8.2.tgz#a111bb250a09d8801bb027b796990b4c49018f23"
+  integrity sha1-oRG7JQoJ2IAbsCe3lpkLTEkBjyM=
   dependencies:
     "@tauri-apps/tauri-inliner" "1.14.1"
     "@tauri-apps/toml" "2.2.4"

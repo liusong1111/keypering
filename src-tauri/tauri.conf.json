@@ -2,15 +2,18 @@
   "build": {
     "distDir": "../build",
     "devPath": "http://127.0.0.1:3000",
+    "withGlobalTauri": true,
     "beforeDevCommand": "",
     "beforeBuildCommand": ""
   },
   "ctx": {},
   "tauri": {
-    "cli": null,
+    "cli": {
+      "description": "Keypering is a light CKB wallet for dApp interaction",
+      "args": []
+    },
     "embeddedServer": {
-      "active": true,
-      "port": "18822"
+      "active": true
     },
     "bundle": {
       "active": true,
