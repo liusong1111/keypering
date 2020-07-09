@@ -4,6 +4,7 @@ import { useHistory, withRouter } from "react-router";
 import Storage from "../../services/storage";
 import {decryptKeystore} from "../../services/messaging";
 import {WalletManager} from "../../services/wallet";
+import commonStyles from "../../widgets/common.module.scss";
 
 class ImportKeystorePage extends React.Component<any, any> {
   constructor(props: any) {
@@ -57,15 +58,15 @@ class ImportKeystorePage extends React.Component<any, any> {
           {title || "Enter password"}
         </NavBar>
         <List>
-          <List.Item>
+          <div>
             <InputItem labelNumber={20} type="text" onChange={this.handleInputWalletName}>Wallet Name</InputItem>
-          </List.Item>
-          <List.Item>
+          </div>
+          <div>
             <InputItem labelNumber={20} type="password" onChange={this.handleInputPassword}>Password</InputItem>
-          </List.Item>
-          <List.Item>
-            <Button type="primary" onClick={this.handleConfirm}>Confirm</Button>
-          </List.Item>
+          </div>
+          <div className={commonStyles.ops}>
+            <Button size="small" type="primary" className={commonStyles.primaryButton} onClick={this.handleConfirm}>Confirm</Button>
+          </div>
         </List>
       </div>
     );

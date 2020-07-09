@@ -62,7 +62,6 @@ class SetWalletNameAndPassword extends React.Component<SetWalletNameAndPasswordP
       <Card className={styles.card}>
         <Card.Header className={styles.cardHeader} title="Setup your new wallet" />
         <Card.Body>
-          <List>
             <InputItem placeholder="" labelNumber={10} value={walletName} onChange={this.handleInputWalletName}>
               Wallet Name
             </InputItem>
@@ -84,7 +83,6 @@ class SetWalletNameAndPassword extends React.Component<SetWalletNameAndPasswordP
             >
               Confirm Password
             </InputItem>
-          </List>
         </Card.Body>
         <Card.Footer
           content={
