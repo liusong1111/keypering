@@ -1,22 +1,23 @@
-import { ec as EC } from "elliptic";
-import { Buffer } from "buffer";
-import { Config, RawTransaction, scriptToAddress, SignatureAlgorithm, SignContext } from "@keyper/specs";
-import { hexToBytes, scriptToHash } from "@nervosnetwork/ckb-sdk-utils";
+import {ec as EC} from "elliptic";
+import {Buffer} from "buffer";
+import {addressToScript, Config, RawTransaction, scriptToAddress, SignatureAlgorithm, SignContext} from "@keyper/specs";
+import {hexToBytes, scriptToHash} from "@nervosnetwork/ckb-sdk-utils";
 import Storage from "./storage";
 import * as rpc from "./rpc";
-import { decryptKeystore, encryptKeystore } from "./messaging";
-import {indexLockHash} from "./rpc";
+import {decryptKeystore, encryptKeystore} from "./messaging";
+import {getCellsSummary, getLiveCellsByLockHash, indexLockHash} from "./rpc";
+import BN from "bn.js";
 
 // const CKB = require("@nervosnetwork/ckb-sdk-rpc");
 // import CKB from "@nervosnetwork/ckb-sdk-rpc";
 
-const { Secp256k1LockScript } = require("@keyper/container/lib/locks/secp256k1");
-const { AnyPayLockScript } = require("@keyper/container/lib/locks/anyone-can-pay");
+const {Secp256k1LockScript} = require("@keyper/container/lib/locks/secp256k1");
+const {AnyPayLockScript} = require("@keyper/container/lib/locks/anyone-can-pay");
 
 // const keystore = require("@keyper/specs/lib/keystore");
-const { Container } = require("@keyper/container/lib");
+const {Container} = require("@keyper/container/lib");
 
-export { mnemonicToEntropy, entropyToMnemonic, generateMnemonic } from "bip39";
+export {mnemonicToEntropy, entropyToMnemonic, generateMnemonic} from "bip39";
 
 // export function generatePrivateKey() {
 //   const ec = new EC("secp256k1");
@@ -52,7 +53,7 @@ function initializeContainer() {
           return value;
         },
         async sign(context: any, message: any) {
-          const { ks } = context;
+          const {ks} = context;
           if (!ks) {
             throw new Error(`no ks for address: ${context.address}`);
           }
@@ -62,7 +63,7 @@ function initializeContainer() {
           const ec = new EC("secp256k1");
           const keypair = ec.keyFromPrivate(privateKey);
           const msg = typeof message === "string" ? hexToBytes(message) : message;
-          const { r, s, recoveryParam } = keypair.sign(msg, {
+          const {r, s, recoveryParam} = keypair.sign(msg, {
             canonical: true,
           });
           if (recoveryParam === null) {
@@ -125,7 +126,7 @@ export class WalletManager {
     // const privateKeyBuffer = privateKey.toArrayLike(Buffer);
     // const ks = keystore.encrypt(privateKeyBuffer, password);
     const ks: any = await encryptKeystore(password, `0x${privateKey.toString("hex")}`);
-    const publicKeys = [{ payload: `0x${publicKeyPayload}`, algorithm: "secp256k1" }];
+    const publicKeys = [{payload: `0x${publicKeyPayload}`, algorithm: "secp256k1"}];
 
     const storage = Storage.getStorage();
     await storage.addWallet(walletName, {
@@ -218,17 +219,20 @@ export class WalletManager {
       })
     );
     const scriptMetaList = await Promise.all(scriptMetaPromises);
+    console.log("scriptMetaPromises.length=", scriptMetaPromises.length);
+    console.log("scriptMetaList.length=", scriptMetaList.length);
     const addresses: any[] = [];
     scriptMetaList.forEach((scriptMetas: any) => {
       scriptMetas.forEach((script: any) => {
         const addr = Object.assign({}, script, {
-          address: scriptToAddress(script.meta.script, { networkPrefix: "ckt", short: true }),
+          address: scriptToAddress(script.meta.script, {networkPrefix: "ckt", short: true}),
           freeAmount: "0x0",
           inUseAmount: "0x0",
         });
         addresses.push(addr);
       });
     });
+    console.log("addresses=", addresses);
     return addresses;
   };
 
@@ -269,5 +273,98 @@ export class WalletManager {
       console.log("error", e);
       throw e;
     }
+  };
+
+  loadCurrentWalletAddressListWithCells = async () => {
+    const addresses = await this.loadCurrentWalletAddressList();
+    const cellsPromises = addresses.map((address: any) => getLiveCellsByLockHash(scriptToHash(address.meta.script), "0x0", "0x32"));
+    const addressCells = await Promise.all(cellsPromises);
+    const addressSummary = addressCells.map((cells: any) => getCellsSummary(cells));
+    const balance = new BN(0);
+    addressCells.forEach((address: any, i) => {
+      addresses[i].freeAmount = `0x${addressSummary[i].free.toString(16)}`;
+      addresses[i].inUseAmount = `0x${addressSummary[i].inuse.toString(16)}`;
+      addresses[i].liveCells = addressCells[i];
+      balance.iadd(addressSummary[i].free);
+    });
+    return addresses;
+  };
+
+  getRawTxTemplate = () => {
+    return {
+      version: "0x0",
+      cellDeps: [{
+        outPoint: {
+          // a fixed value for testnet
+          txHash: "0xf8de3bb47d055cdf460d93a2a6e1b05f7432f9777c8c474abf4eec1d4aee5d37",
+          index: "0x0"
+        },
+        depType: "depGroup",
+      }],
+      headerDeps: [],
+      inputs: [],
+      outputs: [],
+      witnesses: [],
+      outputsData: []
+    }
+  };
+
+  buildTransferTransaction = (fromAddr: string, toAddr: string, amount: number, liveCells: any[]) => {
+    const tx = this.getRawTxTemplate();
+    const inputs = tx.inputs as any[];
+    const outputs = tx.outputs as any[];
+    const witnesses = tx.witnesses as any[];
+    const outputsData = tx.outputsData as any[];
+    const total = new BN(0);
+
+    const toLock = addressToScript(toAddr);
+    outputs.push({
+      capacity: `0x${amount.toString(16)}`,
+      lock: toLock,
+    });
+    outputsData.push("0x");
+    let enough = false;
+    for (const liveCell of liveCells) {
+      if (liveCell.output_data_len !== "0x0") {
+        continue;
+      }
+      const capacity = new BN(liveCell.cell_output.capacity.replace("0x", ""), 16);
+      total.iadd(capacity);
+      inputs.push({
+        previousOutput: {
+          txHash: liveCell.created_by.tx_hash,
+          index: liveCell.created_by.index,
+        },
+        since: "0x0",
+      });
+      witnesses.push("0x");
+      let fee = new BN(amount).add(new BN((inputs.length * 61) + (2 * 16) + 1000));
+      if (fee.lt(new BN("10000000"))) {
+        fee = new BN("10000000");
+      }
+      if (total.gt(fee.add(new BN(amount)))) {
+        if (total.gt(fee.add(new BN(amount)).add(new BN("6100000000")))) {
+          const change = total.sub(new BN(amount)).sub(fee);
+          outputs.push({
+            capacity: `0x${change.toString(16)}`,
+            lock: addressToScript(fromAddr)
+          });
+          outputsData.push("0x");
+        }
+        enough = true;
+        break;
+      }
+    }
+
+    if (!enough) {
+      return null;
+      // throw new Error("not_enough_capacity");
+    }
+    witnesses[0] = {
+      lock: "",
+      inputType: "",
+      outputType: "",
+    }
+    return tx;
   };
 }

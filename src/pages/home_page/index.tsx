@@ -158,17 +158,12 @@ class HomePage extends React.Component<any, any> {
     if (!currentWallet) {
       return;
     }
-
     const manager = WalletManager.getInstance();
-    const addresses = await manager.loadCurrentWalletAddressList();
-    const cellsPromises = addresses.map((address: any) => getLiveCellsByLockHash(scriptToHash(address.meta.script), "0x0", "0x32"));
-    const addressCells = await Promise.all(cellsPromises);
-    const addressSummary = addressCells.map((cells: any) => getCellsSummary(cells));
+    const addresses = await manager.loadCurrentWalletAddressListWithCells();
+    console.log("addresses", addresses);
     const balance = new BN(0);
-    addressCells.forEach((address: any, i) => {
-      addresses[i].freeAmount = `0x${addressSummary[i].free.toString(16)}`;
-      addresses[i].inUseAmount = `0x${addressSummary[i].inuse.toString(16)}`;
-      balance.iadd(addressSummary[i].free);
+    addresses.forEach((address: any, i) => {
+      balance.iadd(new BN(address.freeAmount.replace("0x", ""), 16));
     });
     this.setState({
       addresses,
@@ -294,6 +289,11 @@ class HomePage extends React.Component<any, any> {
     await this.loadAuthorizationList();
   }
 
+  handleGotoTransferCapacityPage = () => {
+    const { history } = this.props;
+    history.push("/transfer_capacity");
+  };
+
   render() {
     const {
       drawerOpen,
@@ -327,7 +327,7 @@ class HomePage extends React.Component<any, any> {
             <div className={styles.balanceLabel}>Balance</div>
             <Balance value={balance} size="large" />
             <div className={styles.ops}>
-              <Button inline type="primary" size="small">
+              <Button inline type="primary" size="small" onClick={this.handleGotoTransferCapacityPage}>
                 Send
               </Button>
             </div>

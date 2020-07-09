@@ -80,9 +80,9 @@ class TransactionRequestPage extends React.Component<any, any> {
       return;
     }
     const auth = await storage.getAuthorization(token);
-    if (!auth) {
-      return;
-    }
+    // if (!auth) {
+    //   return;
+    // }
     this.setState({
       auth,
     });
@@ -90,19 +90,23 @@ class TransactionRequestPage extends React.Component<any, any> {
     if (!rawInputs) {
       return;
     }
-    const inputs = await Promise.all(
-      rawInputs.map(async (input: any) => {
-        const { cell: rawCell } = await getLiveCell(
-          { tx_hash: input.previousOutput.txHash, index: input.previousOutput.index },
-          true,
-        );
-        const cell = camelCaseKey(rawCell);
-        return cell;
-      })
-    );
-    this.setState({
-      inputs,
-    });
+    try {
+      const inputs = await Promise.all(
+        rawInputs.map(async (input: any) => {
+          const { cell: rawCell } = await getLiveCell(
+            { tx_hash: input.previousOutput.txHash, index: input.previousOutput.index },
+            true,
+          );
+          const cell = camelCaseKey(rawCell);
+          return cell;
+        })
+      );
+      this.setState({
+        inputs,
+      });
+    } catch(e) {
+      console.log("error:", e);
+    }
   }
 
   handleDecline = async () => {
@@ -153,7 +157,7 @@ class TransactionRequestPage extends React.Component<any, any> {
     const auth = await store.getAuthorization(token);
     if (!auth) {
       console.log("no_auth");
-      return;
+      // return;
     }
 
     let txSigned;
@@ -190,7 +194,7 @@ class TransactionRequestPage extends React.Component<any, any> {
     } = request;
     const { tx, meta, config, target } = params as TransactionRequestParams;
     const { outputs, outputsData } = tx;
-    const requestFrom = auth?.origin;
+    const requestFrom = auth?.origin || "direct";
     return (
       <div className={styles.page}>
         <NavBar icon={<Icon type="left" />} onLeftClick={this.handleDecline}>
