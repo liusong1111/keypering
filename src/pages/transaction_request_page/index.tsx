@@ -62,7 +62,6 @@ class TransactionRequestPage extends React.Component<any, any> {
   constructor(props: any) {
     super(props);
     this.state = {
-      password: undefined,
       request: undefined,
       auth: undefined,
       inputs: [],
@@ -106,12 +105,6 @@ class TransactionRequestPage extends React.Component<any, any> {
     });
   }
 
-  handleInputPassword = (password: string) => {
-    this.setState({
-      password,
-    });
-  };
-
   handleDecline = () => {
     const { request } = this.state;
     const { history } = this.props;
@@ -129,7 +122,19 @@ class TransactionRequestPage extends React.Component<any, any> {
   };
 
   handleApprove = async () => {
-    const { request, password } = this.state;
+    Modal.prompt("Password", "Sign to broadcast the transaction", [{
+      text: "Cancel"
+    }, {
+      text: "Confirm",
+      onPress: (password: string) => {
+        this.handleConfirm(password);
+      },
+    }],
+      "secure-text");
+  };
+
+  handleConfirm = async (password: string) => {
+    const { request } = this.state;
     const { history } = this.props;
     const { token: wsToken, data } = request;
     const { id, params } = data;
@@ -150,7 +155,7 @@ class TransactionRequestPage extends React.Component<any, any> {
     try {
       txSigned = await manager.signAndSend(password, context, tx, config);
     } catch(e) {
-      Toast.fail("Failed to sign and send transaction, the reason is " + e.toString());
+      Toast.fail(`Failed to sign and send transaction, error code=${e.code}, error message=${e.message}`);
       return;
     }
     const txMeta = {
@@ -213,15 +218,12 @@ class TransactionRequestPage extends React.Component<any, any> {
             </div>
           </Flex.Item>
         </Flex>
-        <div>
-          Password: <InputItem type="password" onChange={this.handleInputPassword} />
-        </div>
         <div className={commonStyles.ops}>
           <Button inline size="small" className={commonStyles.cancelButton} onClick={this.handleDecline}>
             Decline
           </Button>
           <Button inline size="small" type="primary" className={commonStyles.primaryButton} onClick={this.handleApprove}>
-            Approve(Sign And Send)
+            Approve
           </Button>
         </div>
       </div>
