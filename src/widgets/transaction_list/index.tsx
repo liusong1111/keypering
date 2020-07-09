@@ -8,13 +8,13 @@ interface TransactionListProps {
 
 const TransactionList = ({ transactions }: TransactionListProps) => {
   return (
-    <div>
+    <div className={styles.list}>
       {transactions.map((tx) => {
         const { id, meta, rawTransaction } = tx;
         const { requestUrl, metaInfo, state, timestamp } = meta;
         return (
           <div className={styles.item} key={id}>
-            <Transaction requestUrl={requestUrl} metaInfo={metaInfo} state={state} timestamp={timestamp} />
+            <Transaction requestUrl={requestUrl} metaInfo={metaInfo} state={state} timestamp={timestamp} tx={rawTransaction} />
           </div>
         );
       })}

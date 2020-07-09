@@ -252,6 +252,13 @@ export default class Storage {
     await tx.done;
   };
 
+  putTransaction = async (transaction: any) => {
+    const tx = this.db!.transaction("transactions", "readwrite");
+    const { store } = tx;
+    await store.put(transaction);
+    await tx.done;
+  };
+
   removeTransaction = async (transactionId: any): Promise<void> => {
     await this.db!.delete("transactions", transactionId);
   };
@@ -259,6 +266,11 @@ export default class Storage {
   listTransaction = async (): Promise<any[]> => {
     const transactions = await getAll(this.db!, "transactions");
     return transactions;
+  };
+
+  getTransaction = async (transactionId: string) => {
+    const transaction = await this.db!.get("transactions", transactionId);
+    return transaction;
   };
 
   deleteDatabase = async () => {

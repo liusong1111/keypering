@@ -17,6 +17,7 @@ import Storage from "../../services/storage";
 import { decryptKeystore, encryptKeystore, sendAck, writeTextFile, readTextFile } from "../../services/messaging";
 import {getCellsSummary, getLiveCell, getLiveCellsByLockHash} from "../../services/rpc";
 import { scriptToHash } from "@nervosnetwork/ckb-sdk-utils";
+import {formatDate} from "../../widgets/timestamp";
 const tauriApi = require("tauri/api/dialog");
 const { open, save } = tauriApi;
 
@@ -139,6 +140,14 @@ class HomePage extends React.Component<any, any> {
         });
       } else if (method === "sign" || method === "signAndSend") {
         console.log("msg:", msg);
+        const { meta, tx } = params;
+        const txMeta = {
+          requestUrl: auth.origin,
+          state: "pending",
+          metaInfo: meta,
+          timestamp: formatDate(new Date().getTime()),
+        };
+        await storage.addTransaction(id, txMeta, tx);
         history.push("/transaction_request");
       }
     }

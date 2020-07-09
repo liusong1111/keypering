@@ -1,5 +1,8 @@
 .item {
   margin: 14px 0;
+  display: flex;
+  line-height: 16px;
+  height: 16px;
 }
 
 .requestFromLabel, .metaInfoLabel {
@@ -18,8 +21,29 @@ a.requestFromLink, a:visited.requestFromLink {
 
 .timestamp {
   font-size: 90%;
-  display: block;
 }
 
+.state {
+  display: flex;
+  align-items: center;
+  margin-left: 8px;
+}
 
+.state :first-child {
+  margin-right: 4px;
+}
 
+.state.declined, .state.pending {
+  color: #d50000;
+}
+
+.state.approved {
+  color: #009afd;
+}
+
+.link {
+  display: block;
+  align-self: flex-end;
+  margin-left: auto;
+  color: #3cc68a;
+}

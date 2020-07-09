@@ -105,7 +105,7 @@ class TransactionRequestPage extends React.Component<any, any> {
     });
   }
 
-  handleDecline = () => {
+  handleDecline = async () => {
     const { request } = this.state;
     const { history } = this.props;
     const { token: wsToken, data } = request;
@@ -118,6 +118,11 @@ class TransactionRequestPage extends React.Component<any, any> {
         message: "declined",
       },
     });
+    const store = Storage.getStorage();
+    const transaction = await store.getTransaction(id);
+    transaction.meta.state = "declined";
+    transaction.meta.timestamp = formatDate(new Date().getTime());
+    await store.putTransaction(transaction);
     history.push("/");
   };
 
@@ -158,14 +163,12 @@ class TransactionRequestPage extends React.Component<any, any> {
       Toast.fail(`Failed to sign and send transaction, error code=${e.code}, error message=${e.message}`);
       return;
     }
-    const txMeta = {
-      requestUrl: auth.origin,
-      state: "approved",
-      metaInfo: meta,
-      timestamp: formatDate(new Date().getTime()),
-    };
-    console.log("signAndSendOK:", txSigned);
-    await store.addTransaction(id, txMeta, txSigned);
+    console.log("txSigned:", txSigned);
+    const transaction = await store.getTransaction(id);
+    transaction.meta.state = "approved";
+    transaction.meta.timestamp = formatDate(new Date().getTime());
+    transaction.rawTransaction = txSigned;
+    await store.putTransaction(transaction);
     sendAck(wsToken, {
       id,
       jsonrpc: "2.0",

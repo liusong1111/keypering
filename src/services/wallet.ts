@@ -5,6 +5,7 @@ import { hexToBytes, scriptToHash } from "@nervosnetwork/ckb-sdk-utils";
 import Storage from "./storage";
 import * as rpc from "./rpc";
 import { decryptKeystore, encryptKeystore } from "./messaging";
+import {indexLockHash} from "./rpc";
 
 // const CKB = require("@nervosnetwork/ckb-sdk-rpc");
 // import CKB from "@nervosnetwork/ckb-sdk-rpc";
@@ -139,6 +140,11 @@ export class WalletManager {
         algorithm: pubKey.algorithm,
       });
     });
+
+    // index all lockHash, assume RPC service will ignore duplicated ones.
+    const locks = await this.container.getAllLockHashesAndMeta();
+    const hashes = locks.map((lock: any) => lock.hash);
+    hashes.map((hash: string) => indexLockHash(hash, "0x0"));
   };
 
   getCurrentWalletPrivateKey = async (password: string) => {
@@ -254,9 +260,10 @@ export class WalletManager {
       context.password = password;
       const signedTx = await this.container.sign(context, tx, config);
       // todo
-      await rpc.sendTransaction(signedTx);
+      const txHash = await rpc.sendTransaction(signedTx);
       // const ckb = new CKB("https://prototype.ckbapp.dev/testnet/rpc");
       // await ckb.sendTransaction(signedTx);
+      signedTx.txHash = txHash;
       return signedTx;
     } catch (e) {
       console.log("error", e);
