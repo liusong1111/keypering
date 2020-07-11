@@ -11005,7 +11005,12 @@ lodash.uniq@4.5.0, lodash.uniq@^4.5.0:
   resolved "https://registry.npm.taobao.org/lodash.uniq/download/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
   integrity sha1-0CJTc662Uq3BvILklFM5qEJ1R3M=
 
-lodash@4.17.15, "lodash@>=3.5 <5", lodash@^4.0.0, lodash@^4.0.1, lodash@^4.17.11, lodash@^4.17.12, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.5, lodash@~4.17.10:
+lodash@4.17.19:
+  version "4.17.19"
+  resolved "https://registry.npm.taobao.org/lodash/download/lodash-4.17.19.tgz?cache=0&sync_timestamp=1594226805918&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Flodash%2Fdownload%2Flodash-4.17.19.tgz#e48ddedbe30b3321783c5b4301fbd353bc1e4a4b"
+  integrity sha1-5I3e2+MLMyF4PFtDAfvTU7weSks=
+
+"lodash@>=3.5 <5", lodash@^4.0.0, lodash@^4.0.1, lodash@^4.17.11, lodash@^4.17.12, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.5, lodash@~4.17.10:
   version "4.17.15"
   resolved "https://registry.npm.taobao.org/lodash/download/lodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
   integrity sha1-tEf2ZwoEVbv+7dETku/zMOoJdUg=
@@ -16661,10 +16666,10 @@ tar@^6.0.2:
     mkdirp "^1.0.3"
     yallist "^4.0.0"
 
-tauri@^0.8.2:
-  version "0.8.2"
-  resolved "https://registry.npm.taobao.org/tauri/download/tauri-0.8.2.tgz#a111bb250a09d8801bb027b796990b4c49018f23"
-  integrity sha1-oRG7JQoJ2IAbsCe3lpkLTEkBjyM=
+tauri@^0.8.4:
+  version "0.8.4"
+  resolved "https://registry.npm.taobao.org/tauri/download/tauri-0.8.4.tgz#0c1e4d1ada7268512eafab177f8ebfc8792e5844"
+  integrity sha1-DB5NGtpyaFEur6sXf46/yHkuWEQ=
   dependencies:
     "@tauri-apps/tauri-inliner" "1.14.1"
     "@tauri-apps/toml" "2.2.4"
@@ -16681,13 +16686,13 @@ tauri@^0.8.2:
     is-png "2.0.0"
     isbinaryfile "4.0.6"
     jsdom "16.2.2"
-    lodash "4.17.15"
+    lodash "4.17.19"
     minimist "1.2.5"
     ms "2.1.2"
     png2icons "2.0.1"
     read-chunk "3.2.0"
     sharp "0.25.4"
-    webpack-merge "4.2.2"
+    webpack-merge "5.0.9"
     webpack-shell-plugin "0.5.0"
 
 telejson@^3.2.0:
@@ -17801,12 +17806,13 @@ webpack-manifest-plugin@2.2.0:
     object.entries "^1.1.0"
     tapable "^1.0.0"
 
-webpack-merge@4.2.2:
-  version "4.2.2"
-  resolved "https://registry.npm.taobao.org/webpack-merge/download/webpack-merge-4.2.2.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fwebpack-merge%2Fdownload%2Fwebpack-merge-4.2.2.tgz#a27c52ea783d1398afd2087f547d7b9d2f43634d"
-  integrity sha1-onxS6ng9E5iv0gh/VH17nS9DY00=
+webpack-merge@5.0.9:
+  version "5.0.9"
+  resolved "https://registry.npm.taobao.org/webpack-merge/download/webpack-merge-5.0.9.tgz?cache=0&sync_timestamp=1594294904067&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fwebpack-merge%2Fdownload%2Fwebpack-merge-5.0.9.tgz#d5e0e0ae564ae704836d747893bdd2741544bf31"
+  integrity sha1-1eDgrlZK5wSDbXR4k73SdBVEvzE=
   dependencies:
-    lodash "^4.17.15"
+    clone-deep "^4.0.1"
+    wildcard "^2.0.0"
 
 webpack-shell-plugin@0.5.0:
   version "0.5.0"
@@ -17988,6 +17994,11 @@ widest-line@^3.1.0:
   integrity sha1-gpIzO79my0X/DeFgOxNreuFJbso=
   dependencies:
     string-width "^4.0.0"
+
+wildcard@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.npm.taobao.org/wildcard/download/wildcard-2.0.0.tgz#a77d20e5200c6faaac979e4b3aadc7b3dd7f8fec"
+  integrity sha1-p30g5SAMb6qsl55LOq3Hs91/j+w=
 
 with-open-file@^0.1.6:
   version "0.1.7"

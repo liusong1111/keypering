@@ -120,6 +120,28 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f8aac770f1885fd7e387acedd76065302551364496e46b3dd00860b2f8359b9d"
 
 [[package]]
+name = "backtrace"
+version = "0.3.41"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a4ed64ae6d9ebfd9893193c4b2532b1292ec97bd8271c9d7d0fa90cd78a34cba"
+dependencies = [
+ "backtrace-sys",
+ "cfg-if",
+ "libc",
+ "rustc-demangle",
+]
+
+[[package]]
+name = "backtrace-sys"
+version = "0.1.37"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "18fbebbe1c9d1f383a9cc7e8ccdb471b91c8d024ee9c2ca5b5346121fe8b4399"
+dependencies = [
+ "cc",
+ "libc",
+]
+
+[[package]]
 name = "base64"
 version = "0.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -540,6 +562,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "failure"
+version = "0.1.8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d32e9bd16cc02eae7db7ef620b392808b89f6a5e16bb3497d159c6b92a0f4f86"
+dependencies = [
+ "backtrace",
+]
+
+[[package]]
 name = "fake-simd"
 version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -853,6 +884,7 @@ dependencies = [
  "serde_json",
  "stream-cipher",
  "tauri",
+ "tauri-api",
  "uuid",
  "winres",
  "ws",
@@ -1414,6 +1446,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "runas"
+version = "0.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a620b0994a180cdfa25c0439e6d58c0628272571501880d626ffff58e96a0799"
+dependencies = [
+ "cc",
+ "which",
+]
+
+[[package]]
 name = "rust-argon2"
 version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1424,6 +1466,12 @@ dependencies = [
  "constant_time_eq",
  "crossbeam-utils",
 ]
+
+[[package]]
+name = "rustc-demangle"
+version = "0.1.16"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4c691c0e608126e00913e33f0ccf3727d5fc84573623b8d65b2df340b5201783"
 
 [[package]]
 name = "rustc_version"
@@ -1767,9 +1815,9 @@ dependencies = [
 
 [[package]]
 name = "tauri"
-version = "0.7.1"
+version = "0.7.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9aa3c9277bed70ed95c3031f0ee72beb1be8cb76bc8c35f65be4f200b4771398"
+checksum = "0fe732d8ed1484038f05fd5defd67675dec0a787fbcaea1cbec5d7bcbc8263f6"
 dependencies = [
  "anyhow",
  "base64 0.12.3",
@@ -1778,6 +1826,7 @@ dependencies = [
  "lazy_static",
  "once_cell",
  "phf",
+ "runas",
  "serde",
  "serde_json",
  "tauri-api",
@@ -1794,9 +1843,9 @@ dependencies = [
 
 [[package]]
 name = "tauri-api"
-version = "0.7.0"
+version = "0.7.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "99d82ccb91ef83317b85819d60ae60609543f5d4fa6b4f629cd35b3a7c84bc0d"
+checksum = "aa02c789604506587113dddaee5737f155550c5dc3b755ffbfee3053344e46a6"
 dependencies = [
  "anyhow",
  "attohttpc",
@@ -2151,6 +2200,16 @@ dependencies = [
  "pango-sys",
  "pkg-config",
  "soup-sys",
+]
+
+[[package]]
+name = "which"
+version = "3.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d011071ae14a2f6671d0b74080ae0cd8ebf3a6f8c9589a2cd45f23126fe29724"
+dependencies = [
+ "failure",
+ "libc",
 ]
 
 [[package]]
