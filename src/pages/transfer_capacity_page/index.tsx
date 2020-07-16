@@ -32,26 +32,24 @@ const TransferCapacityPage = (props: any) => {
       return;
     }
     const txMeta = {
-      requestUrl: "direct_send",
+      url: "direct_send",
       state: "pending",
-      metaInfo: `transfer ${amount} CKB to ${receiverAddress}`,
+      description: `transfer ${amount} CKB to ${receiverAddress}`,
       timestamp: formatDate(new Date().getTime()),
     };
     const storage = Storage.getStorage();
     const id = new Date().getTime().toString();
     const request = {
       id,
-      data: {
+      payload: {
         id,
-        method: "signAndSend",
+        method: "sign_send",
         jsonrpc: "2.0",
         params: {
-          meta: txMeta.metaInfo,
+          description: txMeta.description,
           token: "xx",
           tx,
-          target: {
-            lockHash: scriptToHash(addressToScript(senderAddress)),
-          }
+          lockHash: scriptToHash(addressToScript(senderAddress)),
         }
       }
     }
