@@ -34,7 +34,7 @@ interface TransactionRequestParams {
 }
 
 const InputOutput = ({ capacity, lock, type, data }: Cell) => {
-  const address = scriptToAddress(lock);
+  const address = scriptToAddress(lock, {networkPrefix: "ckt", short: true});
   let algorithm;
   if (lock.codeHash === "0x9bd7e06f3ecf4be0f2fcd2188b23f1b9fcc88e5d4b65a8637b17723bbda3cce8") {
     algorithm = "secp256k1";
