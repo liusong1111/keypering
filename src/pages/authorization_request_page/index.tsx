@@ -3,7 +3,7 @@ import { withRouter } from "react-router";
 import sha256 from "crypto-js/sha256";
 import AuthorizationRequest from "../../widgets/authorization_request";
 import Storage from "../../services/storage";
-import { sendAck } from "../../services/messaging";
+import { sendAck } from "../../services/keypering_server";
 
 class AuthorizationRequestPage extends React.Component<any, any> {
   constructor(props: any) {
@@ -22,8 +22,8 @@ class AuthorizationRequestPage extends React.Component<any, any> {
   handleApprove = async () => {
     const { history } = this.props;
     const { request } = this.state;
-    const { token: wsToken, data } = request;
-    const { id, method, params } = data;
+    const { token: wsToken, payload } = request;
+    const { id, method, params } = payload;
     const { origin, description } = params;
     const timestamp = new Date().getTime();
     const authToken = sha256(origin).toString();

@@ -4,25 +4,25 @@ import styles from "./transaction.module.scss";
 import { ArrowRightCircle as ArrowRightCircleIcon } from "react-feather";
 
 interface TransactionProps {
-  requestUrl: string;
-  metaInfo: string;
+  url: string;
+  description: string;
   state: "approved" | "declined";
   timestamp: string;
   tx: any;
 }
 
-const Transaction = ({ requestUrl, metaInfo, state, timestamp, tx }: TransactionProps) => {
+const Transaction = ({ url, description, state, timestamp, tx }: TransactionProps) => {
   return (
     <div>
       <div className={styles.item}>
         <span className={styles.requestFromLabel}>Request from: </span>
-        <a className={styles.requestFromLink} href={requestUrl}>
-          {requestUrl}
+        <a className={styles.requestFromLink} href={url}>
+          {url}
         </a>
       </div>
       <div className={styles.item}>
         <span className={styles.metaInfoLabel}>Meta info: </span>
-        {metaInfo}
+        {description}
       </div>
       <div className={styles.item}>
         <span className={styles.timestamp}>{timestamp}</span>

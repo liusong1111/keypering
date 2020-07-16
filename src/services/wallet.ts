@@ -223,9 +223,18 @@ export class WalletManager {
     console.log("scriptMetaList.length=", scriptMetaList.length);
     const addresses: any[] = [];
     scriptMetaList.forEach((scriptMetas: any) => {
-      scriptMetas.forEach((script: any) => {
+      scriptMetas.forEach((o: any) => {
+        const script = {
+          lockHash: o.hash,
+          lockScript: o.meta.script,
+          lockScriptMeta: {
+            name: o.meta.name,
+            cellDeps: o.meta.deps,
+            headerDeps: o.meta.headers,
+          },
+        };
         const addr = Object.assign({}, script, {
-          address: scriptToAddress(script.meta.script, {networkPrefix: "ckt", short: true}),
+          address: scriptToAddress(script.lockScript, {networkPrefix: "ckt", short: true}),
           freeAmount: "0x0",
           inUseAmount: "0x0",
         });
@@ -277,7 +286,7 @@ export class WalletManager {
 
   loadCurrentWalletAddressListWithCells = async () => {
     const addresses = await this.loadCurrentWalletAddressList();
-    const cellsPromises = addresses.map((address: any) => getLiveCellsByLockHash(scriptToHash(address.meta.script), "0x0", "0x32"));
+    const cellsPromises = addresses.map((address: any) => getLiveCellsByLockHash(address.lockHash, "0x0", "0x32"));
     const addressCells = await Promise.all(cellsPromises);
     const addressSummary = addressCells.map((cells: any) => getCellsSummary(cells));
     const balance = new BN(0);

@@ -7,7 +7,7 @@ import commonStyles from "../../widgets/common.module.scss";
 import Tag from "../../widgets/tag";
 import Address from "../../widgets/address";
 import Balance from "../../widgets/balance";
-import { sendAck } from "../../services/messaging";
+import { sendAck } from "../../services/keypering_server";
 import Storage from "../../services/storage";
 import { WalletManager } from "../../services/wallet";
 import { getLiveCell } from "../../services/rpc";
@@ -28,8 +28,8 @@ interface TransactionRequestParams {
   tx: RawTransaction;
   requestFrom: string;
   inputCells: Cell[];
-  meta: string;
-  target: string;
+  description: string;
+  lockHash: string;
   config: any;
 }
 
@@ -75,7 +75,7 @@ class TransactionRequestPage extends React.Component<any, any> {
       request,
     });
     console.log("request:", request);
-    const token = (request as any).data?.params?.token;
+    const token = (request as any).payload?.params?.token;
     if (!token) {
       return;
     }
@@ -86,7 +86,7 @@ class TransactionRequestPage extends React.Component<any, any> {
     this.setState({
       auth,
     });
-    const rawInputs = (request as any).data?.params?.tx?.inputs;
+    const rawInputs = (request as any).payload?.params?.tx?.inputs;
     if (!rawInputs) {
       return;
     }
@@ -112,8 +112,8 @@ class TransactionRequestPage extends React.Component<any, any> {
   handleDecline = async () => {
     const { request } = this.state;
     const { history } = this.props;
-    const { token: wsToken, data } = request;
-    const { id } = data;
+    const { token: wsToken, payload } = request;
+    const { id } = payload;
     sendAck(wsToken, {
       id,
       jsonrpc: "2.0",
@@ -145,10 +145,9 @@ class TransactionRequestPage extends React.Component<any, any> {
   handleConfirm = async (password: string) => {
     const { request } = this.state;
     const { history } = this.props;
-    const { token: wsToken, data } = request;
-    const { id, params } = data;
-    const { target, tx, config, token, meta } = params;
-    const { lockHash } = target;
+    const { token: wsToken, payload } = request;
+    const { id, params } = payload;
+    const { lockHash, tx, config, token, description } = params;
     const manager = WalletManager.getInstance();
     const context = {
       lockHash,
@@ -190,9 +189,9 @@ class TransactionRequestPage extends React.Component<any, any> {
     }
     const {
       token: wsToken,
-      data: { id, params },
+      payload: { id, params },
     } = request;
-    const { tx, meta, config, target } = params as TransactionRequestParams;
+    const { tx, description, config, lockHash } = params as TransactionRequestParams;
     const { outputs, outputsData } = tx;
     const requestFrom = auth?.origin || "direct";
     return (
@@ -210,7 +209,7 @@ class TransactionRequestPage extends React.Component<any, any> {
             </div>
             <div className={styles.line}>
               <span className={styles.label}>Meta Info: </span>
-              <span>{meta}</span>
+              <span>{description}</span>
             </div>
             <div className={styles.line}>Transaction to sign:</div>
             <div className={styles.inputsAndOutputs}>

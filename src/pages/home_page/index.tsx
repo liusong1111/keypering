@@ -14,7 +14,8 @@ import Sidebar from "../../widgets/sidebar";
 import WalletSelector from "../../widgets/wallet_selector";
 import { WalletManager } from "../../services/wallet";
 import Storage from "../../services/storage";
-import { decryptKeystore, encryptKeystore, sendAck, writeTextFile, readTextFile } from "../../services/messaging";
+import { decryptKeystore, encryptKeystore, writeTextFile, readTextFile } from "../../services/messaging";
+import KeyperingServer, { sendAck } from "../../services/keypering_server";
 import {getCellsSummary, getLiveCell, getLiveCellsByLockHash} from "../../services/rpc";
 import { scriptToHash } from "@nervosnetwork/ckb-sdk-utils";
 import {formatDate} from "../../widgets/timestamp";
@@ -37,6 +38,7 @@ class HomePage extends React.Component<any, any> {
       addresses: [],
       balance: "0x0",
       authorizations: [],
+      keyperingServer: null,
     };
     this.init();
   }
@@ -66,92 +68,23 @@ class HomePage extends React.Component<any, any> {
   async componentDidMount() {
     // this.loadCurrentWalletAddressList();
     // this.loadAuthorizationList();
+    const { history } = this.props;
     const storage = Storage.getStorage();
     const manager = WalletManager.getInstance();
     const currentWalletName = await manager.getCurrentWalletName();
     await this.switchWallet(currentWalletName);
-    window.document.addEventListener("ws-event", this.handleWsEvent);
+    const { addresses } = this.state;
+    this.setState({
+      keyperingServer: new KeyperingServer(history, addresses)
+    });
   }
 
   componentWillUnmount() {
-    window.document.removeEventListener("ws-event", this.handleWsEvent);
-  }
-
-  handleWsEvent = async (msg: any) => {
-    const { addresses } = this.state;
-    const storage = Storage.getStorage();
-    const { detail } = msg;
-    console.log(detail);
-    detail.data = JSON.parse(detail.data);
-    const { data, token: wsToken } = detail;
-    const { id, method, params } = data;
-    await storage.setCurrentRequest(detail);
-    const { history } = this.props;
-    if (method === "auth") {
-      history.push("/authorization_request");
-    } else {
-      const { token } = params;
-      const auth = await storage.getAuthorization(token);
-      if (!auth) {
-        sendAck(wsToken, {
-          id,
-          jsonrpc: "2.0",
-          error: {
-            code: 2,
-            message: "invalid_token",
-          },
-        });
-        return;
-      }
-
-      if (method === "query_addresses") {
-        sendAck(wsToken, {
-          id,
-          jsonrpc: "2.0",
-          result: {
-            addresses,
-          }
-        })
-      } else if(method === "query_live_cells") {
-        const { lockHash } = params;
-        const liveCells = await getLiveCellsByLockHash(lockHash, "0x0", "0x32");
-        await Promise.all(liveCells.map(async (cell: any) => {
-          const cellWithData = await getLiveCell({tx_hash: cell.created_by.tx_hash, index: cell.created_by.index}, true);
-          cell.data = cellWithData.cell.data;
-        }));
-        sendAck(wsToken, {
-          id,
-          jsonrpc: "2.0",
-          result: {
-            liveCells,
-          }
-        });
-      }
-      else if (method === "query_locks") {
-        const manager = WalletManager.getInstance();
-        const addresses = await manager.loadCurrentWalletAddressList();
-        const locks = addresses.map((addr: any) => addr.hash);
-        sendAck(wsToken, {
-          id,
-          jsonrpc: "2.0",
-          result: {
-            locks,
-          },
-        });
-      } else if (method === "sign" || method === "signAndSend") {
-        console.log("msg:", msg);
-        const { meta, tx } = params;
-        const txMeta = {
-          requestUrl: auth.origin,
-          state: "pending",
-          metaInfo: meta,
-          timestamp: formatDate(new Date().getTime()),
-        };
-        await storage.addTransaction(id, txMeta, tx);
-        history.push("/transaction_request");
-      }
+    const { keyperingServer } = this.state;
+    if(keyperingServer) {
+      keyperingServer.uninstall();
     }
-  };
+  }
 
   loadCurrentWalletAddressList = async () => {
     const { currentWallet } = this.state;
@@ -231,6 +164,10 @@ class HomePage extends React.Component<any, any> {
     this.setState({
       walletSelectorOpen: false,
     });
+    const { addresses, keyperingServer } = this.state;
+    if (keyperingServer) {
+      keyperingServer.addresses = addresses;
+    }
   };
 
   handleOpenSetting = () => {

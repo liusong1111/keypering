@@ -1,11 +1,3 @@
-export function sendAck(token: any, msg: any) {
-  const { __TAURI__ } = window as any;
-  __TAURI__.invoke({
-    cmd: "webSocketResponse",
-    token,
-    data: JSON.stringify(msg),
-  });
-}
 
 function promisified(method: string, params: any) {
   const win = window as any;

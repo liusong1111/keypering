@@ -60,26 +60,26 @@ impl WebviewHandle {
 
 enum UIMessage {
     SetWebviewHandle(WebviewHandle),
-    TokenAndData(TokenAndData),
+    TokenAndPayload(TokenAndPayload),
 }
 
 
 #[derive(Serialize, Deserialize)]
-struct TokenAndData {
+struct TokenAndPayload {
     token: usize,
-    data: String,
+    payload: String,
 }
 
 fn main() {
     println!("starting...");
     let (tx_ui, rx_ui) = std::sync::mpsc::channel();
-    let (tx_ws, rx_ws) = std::sync::mpsc::channel::<TokenAndData>();
+    let (tx_ws, rx_ws) = std::sync::mpsc::channel::<TokenAndPayload>();
     let tx_ui1 = tx_ui.clone();
     let ws_server = ws::WebSocket::new(move |out: Sender| {
         let tx_ui = tx_ui.clone();
         move |msg: Message| {
             println!("recv ws msg:{}", msg);
-            tx_ui.send(UIMessage::TokenAndData(TokenAndData { token: out.token().0, data: msg.to_string() })).unwrap();
+            tx_ui.send(UIMessage::TokenAndPayload(TokenAndPayload { token: out.token().0, payload: msg.to_string() })).unwrap();
             Ok(())
         }
     }).unwrap();
@@ -92,7 +92,7 @@ fn main() {
     });
     std::thread::spawn(move || {
         for msg in rx_ws {
-            broadcaster.send(msg.data).unwrap();
+            broadcaster.send(msg.payload).unwrap();
         }
     });
     std::thread::spawn(move || {
@@ -102,12 +102,12 @@ fn main() {
                 UIMessage::SetWebviewHandle(_webview_handle) => {
                     webview_handle = Some(_webview_handle);
                 }
-                UIMessage::TokenAndData(token_and_data) => {
+                UIMessage::TokenAndPayload(token_and_payload) => {
                     if let Some(webview_handle) = &webview_handle {
-                        let data = serde_json::to_string(&token_and_data).unwrap();
+                        let data = serde_json::to_string(&token_and_payload).unwrap();
                         webview_handle.dispatch_ws_event(data);
                     } else {
-                        eprintln!("no webview_handle is set while receiving message,token={}, data={}", token_and_data.token, token_and_data.data);
+                        eprintln!("no webview_handle is set while receiving message,token={}, payload={}", token_and_payload.token, token_and_payload.payload);
                     }
                 }
             }
@@ -133,9 +133,9 @@ fn main() {
                             //  your command code
                             println!("MyCustomCommand, argument={}", argument);
                         }
-                        WebSocketResponse { token, data } => {
-                            println!("recv webSocketResponse, token={}, data={}", token, data);
-                            tx_ws.send(TokenAndData { token, data }).unwrap();
+                        WebSocketResponse { token, payload } => {
+                            println!("recv webSocketResponse, token={}, payload={}", token, payload);
+                            tx_ws.send(TokenAndPayload { token, payload }).unwrap();
                         }
                         JsonRpcCommand(rpc) => {
                             let id = &rpc.id;
@@ -156,7 +156,7 @@ fn main() {
                                 }
                                 JsonRpcBody::WriteTextFile { path, content } => {
                                     let result = std::fs::write(path, content);
-                                    let r:Result<(), JsonRpcResponseError>;
+                                    let r: Result<(), JsonRpcResponseError>;
                                     if result.is_err() {
                                         r = Err(JsonRpcResponseError::io_err());
                                     } else {
@@ -166,7 +166,7 @@ fn main() {
                                     let json = serde_json::to_string_pretty(&response).unwrap();
                                     webview_handle.resolve_promise(id, &json);
                                 }
-                                JsonRpcBody::ReadTextFile{ path} => {
+                                JsonRpcBody::ReadTextFile { path } => {
                                     let result = std::fs::read_to_string(path);
                                     let r = match result {
                                         Ok(data) => Ok(data),

@@ -5,6 +5,7 @@
   "dependencies": {
     "@keyper/container": "^0.1.0",
     "@keyper/specs": "^0.1.0",
+    "@keypering/specs": "../keypering-core/packages/specs/lib",
     "@nervosnetwork/ckb-sdk-utils": "^0.32.0",
     "@types/crypto-js": "^3.1.47",
     "@types/node": "^12.0.0",
@@ -71,6 +72,7 @@
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "@types/elliptic": "^6.4.12",
+    "@types/history": "^4.7.6",
     "@types/jest": "^24.0.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "customize-cra": "^1.0.0",

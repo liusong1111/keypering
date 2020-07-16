@@ -104,6 +104,6 @@ pub enum Cmd {
     // multiple arguments are allowed
     // note that rename_all = "camelCase": you need to use "myCustomCommand" on JS
     MyCustomCommand { argument: String },
-    WebSocketResponse { token: usize, data: String },
+    WebSocketResponse { token: usize, payload: String },
     JsonRpcCommand(JsonRpcRequest),
 }

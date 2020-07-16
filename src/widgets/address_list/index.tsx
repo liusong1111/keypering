@@ -4,10 +4,9 @@ import styles from "./address_list.module.scss";
 import Balance from "../balance";
 import Address from "../address";
 import Tag from "../tag";
+import { AddressInfo } from "@keypering/specs";
 
-interface AddressWithAmount {
-  address: string;
-  meta: any;
+interface AddressWithAmount extends AddressInfo {
   freeAmount: string;
   inUseAmount: string;
 }
@@ -32,9 +31,9 @@ interface AddressListProps {
 // };
 
 const AddressList = ({ addresses }: AddressListProps) => {
-  const view = addresses.map(({ address, meta, freeAmount, inUseAmount }) => (
+  const view = addresses.map(({ address, lockScript, lockHash, lockScriptMeta, freeAmount, inUseAmount }) => (
     <div className={styles.item} key={address}>
-      <Tag>{meta.name}</Tag>
+      <Tag>{lockScriptMeta.name}</Tag>
       <Address className={styles.address} value={address} />
       <Flex>
         <Flex.Item className={styles.freeContainer}>
