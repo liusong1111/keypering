@@ -11,10 +11,10 @@ const TransactionList = ({ transactions }: TransactionListProps) => {
     <div className={styles.list}>
       {transactions.map((tx) => {
         const { id, meta, rawTransaction } = tx;
-        const { url, description, state, timestamp } = meta;
+        const { requestFrom, description, state, timestamp } = meta;
         return (
           <div className={styles.item} key={id}>
-            <Transaction url={url} description={description} state={state} timestamp={timestamp} tx={rawTransaction} />
+            <Transaction requestFrom={requestFrom} description={description} state={state} timestamp={timestamp} tx={rawTransaction} />
           </div>
         );
       })}

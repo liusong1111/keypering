@@ -264,7 +264,10 @@ export default class Storage {
   };
 
   listTransaction = async (): Promise<any[]> => {
-    const transactions = await getAll(this.db!, "transactions");
+    let transactions = await getAll(this.db!, "transactions");
+    transactions.sort((a: any, b: any) => {
+      return (a.meta.timestamp > b.meta.timestamp) && -1 || 1;
+    })
     return transactions;
   };
 

@@ -159,6 +159,7 @@ class TransactionRequestPage extends React.Component<any, any> {
       // return;
     }
 
+    const requestFrom = auth?.url || "direct";
     let txSigned;
     try {
       txSigned = await manager.signAndSend(password, context, tx, config);
@@ -168,6 +169,7 @@ class TransactionRequestPage extends React.Component<any, any> {
     }
     console.log("txSigned:", txSigned);
     const transaction = await store.getTransaction(id);
+    transaction.meta.requestFrom = requestFrom;
     transaction.meta.state = "approved";
     transaction.meta.timestamp = formatDate(new Date().getTime());
     transaction.rawTransaction = txSigned;
