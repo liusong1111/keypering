@@ -4,20 +4,21 @@ import styles from "./authorization.module.scss";
 import Timestamp from "../timestamp";
 
 interface AuthorizationProps {
-  origin: string;
+  url: string;
+  description: string;
   token: string;
   timestamp: string | number | Date;
   onRevoke: any;
   [key: string]: any;
 }
 
-const Authorization = ({ origin, token, timestamp, onRevoke }: AuthorizationProps) => {
+const Authorization = ({ url, description, token, timestamp, onRevoke }: AuthorizationProps) => {
   return (
     <div>
       <div className={styles.applicationContainer}>
         <span className={styles.applicationLabel}>Application: </span>
-        <a className={styles.link} href={origin} target="_blank">
-          {origin}
+        <a className={styles.link} href={url} target="_blank">
+          {url}
         </a>
       </div>
       <div className={styles.container}>

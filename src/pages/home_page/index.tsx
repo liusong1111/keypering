@@ -74,6 +74,7 @@ class HomePage extends React.Component<any, any> {
     const currentWalletName = await manager.getCurrentWalletName();
     await this.switchWallet(currentWalletName);
     const { addresses } = this.state;
+    console.log("set keyperingServer address=", addresses);
     this.setState({
       keyperingServer: new KeyperingServer(history, addresses)
     });
@@ -167,6 +168,7 @@ class HomePage extends React.Component<any, any> {
     const { addresses, keyperingServer } = this.state;
     if (keyperingServer) {
       keyperingServer.addresses = addresses;
+      console.log("set(1) keyperingServer address=", addresses);
     }
   };
 

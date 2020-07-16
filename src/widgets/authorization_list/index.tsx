@@ -9,9 +9,9 @@ interface AuthorizationListProps {
 
 const AuthorizationList = (props: AuthorizationListProps) => {
   const { authorizations, onRevoke } = props;
-  const items = authorizations.map(({ origin, timestamp, token }) => (
+  const items = authorizations.map(({ url, description, timestamp, token }) => (
     <div className={styles.item} key={token}>
-      <Authorization origin={origin} timestamp={timestamp} token={token} onRevoke={onRevoke} />
+      <Authorization url={url} description={description} timestamp={timestamp} token={token} onRevoke={onRevoke} />
     </div>
   ));
   return <div>{items}</div>;
