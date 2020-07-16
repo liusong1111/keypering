@@ -6,7 +6,7 @@ import commonStyles from "../../widgets/common.module.scss";
 
 interface AuthorizationRequestProps {
   token: number;
-  origin: string;
+  url: string;
   description: string;
   history: any;
   handleApprove: any;
@@ -29,13 +29,13 @@ class AuthorizationRequest extends React.Component<any, any> {
   };
 
   render() {
-    const { origin, description, history, handleApprove, handleDecline } = this.props;
+    const { url, description, history, handleApprove, handleDecline } = this.props;
     const { agree } = this.state;
     let domain = "unknown";
     try {
-      domain = new URL(origin).hostname;
+      domain = new URL(url).hostname;
     } catch (e) {
-      console.log("illegal origin:", origin);
+      console.log("illegal url:", url);
     }
 
     return (
@@ -46,8 +46,8 @@ class AuthorizationRequest extends React.Component<any, any> {
         <List>
           <List.Item>
             <span className={styles.label}>Request from:</span>
-            <a className={styles.link} href={origin} target="_blank">
-              {origin}
+            <a className={styles.link} href={url} target="_blank">
+              {url}
             </a>
           </List.Item>
           <List.Item>

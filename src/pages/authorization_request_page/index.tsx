@@ -24,12 +24,12 @@ class AuthorizationRequestPage extends React.Component<any, any> {
     const { request } = this.state;
     const { token: wsToken, payload } = request;
     const { id, method, params } = payload;
-    const { origin, description } = params;
+    const { url, description } = params;
     const timestamp = new Date().getTime();
-    const authToken = sha256(origin).toString();
+    const authToken = sha256(url).toString();
     await Storage.getStorage().addAuthorization({
       token: authToken,
-      origin,
+      url,
       description,
       timestamp,
     });
@@ -47,8 +47,8 @@ class AuthorizationRequestPage extends React.Component<any, any> {
     console.log("handleDecline");
     const { history } = this.props;
     const { request } = this.state;
-    const { token: wsToken, data } = request;
-    const { id, method, params } = data;
+    const { token: wsToken, payload } = request;
+    const { id, method, params } = payload;
     sendAck(0, {
       id,
       jsonrpc: "2.0",
@@ -67,13 +67,13 @@ class AuthorizationRequestPage extends React.Component<any, any> {
       console.log("request is null");
       return null;
     }
-    const { token: wsToken, data } = request;
-    const { id, method, params } = data;
-    const { origin, description } = params;
+    const { token: wsToken, payload } = request;
+    const { id, method, params } = payload;
+    const { url, description } = params;
     return (
       <AuthorizationRequest
         token={wsToken}
-        origin={origin}
+        url={url}
         description={description}
         history={history}
         handleApprove={this.handleApprove}
