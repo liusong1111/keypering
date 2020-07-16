@@ -72,12 +72,13 @@ class HomePage extends React.Component<any, any> {
     const storage = Storage.getStorage();
     const manager = WalletManager.getInstance();
     const currentWalletName = await manager.getCurrentWalletName();
-    await this.switchWallet(currentWalletName);
-    const { addresses } = this.state;
-    console.log("set keyperingServer address=", addresses);
-    this.setState({
-      keyperingServer: new KeyperingServer(history, addresses)
-    });
+    if(currentWalletName) {
+      await this.switchWallet(currentWalletName);
+      const { addresses } = this.state;
+      this.setState({
+        keyperingServer: new KeyperingServer(history, addresses)
+      });
+    }
   }
 
   componentWillUnmount() {
