@@ -193,7 +193,7 @@ class TransactionRequestPage extends React.Component<any, any> {
     } = request;
     const { tx, description, config, lockHash } = params as TransactionRequestParams;
     const { outputs, outputsData } = tx;
-    const requestFrom = auth?.origin || "direct";
+    const requestFrom = auth?.url || "direct";
     return (
       <div className={styles.page}>
         <NavBar icon={<Icon type="left" />} onLeftClick={this.handleDecline}>
