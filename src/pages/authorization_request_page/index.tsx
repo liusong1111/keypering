@@ -4,6 +4,7 @@ import sha256 from "crypto-js/sha256";
 import AuthorizationRequest from "../../widgets/authorization_request";
 import Storage from "../../services/storage";
 import { sendAck } from "../../services/keypering_server";
+import {WalletManager} from "../../services/wallet";
 
 class AuthorizationRequestPage extends React.Component<any, any> {
   constructor(props: any) {
@@ -26,8 +27,11 @@ class AuthorizationRequestPage extends React.Component<any, any> {
     const { id, method, params } = payload;
     const { url, description } = params;
     const timestamp = new Date().getTime();
-    const authToken = sha256(url).toString();
+    const manager = WalletManager.getInstance();
+    const walletName = await manager.getCurrentWalletName();
+    const authToken = sha256(new Date().getTime() + "").toString();
     await Storage.getStorage().addAuthorization({
+      walletName,
       token: authToken,
       url,
       description,

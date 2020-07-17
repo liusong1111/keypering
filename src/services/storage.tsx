@@ -226,9 +226,19 @@ export default class Storage {
     return result;
   };
 
+  listAuthorizationByWalletName = async (walletName: string): Promise<any[]> => {
+    const auths = await this.listAuthorization();
+    return auths.filter((auth) => auth.walletName === walletName);
+  };
+
   getAuthorization = async (token: string): Promise<any> => {
     const result = await this.db!.get("authorizations", token);
     return result;
+  };
+
+  getAuthorizationByWalletNameAndUrl = async (walletName: string, url: string): Promise<any> => {
+    const auths = await this.listAuthorization();
+    return auths.find((auth) => auth.walletName === walletName && auth.url === url);
   };
 
   removeAuthorization = async (token: string): Promise<void> => {
@@ -236,7 +246,11 @@ export default class Storage {
   };
 
   addAuthorization = async (auth: any): Promise<void> => {
-    console.log("addAuthorization:", JSON.stringify(auth, null, 2));
+    // console.log("addAuthorization:", JSON.stringify(auth, null, 2));
+    const existingAuth = await this.getAuthorizationByWalletNameAndUrl(auth.walletName, auth.url);
+    if (existingAuth) {
+      await this.removeAuthorization(existingAuth.token);
+    }
     await this.db!.put("authorizations", auth);
   };
 

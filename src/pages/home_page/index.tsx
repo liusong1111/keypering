@@ -47,10 +47,11 @@ class HomePage extends React.Component<any, any> {
     const storage = Storage.getStorage();
     const manager = WalletManager.getInstance();
     const currentWallet = await manager.getCurrentWallet();
+    const currentWalletName = await manager.getCurrentWalletName();
     // sth weird...
     await manager.loadWallets();
 
-    const authorizations = await storage.listAuthorization();
+    const authorizations = await storage.listAuthorizationByWalletName(currentWalletName);
     const transactions = await storage.listTransaction();
     const wallets = await manager.getWallets();
     this.setState({
@@ -108,7 +109,9 @@ class HomePage extends React.Component<any, any> {
 
   loadAuthorizationList = async () => {
     const storage = Storage.getStorage();
-    const authorizations = await storage.listAuthorization();
+    const manager = WalletManager.getInstance();
+    const walletName = await manager.getCurrentWalletName();
+    const authorizations = await storage.listAuthorizationByWalletName(walletName);
     this.setState({ authorizations });
   };
 
