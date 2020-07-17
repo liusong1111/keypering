@@ -50,6 +50,7 @@ for mac:
 
 https://tauri.studio/docs/getting-started/setup-macos
 
+And, run the following commands to build a standalone executable file:
 
 ```shell
 yarn install
