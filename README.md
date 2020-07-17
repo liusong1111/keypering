@@ -40,6 +40,14 @@ Compile and open the desktop app, which loads `http://127.0.0.1:3000/` as homepa
 The app will recompile if you make edits on rust code. 
 
 ## How to build production
+First, Setup the tauri
+
+for windows:
+https://tauri.studio/docs/getting-started/setup-windows
+for mac:
+https://tauri.studio/docs/getting-started/setup-macos
+
+
 ```shell
 yarn install
 yarn build
