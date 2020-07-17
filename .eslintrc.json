@@ -1,7 +1,9 @@
 {
   "env": {
     "browser": true,
-    "es6": true
+    "es6": true,
+    "node": true,
+    "jest": true
   },
   "settings": {
     "import/resolver": {
@@ -15,11 +17,9 @@
     }
   },
   "extends": [
-    "airbnb",
-    "eslint:recommended",
+    "airbnb-typescript",
     "plugin:prettier/recommended",
-    "plugin:react/recommended",
-    "plugin:@typescript-eslint/eslint-recommended"
+    "plugin:react-hooks/recommended"
   ],
   "globals": {
     "Atomics": "readonly",
@@ -35,6 +35,7 @@
   },
   "plugins": [
     "react",
+    "prettier",
     "@typescript-eslint"
   ],
   "rules": {
@@ -42,6 +43,47 @@
       "error",
       2
     ],
+    "prettier/prettier": [2, {
+      "printWidth": 120
+    }],
+    "semi": [2, "never"],
+    "curly": [2, "all"],
+    "comma-dangle": [2, {
+      "arrays": "always-multiline",
+      "objects": "always-multiline",
+      "imports": "always-multiline",
+      "exports": "always-multiline",
+      "functions": "ignore"
+    }],
+    "max-len": [2, {
+      "code": 120,
+      "ignoreComments": true,
+      "ignoreTrailingComments": true,
+      "ignoreUrls": true,
+      "ignoreStrings": true,
+      "ignoreTemplateLiterals": true,
+      "ignoreRegExpLiterals": true,
+    }],
+    "object-curly-newline": ["error", {
+      "ObjectExpression": {
+        "consistent": true
+      },
+      "ObjectPattern": {
+        "consistent": true
+      },
+      "ImportDeclaration": {
+        "consistent": true,
+      },
+      "ExportDeclaration": {
+        "multiline": true,
+        "minProperties": 3
+      }
+    }],
+    "no-console": [2, {
+      "allow": ["info", "warn", "error", "group", "groupEnd"]
+    }],
+    "no-alert": [0],
+    "no-bitwise": [0],
     "react/jsx-filename-extension": [
       1,
       {
