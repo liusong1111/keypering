@@ -12,8 +12,8 @@ build = "src/build.rs"
 [dependencies]
 serde_json = "1.0"
 serde = { version = "1.0", features = [ "derive" ] }
-tauri = { version = "0.7.4", features = [ "all-api", "edge", "cli" ] }
-tauri-api = "0.7.1"
+tauri = { version = "0.8.0", features = [ "all-api", "cli" ] }
+tauri-api = "0.7.3"
 ws = "0.9.1"
 scrypt = "0.3.0"
 rand = "0.7.3"

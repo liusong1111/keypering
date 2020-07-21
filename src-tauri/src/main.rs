@@ -4,7 +4,7 @@ windows_subsystem = "windows"
 )]
 
 use ws::{Message, Sender};
-use tauri::Handle;
+use tauri::WebviewMut;
 use serde::{Serialize, Deserialize};
 
 mod cmd;
@@ -14,17 +14,17 @@ use crate::cmd::{JsonRpcBody, JsonRpcResponse, DecryptKeystoreResponse, JsonRpcR
 
 #[derive(Clone)]
 struct WebviewHandle {
-    handle: Handle<()>,
+    handle: WebviewMut,
 }
 
 impl WebviewHandle {
-    fn new(handle: Handle<()>) -> Self {
+    fn new(handle: WebviewMut) -> Self {
         Self {
             handle,
         }
     }
 
-    fn resolve_promise(&self, request_id: &str, data: &str) {
+    fn resolve_promise(&mut self, request_id: &str, data: &str) {
         let request_id = request_id.to_string();
         let data = data.to_string();
         let result = self.handle.dispatch(move |webview| {
@@ -42,7 +42,7 @@ impl WebviewHandle {
         println!("dispatchEvent result={:?}", result);
     }
 
-    fn dispatch_ws_event(&self, detail: String) {
+    fn dispatch_ws_event(&mut self, detail: String) {
         // let mut detail = serde_json::to_string(&detail).unwrap();
         let result = self.handle.dispatch(move |webview| {
             webview.eval(&format!(r#"
@@ -103,7 +103,7 @@ fn main() {
                     webview_handle = Some(_webview_handle);
                 }
                 UIMessage::TokenAndPayload(token_and_payload) => {
-                    if let Some(webview_handle) = &webview_handle {
+                    if let Some(webview_handle) = &mut webview_handle {
                         let data = serde_json::to_string(&token_and_payload).unwrap();
                         webview_handle.dispatch_ws_event(data);
                     } else {
@@ -116,7 +116,7 @@ fn main() {
     println!("starting tauri server...");
     tauri::AppBuilder::new()
         .setup(move |_webview, _win| {
-            let webview_handle = WebviewHandle::new(_webview.handle());
+            let webview_handle = WebviewHandle::new(_webview.as_mut());
             println!("setting up tauri webview...");
             tx_ui1.send(UIMessage::SetWebviewHandle(webview_handle)).unwrap();
         })
@@ -139,7 +139,7 @@ fn main() {
                         }
                         JsonRpcCommand(rpc) => {
                             let id = &rpc.id;
-                            let webview_handle = WebviewHandle::new(_webview.handle());
+                            let mut webview_handle = WebviewHandle::new(_webview.as_mut());
                             match rpc.body {
                                 JsonRpcBody::EncryptKeystore { password, private_key } => {
                                     let ks = keystore::encrypt(&password, &private_key);

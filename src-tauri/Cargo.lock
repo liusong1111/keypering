@@ -74,18 +74,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bbf56136a5198c7b01a49e3afcbef6cf84597273d298f54432926024107b0109"
 
 [[package]]
-name = "atk-sys"
-version = "0.9.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e552c1776737a4c80110d06b36d099f47c727335f9aaa5d942a72b6863a8ec6f"
-dependencies = [
- "glib-sys",
- "gobject-sys",
- "libc",
- "pkg-config",
-]
-
-[[package]]
 name = "attohttpc"
 version = "0.15.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -235,12 +223,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "boxfnonce"
-version = "0.1.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5988cb1d626264ac94100be357308f29ff7cbdd3b36bda27f450a4ee3f713426"
-
-[[package]]
 name = "byte-tools"
 version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -288,16 +270,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ad3b39a260062fca31f7b0b12f207e8f2590a67d32ec7d59c20484b07ea7285e"
 dependencies = [
  "cc",
- "libc",
- "pkg-config",
-]
-
-[[package]]
-name = "cairo-sys-rs"
-version = "0.9.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ff65ba02cac715be836f63429ab00a767d48336efc5497c5637afb53b4f14d63"
-dependencies = [
  "libc",
  "pkg-config",
 ]
@@ -514,11 +486,10 @@ dependencies = [
 
 [[package]]
 name = "dirs"
-version = "3.0.0"
+version = "3.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2fddc3610d8f9552384e06ebc87f714e1d0b2b64a99194d2faf36d7ae5f48549"
+checksum = "142995ed02755914747cc6ca76fc7e4583cd18578746716d0508ea6ed558b9ff"
 dependencies = [
- "cfg-if",
  "dirs-sys",
 ]
 
@@ -650,35 +621,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8f5f3913fa0bfe7ee1fd8248b6b9f42a5af4b9d65ec2dd2c3c26132b950ecfc2"
 
 [[package]]
-name = "gdk-pixbuf-sys"
-version = "0.9.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d8991b060a9e9161bafd09bf4a202e6fd404f5b4dd1a08d53a1e84256fb34ab0"
-dependencies = [
- "gio-sys",
- "glib-sys",
- "gobject-sys",
- "libc",
- "pkg-config",
-]
-
-[[package]]
-name = "gdk-sys"
-version = "0.9.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6adf679e91d1bff0c06860287f80403e7db54c2d2424dce0a470023b56c88fbb"
-dependencies = [
- "cairo-sys-rs",
- "gdk-pixbuf-sys",
- "gio-sys",
- "glib-sys",
- "gobject-sys",
- "libc",
- "pango-sys",
- "pkg-config",
-]
-
-[[package]]
 name = "generator"
 version = "0.6.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -719,57 +661,6 @@ dependencies = [
  "cfg-if",
  "libc",
  "wasi",
-]
-
-[[package]]
-name = "gio-sys"
-version = "0.9.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4fad225242b9eae7ec8a063bb86974aca56885014672375e5775dc0ea3533911"
-dependencies = [
- "glib-sys",
- "gobject-sys",
- "libc",
- "pkg-config",
-]
-
-[[package]]
-name = "glib-sys"
-version = "0.9.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "95856f3802f446c05feffa5e24859fe6a183a7cb849c8449afc35c86b1e316e2"
-dependencies = [
- "libc",
- "pkg-config",
-]
-
-[[package]]
-name = "gobject-sys"
-version = "0.9.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "31d1a804f62034eccf370006ccaef3708a71c31d561fee88564abe71177553d9"
-dependencies = [
- "glib-sys",
- "libc",
- "pkg-config",
-]
-
-[[package]]
-name = "gtk-sys"
-version = "0.9.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "53def660c7b48b00b510c81ef2d2fbd3c570f1527081d8d7947f471513e1a4c1"
-dependencies = [
- "atk-sys",
- "cairo-sys-rs",
- "gdk-pixbuf-sys",
- "gdk-sys",
- "gio-sys",
- "glib-sys",
- "gobject-sys",
- "libc",
- "pango-sys",
- "pkg-config",
 ]
 
 [[package]]
@@ -851,15 +742,6 @@ name = "itoa"
 version = "0.4.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dc6f3ad7b9d11a0c00842ff8de1b60ee58661048eb8049ed33c73594f359d7e6"
-
-[[package]]
-name = "javascriptcore-rs-sys"
-version = "0.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3f46ada8a08dcd75a10afae872fbfb51275df4a8ae0d46b8cc7c708f08dd2998"
-dependencies = [
- "libc",
-]
 
 [[package]]
 name = "kernel32-sys"
@@ -1209,18 +1091,6 @@ name = "os_str_bytes"
 version = "2.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "06de47b848347d8c4c94219ad8ecd35eb90231704b067e67e6ae2e36ee023510"
-
-[[package]]
-name = "pango-sys"
-version = "0.9.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "86b93d84907b3cf0819bff8f13598ba72843bee579d5ebc2502e4b0367b4be7d"
-dependencies = [
- "glib-sys",
- "gobject-sys",
- "libc",
- "pkg-config",
-]
 
 [[package]]
 name = "pbkdf2"
@@ -1693,20 +1563,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "soup-sys"
-version = "0.9.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "48a2f246b51c81d4baa1ce611240c2f6e0323ae75f3b6cc9d2d2911e0567962c"
-dependencies = [
- "bitflags 1.2.1",
- "gio-sys",
- "glib-sys",
- "gobject-sys",
- "libc",
- "pkg-config",
-]
-
-[[package]]
 name = "stream-cipher"
 version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1815,9 +1671,9 @@ dependencies = [
 
 [[package]]
 name = "tauri"
-version = "0.7.4"
+version = "0.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "193aad86f0296eac882211d924a46e85a9108d26281547aba10a0a5e417a16a4"
+checksum = "f72daab05746b62b1301359299c04c073d0301ddbdf694c8df1d9a8099b71289"
 dependencies = [
  "anyhow",
  "base64 0.12.3",
@@ -1830,27 +1686,27 @@ dependencies = [
  "serde",
  "serde_json",
  "tauri-api",
- "tauri-web-view",
- "tauri-webview-sys",
  "tauri_includedir",
  "tauri_includedir_codegen",
  "thiserror",
  "threadpool",
  "tiny_http",
+ "urlencoding",
  "uuid",
  "webbrowser",
+ "webview_official",
 ]
 
 [[package]]
 name = "tauri-api"
-version = "0.7.1"
+version = "0.7.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "aa02c789604506587113dddaee5737f155550c5dc3b755ffbfee3053344e46a6"
+checksum = "06ec51aad866f15a1771c2f1a46aad5a8a372a8a4730f3db469eb4cbcecc8106"
 dependencies = [
  "anyhow",
  "attohttpc",
  "clap",
- "dirs 3.0.0",
+ "dirs 3.0.1",
  "either",
  "flate2",
  "http",
@@ -1898,36 +1754,6 @@ dependencies = [
  "anyhow",
  "sysinfo",
  "thiserror",
-]
-
-[[package]]
-name = "tauri-web-view"
-version = "0.6.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "49fe1663f4effc1d1ca2da9200ff305884cd1cd9184621202f3fc87c5fe37fac"
-dependencies = [
- "boxfnonce",
- "tauri-webview-sys",
- "tinyfiledialogs",
- "urlencoding",
-]
-
-[[package]]
-name = "tauri-webview-sys"
-version = "0.5.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e6eae41fb6beb03af10d7cb05ed010103d0272cf2dda84d67082385e06640494"
-dependencies = [
- "cc",
- "gdk-sys",
- "gio-sys",
- "glib-sys",
- "gobject-sys",
- "gtk-sys",
- "javascriptcore-rs-sys",
- "libc",
- "pkg-config",
- "webkit2gtk-sys",
 ]
 
 [[package]]
@@ -2033,16 +1859,6 @@ dependencies = [
  "chunked_transfer",
  "log",
  "url",
-]
-
-[[package]]
-name = "tinyfiledialogs"
-version = "3.3.9"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "848eb50d6d21430349d82418c2244f611b1ad3e1c52c675320338b3102d06554"
-dependencies = [
- "cc",
- "libc",
 ]
 
 [[package]]
@@ -2181,25 +1997,13 @@ dependencies = [
 ]
 
 [[package]]
-name = "webkit2gtk-sys"
-version = "0.10.0"
+name = "webview_official"
+version = "0.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f438a797e617deaa635e482f0beb29abb3bbe1540709cc20a572cac499b2f980"
+checksum = "e6572132855073d999a06a56f7e8b9d26959923d74c4f30503507b698f556fe1"
 dependencies = [
- "atk-sys",
- "bitflags 1.2.1",
- "cairo-sys-rs",
- "gdk-pixbuf-sys",
- "gdk-sys",
- "gio-sys",
- "glib-sys",
- "gobject-sys",
- "gtk-sys",
- "javascriptcore-rs-sys",
- "libc",
- "pango-sys",
+ "cc",
  "pkg-config",
- "soup-sys",
 ]
 
 [[package]]
