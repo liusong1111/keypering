@@ -2,6 +2,7 @@
 function promisified(method: string, params: any) {
   const win = window as any;
   const { __TAURI__ } = win;
+  const { tauri } = __TAURI__;
   const id = new Date().getTime().toString();
   return new Promise((resolve, reject) => {
     win[id] = (response: any) => {
@@ -13,7 +14,7 @@ function promisified(method: string, params: any) {
       }
     };
 
-    __TAURI__.invoke({
+    tauri.invoke({
       cmd: "jsonRpcCommand",
       id,
       jsonrpc: "2.0",
